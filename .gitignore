@@ -1,0 +1,13 @@
+# secrets
+.env
+*.key
+# local-only planning and judge research (never public)
+PLAN.md
+research/
+reference/judges.json
+# bulky or generated
+__pycache__/
+*.pyc
+.venv/
+runs/raw/
+*.safetensors
