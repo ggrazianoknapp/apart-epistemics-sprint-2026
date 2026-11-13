@@ -37,14 +37,24 @@ class Client:
                 r = json.loads(line)
                 self.cache[r["cache_key"]] = r
         self.lock = asyncio.Lock()
+        self.key_lock = asyncio.Lock()
         self._last_check, self._usage = 0.0, None
 
     async def sprint_spend(self):
-        """Key usage above the sprint baseline, refreshed at most once a minute."""
-        if time.time() - self._last_check > 60:
-            r = await self.http.get(f"{OPENROUTER}/key", headers={"Authorization": f"Bearer {self.key}"})
-            self._usage = r.json()["data"]["usage"]
-            self._last_check = time.time()
+        """Key usage above the sprint baseline, refreshed at most once a minute (one request at a time)."""
+        async with self.key_lock:
+            if self._usage is None or time.time() - self._last_check > 60:
+                for attempt in range(6):
+                    try:
+                        r = await self.http.get(f"{OPENROUTER}/key", headers={"Authorization": f"Bearer {self.key}"})
+                        self._usage = r.json()["data"]["usage"]
+                        self._last_check = time.time()
+                        break
+                    except Exception as e:  # rate limit or network blip: keep the last known value and retry
+                        print(f"key check failed ({attempt+1}): {repr(e)[:120]}", file=sys.stderr, flush=True)
+                        await asyncio.sleep(5 * (attempt + 1))
+                if self._usage is None:
+                    raise RuntimeError("could not read the key's usage; refusing to spend blind")
         return self._usage - BASELINE_USAGE
 
     async def chat(self, model, messages, step_id, max_tokens=16000, reasoning="medium", temperature=None,
