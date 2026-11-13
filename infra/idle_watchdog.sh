@@ -2,6 +2,8 @@
 # Stops this Vast instance after IDLE_MIN minutes with the GPU idle AND no keepalive touch.
 # Touch /workspace/KEEPALIVE to keep the box up while working without the GPU.
 IDLE_MIN=${IDLE_MIN:-120}
+# Vast puts the instance's own id and scoped API key in the container's start environment.
+eval "$(tr '\0' '\n' < /proc/1/environ | grep -E '^(CONTAINER_ID|CONTAINER_API_KEY)=' | sed 's/^/export /')"
 CHECK_SEC=300
 idle=0
 while true; do

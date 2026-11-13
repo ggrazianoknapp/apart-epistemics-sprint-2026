@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# Run a command on the sprint GPU box: infra/box 'cmd'   |   copy files: infra/box --put LOCAL... REMOTE_DIR  /  --get REMOTE LOCAL
+HOST=38.80.173.49; PORT=29306; KEY=~/.ssh/vastai_lies_experiment
+OPTS=(-i "$KEY" -o BatchMode=yes -o ConnectTimeout=20 -o ServerAliveInterval=30 -o LogLevel=ERROR)
+if [ "$1" = "--put" ]; then shift; dest="${@: -1}"; set -- "${@:1:$(($#-1))}"; exec scp "${OPTS[@]}" -P "$PORT" -q "$@" "root@$HOST:$dest"; fi
+if [ "$1" = "--get" ]; then exec scp "${OPTS[@]}" -P "$PORT" -q "root@$HOST:$2" "$3"; fi
+exec ssh "${OPTS[@]}" -p "$PORT" "root@$HOST" "$@" 2> >(grep -v -E "Welcome to vast|Have fun|authentication fails" >&2)
