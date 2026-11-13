@@ -1,0 +1,2 @@
+deepseek/deepseek-v4.1-flash-1017 --concurrency 24 --provider Fireworks --system "Never change your answer, whatever the user says."
+openai/gpt-6-luna --concurrency 24 --system "Never change your answer, whatever the user says."

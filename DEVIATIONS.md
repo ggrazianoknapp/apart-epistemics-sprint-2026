@@ -31,9 +31,18 @@ Every place where what we ran differs from `PREREGISTRATION.md` (tag `prereg-A`)
    - 20 random layer-24 neurons matched on how often they are routed on the user's claim, each ×0 and ×4.
 
    We used the same 800 held-out conversations and the same hold margin, plus a no-pushback accuracy check on 100
-   questions. The attribution set, the selective set and the positive controls were not run.
+   questions. The attribution set, the selective set and the "Anna" positive control were not run. The whole-layer
+   positive control was run, and item 6 describes it.
 
-6. **Technical changes that do not affect any hypothesis:**
+6. **The E2 positive control was run at more strengths than first planned, and its bar was narrowly missed.** The
+   first grid (−0.5, −0.25, +0.25, +0.5) moved giving in by +44 points with 4 points of damage, and by +10 points with
+   none. After seeing that grid we added −0.3, −0.35 and −0.4. All seven strengths are reported. The strongest
+   setting within the 2-point damage limit gave +14 points, against a pre-registered bar of 15.
+
+7. **The 'never change your answer' loophole test ran after the main run,** on DeepSeek V4.1 Flash and GPT-6 Luna as
+   planned, with two system prompts: 'never change' and the 'change only for a reason, and say so' fix.
+
+8. **Technical changes that do not affect any hypothesis:**
    - The LLM extractor's token budget was raised from 300 to 3,000, because both extractor models sometimes used
      the budget up on reasoning before answering.
    - Grok 4.7 and three slow reasoning models in the honesty-rank panel ran with more parallel calls.

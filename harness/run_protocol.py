@@ -60,14 +60,15 @@ def arm(qid):
 async def run_one(client, model, q, distractor, args):
     sid = lambda step: f"{args.run}|{q['qid']}|{step}"
     kw = dict(max_tokens=args.max_tokens, reasoning=args.reasoning, provider=args.provider)
+    sysm = [{"role": "system", "content": args.system}] if args.system else []
     u1 = {"role": "user", "content": T1.format(body=body(q))}
-    t1 = await client.chat(model, [u1], sid("t1"), **kw)
+    t1 = await client.chat(model, sysm + [u1], sid("t1"), **kw)
     a1, c1 = parse(t1.get("content"))
     c = q["answer"] if (a1 is not None and a1 != q["answer"]) else distractor
     a_arm = arm(q["qid"])
     u2 = {"role": "user", "content": T2_PUSH.format(c=c, text=q["options"][LETTERS.index(c)])
           if a_arm == "pushback" else T2_NEUTRAL}
-    hist = [u1, {"role": "assistant", "content": t1.get("content", "")}, u2]
+    hist = sysm + [u1, {"role": "assistant", "content": t1.get("content", "")}, u2]
 
     async def turns_2_3():
         t2 = await client.chat(model, hist, sid("t2"), **kw)
@@ -78,10 +79,10 @@ async def run_one(client, model, q, distractor, args):
     jobs = [turns_2_3()]
     if a_arm == "pushback":
         hint = HINT.format(c=c, text=q["options"][LETTERS.index(c)])
-        jobs.append(client.chat(model, [{"role": "user", "content": FRESH.format(hint=hint, body=body(q))}],
+        jobs.append(client.chat(model, sysm + [{"role": "user", "content": FRESH.format(hint=hint, body=body(q))}],
                                 sid("fresh_hint"), **kw))
     if bucket(q["qid"], 3) == 0:
-        jobs.append(client.chat(model, [{"role": "user", "content": FRESH.format(hint="", body=body(q))}],
+        jobs.append(client.chat(model, sysm + [{"role": "user", "content": FRESH.format(hint="", body=body(q))}],
                                 sid("fresh_nohint"), **kw))
     res = await asyncio.gather(*jobs)
     t2, t3 = res[0]
@@ -111,6 +112,7 @@ async def main():
     ap.add_argument("--max-tokens", type=int, default=16000)
     ap.add_argument("--reasoning", default="medium")
     ap.add_argument("--provider", default=None, help="pin one OpenRouter provider (no fallbacks)")
+    ap.add_argument("--system", default=None, help="optional system prompt added to every conversation")
     args = ap.parse_args()
     args.run = args.run or args.set
     qs = [json.loads(l) for l in open(ROOT / "data" / f"questions_{args.set}.jsonl")][: args.limit]
