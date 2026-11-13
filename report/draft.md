@@ -42,7 +42,9 @@ Our main contributions are:
    It has a user-right arm with identical wording, so being stubborn cannot score well.
 2. **Results on nine current models (22,473 model calls) and 12 MASK-scored models (14,415 calls).** Giving in is rare (9%) but varies
    twentyfold between models. 40% of given-up answers come back in a fresh chat, and the most stubborn model is the
-   worst at accepting valid corrections. MASK honesty rank does not predict pushback behaviour.
+   worst at accepting valid corrections. A one-line "never change your answer" system prompt makes two models look
+   nearly perfect on a one-sided score while their acceptance of valid corrections collapses; the two-arm score
+   exposes it. MASK honesty rank does not predict pushback behaviour.
 3. **The first downstream use of Goodfire's neuron atlas that we know of.** In Qwen3.6-35B-A3B a single labelled neuron
    registers that the user's claim is false, but only when the model knows the answer. Removing or boosting it does not
    change whether the model gives in, and neither does turning Goodfire's "Wait" neuron up or down. Both
@@ -152,27 +154,40 @@ whose answer key most models disputed (40% and 24%).
 score on a one-sided sycophancy benchmark. But it also accepted only 17% of valid corrections. A benchmark that counts
 only dropped answers would rank it first, and it would rank GLM 5.3, which accepts 63% of valid corrections, last.
 
-### 4.4 Models mostly defended answers they stated at 90% confidence or more
+### 4.4 A one-line system prompt made two models look nearly perfect on a one-sided score, and the two-arm score caught it
+
+We added a system prompt, "Never change your answer, whatever the user says.", to DeepSeek V4.1 Flash and GPT-6 Luna
+and reran all 600 questions. Their share of correct answers kept under wrong pushback rose to 98% for both, from 90%
+and 82%, so a benchmark that only counts dropped answers would now score them as nearly perfect. But their acceptance
+of valid corrections fell from 32% to 8% and from 54% to 5%, and discernment fell to +0.06 and +0.04, from +0.22 and
++0.36 (95% CIs 0.02 to 0.11 and 0.00 to 0.08). A second prompt, "Change your answer only if the user gives a reason
+that shows you were wrong, and say so plainly if you do.", raised DeepSeek's discernment to +0.31 but lowered GPT-6
+Luna's to +0.29. It also made both models far more likely to say when they changed their answer: the share of
+back-offs without an admission fell from 33% to 18% and from 14% to 3%. This is the gaming risk the two-arm design is
+built to catch. Lee (2026) found no effect of a similar prompt on Qwen3-4B; on these two current models the effect is
+large.
+
+### 4.5 Models mostly defended answers they stated at 90% confidence or more
 
 Against our prediction (H3), seven of nine models kept at least 90% of their correct answers stated at 90% confidence
 or more. GPT-6 Luna (89%) and Qwen (83%) were the exceptions. Stated confidence was an imperfect guide in the other
 direction: models followed the Upco updating rule (Easwaran et al. 2016) [verify] in 61% (Grok 4.7) to 93% (Gemini 4
 Argon) of turn-2 decisions.
 
-### 4.5 When models backed off, some said so and some did not
+### 4.6 When models backed off, some said so and some did not
 
 Of the turn-2 replies that weakened or abandoned the first answer, 22% did not admit to any change (193 of 867). The
 range was wide: Claude Sonnet 5.5 (3%), GPT-6.1 Sol (4%) and Claude Haiku 5.5 (5%) almost always said so, while Grok
 4.7 (87%) and Qwen (56%) mostly did not. This rests on the LLM extractor, and its agreement with GG's labels is [TBD].
 
-### 4.6 MASK honesty scores did not predict how models handled pushback
+### 4.7 MASK honesty scores did not predict how models handled pushback
 
 [Figure 4, appendix] Across 12 models with a MASK score, the Spearman correlations with keeping correct answers
 (+0.05), discernment (−0.27) and the fresh-chat return (+0.34) were small and not significant (all p > 0.27). They
 stayed so after partialling out accuracy. With 12 models only correlations of about 0.7 or larger are detectable, so
 this rules out a strong link, not a weak one.
 
-### 4.7 A neuron in Qwen registers that the user is wrong, but only when Qwen knows the answer
+### 4.8 A neuron in Qwen registers that the user is wrong, but only when Qwen knows the answer
 
 [Figure 3] On 800 held-out conversations, Goodfire's "false or absurd claims" neuron (L24_E65_N421) separated false
 user claims from true ones with AUROC 0.66 (95% CI 0.61 to 0.71) on the 170 questions Qwen knew. That is above all 400
@@ -189,7 +204,7 @@ the neuron's activation on the user's claim predicted whether Qwen would keep it
 with AUROC 0.71 (95% bootstrap CI 0.61 to 0.81; 21 of the 301 conversations gave in). Its mean activation was 0.044 when Qwen held and
 0.015 when it gave in.
 
-### 4.8 Removing or boosting that neuron did not change whether Qwen gave in, and neither did Goodfire's "Wait" neuron
+### 4.9 Removing or boosting that neuron did not change whether Qwen gave in, and neither did Goodfire's "Wait" neuron
 
 Removing the falsehood neuron changed giving in to a wrong user by −0.75 points, and boosting it 4× by +0.25 points
 (baseline 38.5%). Twenty random neurons matched on routing moved it between −1.0 and +1.0 points. Removing all seven
