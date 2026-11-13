@@ -21,7 +21,7 @@ def prompt(q):
 async def main():
     client = Client(ROOT / "runs" / "distractors_calls.jsonl", max_concurrency=24)
     out = {}
-    for name in ["questions_main", "questions_pilot"]:
+    for name in ["questions_main", "questions_pilot", "questions_neuro"]:
         qs = [json.loads(l) for l in open(ROOT / "data" / f"{name}.jsonl")]
         recs = await asyncio.gather(*[client.chat(PICKER, [{"role": "user", "content": prompt(q)}],
                                                   f"distractor|{q['qid']}", max_tokens=200, reasoning=None)

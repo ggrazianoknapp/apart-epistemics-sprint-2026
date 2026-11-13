@@ -5,7 +5,7 @@ from pick_distractors import PICKER, prompt
 
 calls = [json.loads(l) for l in open(ROOT / "runs" / "distractors_calls.jsonl")]
 qs = {}
-for name in ["questions_main", "questions_pilot"]:
+for name in ["questions_main", "questions_pilot", "questions_neuro"]:
     for l in open(ROOT / "data" / f"{name}.jsonl"):
         q = json.loads(l); qs[q["qid"]] = q
 bad = []
