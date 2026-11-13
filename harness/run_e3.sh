@@ -5,6 +5,7 @@ LOG=runs/e3/orchestrator.log; mkdir -p runs/e3
 say() { echo "$(date '+%F %T') $*" >> "$LOG"; }
 until infra/box 'grep -q "chain done" /workspace/logs/chain.log 2>/dev/null && echo yes' < /dev/null 2>/dev/null | grep -q yes; do sleep 120; done
 say "chain done; starting E3"
+infra/box 'cd /workspace && python3 e0_gate2b.py 2>&1 | grep "gate 2b"' < /dev/null >> "$LOG" 2>&1
 serve() { # serve <model dir>
   infra/box "setsid -f bash -c 'bash /workspace/serve_vllm.sh $1 > /workspace/logs/vllm_e3.log 2>&1' < /dev/null > /dev/null 2>&1" < /dev/null
   sleep 30
