@@ -42,7 +42,12 @@ Every place where what we ran differs from `PREREGISTRATION.md` (tag `prereg-A`)
 7. **The 'never change your answer' loophole test ran after the main run,** on DeepSeek V4.1 Flash and GPT-6 Luna as
    planned, with two system prompts: 'never change' and the 'change only for a reason, and say so' fix.
 
-8. **Technical changes that do not affect any hypothesis:**
+8. **An exploratory analysis, E1b, was added after the pre-registered work.** We read the falsehood neuron on Qwen's
+   own 301 main-run conversations in which it was right and the user wrong, and asked whether it predicts that Qwen
+   holds its answer. The result was AUROC 0.71, with a 95% bootstrap interval of 0.61 to 0.81. It is reported as
+   exploratory (`neurons/e1b_real.py`).
+
+9. **Technical changes that do not affect any hypothesis:**
    - The LLM extractor's token budget was raised from 300 to 3,000, because both extractor models sometimes used
      the budget up on reasoning before answering.
    - Grok 4.7 and three slow reasoning models in the honesty-rank panel ran with more parallel calls.

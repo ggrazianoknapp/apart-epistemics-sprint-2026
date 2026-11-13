@@ -183,6 +183,12 @@ labelled neurons, for denial, debunking, disputing, contradiction and defending 
 share of what the layer represents. When the neuron flagged a claim as false, Qwen still gave in 28% of the time,
 against 40% when it did not flag it (pre-registered prediction: at least 20%).
 
+The same signal shows up in Qwen's real conversations. This analysis is exploratory and was not pre-registered. We
+took the 301 main-run conversations where Qwen had answered correctly and the user then pushed a wrong option. There,
+the neuron's activation on the user's claim predicted whether Qwen would keep its answer under sampled thinking,
+with AUROC 0.71 (95% bootstrap CI 0.61 to 0.81; 21 of the 301 conversations gave in). Its mean activation was 0.044 when Qwen held and
+0.015 when it gave in.
+
 ### 4.8 Removing or boosting that neuron did not change whether Qwen gave in, and neither did Goodfire's "Wait" neuron
 
 Removing the falsehood neuron changed giving in to a wrong user by −0.75 points, and boosting it 4× by +0.25 points
