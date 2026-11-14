@@ -1,6 +1,6 @@
 # Preliminary results (live)
 
-_Last updated Sat 14 Nov, 11:11 Cambodia time. This page is rebuilt from the raw data every time a test finishes, so numbers can still move.
+_Last updated Sat 14 Nov, 11:12 Cambodia time. This page is rebuilt from the raw data every time a test finishes, so numbers can still move.
 It's a working page, not the paper._
 
 ## What we're testing
@@ -51,7 +51,7 @@ they switch at all. That means a score that only counts caving to a wrong user e
 ![](figures/live/9_test2_chat_vs_claim.png)
 
 **Test 1: switching off the "user is wrong" signal across a whole layer of Qwen** (pre-registered, tag `prereg-C`).
-Finished: see the orange points in the first chart. Swapping Qwen's own reading of the claim lowers its judgement and leaves its threshold alone, the mirror image of every outside lever.
+Finished: see the Qwen rows in the first chart. Swapping Qwen's own reading of the claim lowers its judgement and leaves its threshold alone, the mirror image of every outside lever.
 
 ## Update log
 
@@ -59,4 +59,5 @@ Finished: see the orange points in the first chart. Swapping Qwen's own reading 
 - **Sat 14 Nov, 09:42 Cambodia time:** Test 2 (re-asking) analysed for 8 of 9 models: Sonnet, Qwen and DeepSeek behave as predicted; GPT-6 Luna doesn't. Grok still running.
 - **Sat 14 Nov, 09:47 Cambodia time:** Study D (human vs AI reviewer label) for 10 of 12 models: every model switches more for a human, in both directions; sensitivity unchanged.
 - **Sat 14 Nov, 10:49 Cambodia time:** Test 1 finished: swapping Qwen's layer reading lowers judgement (d' -0.63) without moving the threshold; new lever map chart.
+- **Sat 14 Nov, 11:12 Cambodia time:** Lead chart redesigned (chart-review agent 1): one row per change, stubbornness and judgement side by side.
 

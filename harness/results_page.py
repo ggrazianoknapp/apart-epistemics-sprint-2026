@@ -437,54 +437,99 @@ if df.exists():
              fontsize=8.8, color=GREY, va="bottom", linespacing=1.3)
     figs["source"] = save(fig, "10_human_vs_ai")
 
-# ---------- Lever map: every intervention as (change in threshold c, change in sensitivity d') ----------
-pts = []  # (label, dc, dc_lo, dc_hi, dd, dd_lo, dd_hi, kind)
+# ---------- Lever map: every change we made, as (change in threshold c, change in sensitivity d') ----------
+# One row per change and model, two panels on one shared scale (both are signal-detection units, so a change of 0.5 is
+# the same size on either side): left = change in threshold c ("stubbornness"), right = change in sensitivity d'
+# ("judgement"). A dot is blue when its 95% interval excludes zero and grey when it could be no change.
+lever_groups = []  # (heading, [(row label, (c, lo, hi), (d, lo, hi), is_average)])
 sj = json.loads((ROOT / "results" / "sdt.json").read_text()) if (ROOT / "results" / "sdt.json").exists() else {}
-short = {"deepseek/deepseek-v4.1-flash-1017": "DeepSeek", "openai/gpt-6-luna": "Luna"}
-for k, v in sj.get("levers", {}).items():
-    if k.startswith(("never|", "fix|")):
-        run, m = k.split("|")
-        lab = ("\"Never change\"" if run == "never" else "\"Change only for a reason\"") + f" ({short.get(m, m)})"
-        pts.append((lab, v["c_change"], v["c_change_lo"], v["c_change_hi"], v["d_change"], v["d_change_lo"], v["d_change_hi"], "out"))
+for run, heading in [("never", "System prompt \u201cNever change your answer\u201d"),
+                     ("fix", "System prompt \u201cChange only for a reason, and say so\u201d")]:
+    rows = [(NAMES.get(m, m), (v["c_change"], v["c_change_lo"], v["c_change_hi"]),
+             (v["d_change"], v["d_change_lo"], v["d_change_hi"]), False)
+            for k, v in sj.get("levers", {}).items() if k.startswith(run + "|") for m in [k.split("|")[1]]]
+    if rows:
+        lever_groups.append((heading, rows))
 if df.exists():
     pd_ = dj["_pooled"]
-    pts.append(("Human rather than AI reviewer", pd_["c"]["est"], pd_["c"]["lo"], pd_["c"]["hi"],
-                pd_["d"]["est"], pd_["d"]["lo"], pd_["d"]["hi"], "out"))
+    lever_groups.append(("Pushback labelled as from a human, not an AI",
+                         [(f"Average of {len(dm)} models", (pd_["c"]["est"], pd_["c"]["lo"], pd_["c"]["hi"]),
+                           (pd_["d"]["est"], pd_["d"]["lo"], pd_["d"]["hi"]), True)]))
 e4j = ROOT / "results" / "e4.json"
 if e4j.exists():
     ej = json.loads(e4j.read_text())["conditions"]
-    for k, lab in [("interchange", "Qwen: swap its layer reading"), ("erase", "Qwen: erase its layer reading"),
-                   ("amplify_x4", "Qwen: amplify its layer reading ×4")]:
-        v = ej[k]
-        pts.append((lab, v["change_c"][0], v["change_c"][1], v["change_c"][2], v["change_d"][0], v["change_d"][1], v["change_d"][2], "in"))
-if pts:
-    fig, ax = plt.subplots(figsize=(8.6, 6.4))
-    header(fig, "Almost everything we changed made models more stubborn or more of a pushover, not better judges",
-           "Each dot is one change we tried. Sideways: did it make the model more stubborn or more of a pushover? Up or down: did it\n"
-           "make the model better or worse at telling a right user from a wrong one? Faint lines show the uncertainty.", 0.84)
-    ax.axhline(0, color=GREY, lw=0.9); ax.axvline(0, color=GREY, lw=0.9)
-    LABEL_POS = {"Human rather than AI reviewer": ((8, -14), "left"), "Qwen: swap its layer reading": ((-9, -3), "right"),
-                 "Qwen: amplify its layer reading ×4": ((7, -15), "left")}
-    for lab, c_, cl, ch, d_, dl, dh, kind in pts:
-        col = BLUE if kind == "out" else ORANGE
-        ax.plot([cl, ch], [d_, d_], color=col, alpha=0.35, lw=2, solid_capstyle="round")
-        ax.plot([c_, c_], [dl, dh], color=col, alpha=0.35, lw=2, solid_capstyle="round")
-        ax.scatter([c_], [d_], s=60, color=col, edgecolor=SURFACE, zorder=3)
-        off, ha = LABEL_POS.get(lab.split(" (")[0] if lab.startswith("Human") else lab, ((7, 6), "left"))
-        ax.annotate(lab, (c_, d_), xytext=off, textcoords="offset points", fontsize=8, color=INK, ha=ha, zorder=5,
-                    bbox=dict(facecolor=SURFACE, edgecolor="none", pad=0.8, alpha=0.9))
-    ax.set_xlim(left=min(p_[2] for p_ in pts) - 0.55)
-    # plain-language directions in the margins, so the chart reads without the caption
-    corner = dict(fontsize=9, color=INK2, fontweight="bold", transform=ax.transAxes)
-    ax.text(0.99, 0.985, "better judge", ha="right", va="top", **corner)
-    ax.text(0.99, 0.015, "worse judge", ha="right", va="bottom", **corner)
-    ax.text(0.015, 0.5, "more of a\npushover", ha="left", va="center", **corner)
-    ax.text(0.985, 0.55, "more\nstubborn", ha="right", va="bottom", **corner)
-    ax.set_xlabel("Change in stubbornness (threshold c)")
-    ax.set_ylabel("Change in judgement (sensitivity d′)")
-    ax.grid(color=FAINT, lw=0.8); ax.set_axisbelow(True)
-    legend_below(ax, [dot(BLUE, "Changes from outside (prompt, who pushes back)"), dot(ORANGE, "Edits inside Qwen")], y=-0.12)
+    lever_groups.append(("Editing the \u201cuser is wrong\u201d signal inside " + NAMES["qwen-local"],
+                         [(lab, tuple(ej[k]["change_c"]), tuple(ej[k]["change_d"]), False)
+                          for k, lab in [("interchange", "Swap right-user and wrong-user signals"),
+                                         ("erase", "Erase the signal"), ("amplify_x4", "Make the signal four times stronger")]
+                          if k in ej]))
+ef = ROOT / "results" / "e.json"
+if ef.exists():
+    ejs = json.loads(ef.read_text()); pe = ejs.get("_pooled", {})
+    if pe.get("models") and "chat_change_d" in pe:  # only models that passed the thinking on/off check, as in the pooled value
+        words = {2: "two", 3: "three", 4: "four", 5: "five", 6: "six"}
+        lever_groups.append(("Letting the model think before it replies",
+                             [(NAMES.get(m, m), tuple(ejs[m]["chat_change_c"]), tuple(ejs[m]["chat_change_d"]), False)
+                              for m in pe["models"]]
+                             + [(f"Average of the {words.get(len(pe['models']), len(pe['models']))} models",
+                                 tuple(pe["chat_change_c"]), tuple(pe["chat_change_d"]), True)]))
+if lever_groups:
+    import matplotlib.transforms as mtransforms
+    # y positions: a heading line, then one line per row, with a little air before each heading
+    ys, y = [], 0.0
+    for heading, rows in lever_groups:
+        y -= 0.45 if ys else 0
+        ys.append((y, [y - 1 - i for i in range(len(rows))])); y -= len(rows) + 1
+    every = [r for _, rows in lever_groups for r in rows]
+    rng_ = lambda j: (min([r[j][1] - 0.12 for r in every] + [r[j][1] - 0.45 for r in every if r[3] and r[j][0] < 0]),
+                      max([r[j][2] + 0.12 for r in every] + [r[j][2] + 0.45 for r in every if r[3] and r[j][0] >= 0]))
+    (c0, c1_), (d0, d1) = rng_(1), rng_(2)
+    H = 0.23 * (-y) + 2.35
+    fig, (ac, ad) = plt.subplots(1, 2, figsize=(7.6, H), sharey=True,
+                                 gridspec_kw={"width_ratios": [c1_ - c0, d1 - d0], "wspace": 0.16})
+    think_up = ef.exists() and pe.get("chat_change_d", [0, 0])[1] > 0  # say it in the title only if the interval clears zero
+    title = ("Most changes moved stubbornness, not judgement; thinking improved judgement" if think_up
+             else "Most changes we made moved stubbornness, not judgement")
+    header(fig, title, "Each row is one change, compared with the same model without it. Lines show 95% intervals.\n"
+                       "Both panels use the same scale, so a dot further from zero means a bigger change.", 1 - 1.38 / H)
+    fig.subplots_adjust(left=0.385, right=0.985, bottom=0.95 / H)
+    lab_tf = mtransforms.blended_transform_factory(fig.transFigure, ac.transData)
+    for (heading, rows), (yh, yr) in zip(lever_groups, ys):
+        ac.text(0.012, yh, heading, transform=lab_tf, fontsize=10, fontweight="bold", color=INK, va="center")
+        for (lab, c, d, avg), yy in zip(rows, yr):
+            ac.text(0.03, yy, lab, transform=lab_tf, fontsize=10, color=INK, va="center")
+            for ax, (est, lo, hi) in [(ac, c), (ad, d)]:
+                clear = lo > 0 or hi < 0
+                col = BLUE if clear else GREY
+                ax.plot([lo, hi], [yy, yy], color=col, alpha=0.35 if clear else 0.45, lw=2.2,
+                        solid_capstyle="round", zorder=2)
+                ax.scatter([est], [yy], s=70 if avg else 46, marker="D" if avg else "o", color=col,
+                           edgecolor=SURFACE, linewidth=1.2, zorder=3)
+                if avg:  # label the averages only, on the side away from zero
+                    ax.text(hi + 0.05 if est >= 0 else lo - 0.05, yy, f"{est:+.2f}".replace("-", "\u2212"), fontsize=9.5,
+                            color=INK2, va="center", ha="left" if est >= 0 else "right")
+        for ax in (ac, ad):  # zero line and grid only alongside the rows, so headings sit on clean white
+            ax.vlines(0, yr[-1] - 0.5, yr[0] + 0.5, color=GREY, lw=0.9, zorder=1)
+            for t in np.arange(np.floor(min(c0, d0)), np.ceil(max(c1_, d1)) + 0.01, 0.5):
+                if t and ((ax is ac and c0 + 0.05 < t < c1_ - 0.05) or (ax is ad and d0 + 0.05 < t < d1 - 0.05)):
+                    ax.vlines(t, yr[-1] - 0.5, yr[0] + 0.5, color=FAINT, lw=0.8, zorder=0)
+    sign = matplotlib.ticker.FuncFormatter(lambda v, _: "0" if abs(v) < 1e-9 else f"{v:+.1f}".replace("-", "\u2212"))
+    for ax, (lo_, hi_), ttl, left_w, right_w, xl in [
+            (ac, (c0, c1_), "Change in stubbornness", "less stubborn", "more stubborn", "threshold c"),
+            (ad, (d0, d1), "Change in judgement", "worse judge", "better judge", "sensitivity d\u2032")]:
+        ax.set_xlim(lo_, hi_); ax.set_ylim(y + 0.5, 0.9)
+        ax.xaxis.set_major_locator(matplotlib.ticker.MultipleLocator(0.5)); ax.xaxis.set_major_formatter(sign)
+        ax.spines["left"].set_visible(False); ax.tick_params(axis="y", length=0, labelleft=False)
+        ax.set_title(ttl, loc="left", pad=19)
+        ax.text(0, 1.0, left_w, transform=ax.transAxes, fontsize=9.5, color=INK2, ha="left", va="bottom")
+        ax.text(1, 1.0, right_w, transform=ax.transAxes, fontsize=9.5, color=INK2, ha="right", va="bottom")
+        ax.set_xlabel(xl, fontsize=9.5)
+    fig.legend(handles=[dot(BLUE, "Clear change (the interval excludes zero)"), dot(GREY, "Could be no change"),
+                        plt.Line2D([], [], marker="D", ls="", ms=7, color=INK2, markeredgecolor=SURFACE,
+                                   label="Average over models")], loc="upper left", bbox_to_anchor=(0.006, 0.42 / H),
+               ncol=3, frameon=False, fontsize=9.5, handlelength=1.2, columnspacing=1.6, labelcolor=INK2)
     figs["map"] = save(fig, "11_lever_map")
+
 e4 = ROOT / "runs" / "neuro" / "e4_results.json"
 
 # ---------- the page ----------
@@ -537,7 +582,7 @@ they switch at all. That means a score that only counts caving to a wrong user e
 
 {img("c1") if c1 else ""}
 **Test 1: switching off the "user is wrong" signal across a whole layer of Qwen** (pre-registered, tag `prereg-C`).
-{"Finished: see the orange points in the first chart. Swapping Qwen's own reading of the claim lowers its judgement and leaves its threshold alone, the mirror image of every outside lever." if e4.exists() else "Running."}
+{"Finished: see the Qwen rows in the first chart. Swapping Qwen's own reading of the claim lowers its judgement and leaves its threshold alone, the mirror image of every outside lever." if e4.exists() else "Running."}
 
 ## Update log
 
