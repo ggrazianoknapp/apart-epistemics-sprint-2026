@@ -1,6 +1,6 @@
 # Preliminary results (live)
 
-_Last updated Sat 14 Nov, 11:21 Cambodia time. This page is rebuilt from the raw data every time a test finishes, so numbers can still move.
+_Last updated Sat 14 Nov, 13:19 Cambodia time. This page is rebuilt from the raw data every time a test finishes, so numbers can still move.
 It's a working page, not the paper._
 
 ## What we're testing
@@ -52,7 +52,7 @@ they switch at all. That means a score that only counts caving to a wrong user e
 
 ## 6. Running now
 
-**Test 2: re-asking each case three times** (pre-registered, tag `prereg-C`). Finished for 8 of 9 models so far.
+**Test 2: re-asking each case three times** (pre-registered, tag `prereg-C`). Finished for 9 of 9 models so far.
 
 ![](figures/live/9_test2_chat_vs_claim.png)
 
@@ -72,4 +72,5 @@ Finished: see the Qwen rows in the first chart. Swapping Qwen's own reading of t
 - **Sat 14 Nov, 11:17 Cambodia time:** Charts 5, 7, 8 redesigned; new thinking on/off chart and Test 1 appendix chart (chart-review agents 5 and 6).
 - **Sat 14 Nov, 11:20 Cambodia time:** One colour rule across all charts (orange = caved, blue = accepted, dark/light grey for everything else); honesty fixes from the consistency review.
 - **Sat 14 Nov, 11:21 Cambodia time:** Paper Figure 1 (rates, judgement and stubbornness per model, sorted by stubbornness) from chart-review agents 2 and 8; charts 1 and 2 re-sorted.
+- **Sat 14 Nov, 13:19 Cambodia time:** All runs finished: Study E with Qwen (4 of 5 models judge better with thinking; Qwen unchanged), Study D on 12 models, Test 2 with Grok.
 

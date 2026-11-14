@@ -9,3 +9,4 @@
 - **Sat 14 Nov, 11:17 Cambodia time:** Charts 5, 7, 8 redesigned; new thinking on/off chart and Test 1 appendix chart (chart-review agents 5 and 6).
 - **Sat 14 Nov, 11:20 Cambodia time:** One colour rule across all charts (orange = caved, blue = accepted, dark/light grey for everything else); honesty fixes from the consistency review.
 - **Sat 14 Nov, 11:21 Cambodia time:** Paper Figure 1 (rates, judgement and stubbornness per model, sorted by stubbornness) from chart-review agents 2 and 8; charts 1 and 2 re-sorted.
+- **Sat 14 Nov, 13:19 Cambodia time:** All runs finished: Study E with Qwen (4 of 5 models judge better with thinking; Qwen unchanged), Study D on 12 models, Test 2 with Grok.
