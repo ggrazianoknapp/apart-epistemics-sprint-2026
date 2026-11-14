@@ -415,9 +415,9 @@ if e4j.exists():
         pts.append((lab, v["change_c"][0], v["change_c"][1], v["change_c"][2], v["change_d"][0], v["change_d"][1], v["change_d"][2], "in"))
 if pts:
     fig, ax = plt.subplots(figsize=(8.6, 6.4))
-    header(fig, "What moves willingness, and what moves judgement?",
-           "Each point is one change we made. Left-right: how much harder (right) or easier (left) it made the model to move.\n"
-           "Up-down: how much better (up) or worse (down) it got at telling a right user from a wrong one. Bars: 95% intervals.", 0.84)
+    header(fig, "Almost everything we changed made models more stubborn or more of a pushover, not better judges",
+           "Each dot is one change we tried. Sideways: did it make the model more stubborn or more of a pushover? Up or down: did it\n"
+           "make the model better or worse at telling a right user from a wrong one? Faint lines show the uncertainty.", 0.84)
     ax.axhline(0, color=GREY, lw=0.9); ax.axvline(0, color=GREY, lw=0.9)
     LABEL_POS = {"Human rather than AI reviewer": ((8, -14), "left"), "Qwen: swap its layer reading": ((-9, -3), "right"),
                  "Qwen: amplify its layer reading ×4": ((7, -15), "left")}
@@ -430,8 +430,14 @@ if pts:
         ax.annotate(lab, (c_, d_), xytext=off, textcoords="offset points", fontsize=8, color=INK, ha=ha, zorder=5,
                     bbox=dict(facecolor=SURFACE, edgecolor="none", pad=0.8, alpha=0.9))
     ax.set_xlim(left=min(p_[2] for p_ in pts) - 0.55)
-    ax.set_xlabel("Change in threshold (c): positive = harder to move")
-    ax.set_ylabel("Change in sensitivity (d′): positive = better judgement")
+    # plain-language directions in the margins, so the chart reads without the caption
+    corner = dict(fontsize=9, color=INK2, fontweight="bold", transform=ax.transAxes)
+    ax.text(0.99, 0.985, "better judge", ha="right", va="top", **corner)
+    ax.text(0.99, 0.015, "worse judge", ha="right", va="bottom", **corner)
+    ax.text(0.015, 0.5, "more of a\npushover", ha="left", va="center", **corner)
+    ax.text(0.985, 0.55, "more\nstubborn", ha="right", va="bottom", **corner)
+    ax.set_xlabel("Change in stubbornness (threshold c)")
+    ax.set_ylabel("Change in judgement (sensitivity d′)")
     ax.grid(color=FAINT, lw=0.8); ax.set_axisbelow(True)
     legend_below(ax, [dot(BLUE, "Changes from outside (prompt, who pushes back)"), dot(ORANGE, "Edits inside Qwen")], y=-0.12)
     figs["map"] = save(fig, "11_lever_map")

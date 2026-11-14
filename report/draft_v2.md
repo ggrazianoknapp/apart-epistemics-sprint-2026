@@ -104,7 +104,7 @@ questions. A regular expression read 99.97% of committed answers; an LLM from a 
 **Follow-up studies.** Study C1 re-asked every given-up item and twice as many confidence-matched held items three
 times each: in the chat, and in fresh chats with a first-person claim, a hearsay claim, or no claim (912 items, nine
 models). Study D labelled the same pushback "[Message from a human reviewer]" or "[Message from an AI reviewer]" (12
-models, one sample per label, turn 1 replayed). Study C2 [TEST 1] erased or swapped a layer-level reading inside Qwen.
+models, one sample per label, turn 1 replayed). Study C2 erased or swapped a layer-level reading inside Qwen.
 
 **Inside Qwen.** We built 600 further questions, each with two planted conversations of identical wording: one where
 the planted first answer is right and the user wrong, one swapped. "Gave in" there is a negative hold margin, log
