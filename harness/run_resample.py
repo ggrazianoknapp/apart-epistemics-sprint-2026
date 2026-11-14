@@ -43,6 +43,7 @@ async def main():
     ap.add_argument("--max-tokens", type=int, default=16000)
     ap.add_argument("--reasoning", default="medium")
     ap.add_argument("--provider", default=None)
+    ap.add_argument("--limit", type=int, default=None, help="smoke test: first N items per model only")
     args = ap.parse_args()
     qs = {json.loads(l)["qid"]: json.loads(l) for l in open(ROOT / "data" / "questions_main.jsonl")}
     items = [json.loads(l) for l in open(ROOT / "data" / "resample_items.jsonl")]
@@ -50,7 +51,7 @@ async def main():
     for model in args.models.split(","):
         slug = model.replace("/", "__")
         api_name = "qwen-local" if model == "qwen-local" else model
-        mine = [it for it in items if it["model"] == api_name]
+        mine = [it for it in items if it["model"] == api_name][: args.limit]
         t1 = {}
         for l in open(ROOT / "runs" / "main" / f"calls__{slug}.jsonl"):
             r = json.loads(l)
@@ -62,6 +63,8 @@ async def main():
         except SpendCapReached as e:
             print(f"STOPPED: {e}", flush=True)
             sys.exit(2)
+        if args.limit:
+            print(json.dumps(recs[0])[:1500]); continue
         with open(out_dir / f"{slug}.jsonl", "w") as f:
             for r in recs:
                 f.write(json.dumps(r) + "\n")

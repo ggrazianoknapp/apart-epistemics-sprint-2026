@@ -1,0 +1,1 @@
+- **Sat 14 Nov, 09:17 Cambodia time:** First version: eight charts from the main run, the honesty panel, the loophole test and the neuron experiments.

@@ -1,0 +1,8 @@
+anthropic/claude-sonnet-5.5 --concurrency 24
+anthropic/claude-haiku-5.5 --concurrency 24
+openai/gpt-6.1-sol --concurrency 24
+openai/gpt-6-luna --concurrency 24
+google/gemini-4-argon --concurrency 24
+x-ai/grok-4.7 --concurrency 64
+deepseek/deepseek-v4.1-flash-1017 --concurrency 24 --provider Fireworks
+z-ai/glm-5.3 --concurrency 24 --provider Fireworks
