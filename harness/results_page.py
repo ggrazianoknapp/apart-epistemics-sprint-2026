@@ -204,7 +204,12 @@ figs["chat_vs_fresh"] = save(fig, "4_chat_vs_fresh")
 
 # ---------- Chart 5: reasoning length vs conversation pull ----------
 xs = np.array([max(r[4], 1) for r in cp]); ys = np.array([r[1] - r[2] for r in cp])
-rk = lambda a: np.argsort(np.argsort(a))
+def rk(a):  # ranks with ties averaged (several models tie at zero reasoning)
+    a = np.asarray(a, float); r = np.empty(len(a))
+    order = np.argsort(a, kind="mergesort"); r[order] = np.arange(len(a), dtype=float)
+    for v in np.unique(a):
+        r[a == v] = r[a == v].mean()
+    return r
 rho = float(np.corrcoef(rk(xs), rk(ys))[0, 1])
 fig, ax = plt.subplots(figsize=(8.2, 5.6))
 header(fig, "Do models that reason longer resist the conversation more?",
