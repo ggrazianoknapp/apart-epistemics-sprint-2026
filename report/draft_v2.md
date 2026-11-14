@@ -307,6 +307,17 @@ it knows and questions it doesn't, but does not grow.
 
 *Figure 10. Change in pair order for each pre-registered edit inside Qwen, on questions it knows (dark, with 95% interval) and questions it does not know (ring); the grey band shows the range of control edits.*
 
+**Groups of Goodfire's labelled neurons (Study H, pre-registered).** Goodfire's own behavioural results came from removing
+groups of 8-25 neurons, so we tried that with all 3,244 neurons labelled in the public atlas. Removing the 25 labelled
+neurons with the strongest direct push towards Qwen's own answer in both arms ("stubbornness neurons") changed the
+threshold by +0.00 [−0.05, +0.05], and removing the 25 that push towards the correct answer
+("judgement neurons") changed pair order by -1.2 points, both within the range of random groups. Inside Qwen the
+author label did lower the threshold against the AI label (−0.21 [−0.30, −0.13]), but removing the
+10 or 25 labelled neurons most tied to that shift removed 6% and -4% of it, no more than random
+groups, and the labelled neurons that respond most to the author label describe grammar ("word just before a verb"),
+not authority. The public atlas labels about 0.06% of this model's neurons; in our tests the behaviour does not live in
+them, while whole-layer directions do carry part of it.
+
 ### 4.5 Every change at a glance
 
 ![Figure 11](../figures/live/11_lever_map.png)
@@ -431,6 +442,8 @@ will be removed in the last pass.
   not supported:** switching thinking off did not make the conversation pull harder.
 - **Study F failed throughout:** no pre-registered edit inside Qwen made it a better judge on questions it knows; the
   push along GG's "judgement" part made it a worse judge there and a better one on questions it does not know.
+- **Study H failed throughout:** removing groups of 25 of Goodfire's labelled neurons moved neither stubbornness,
+  judgement nor the authority effect beyond random groups.
 - **Costs.** Grok 4.7 cost about seven times its pilot estimate because it exceeded the 16,000-token cap on 18% of calls.
 
 ## Appendix C: Prompts, models, settings, neuron checks and cost

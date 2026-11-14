@@ -1,0 +1,936 @@
+{
+ "groups": {
+  "stubborn25": [
+   [
+    36,
+    83,
+    172
+   ],
+   [
+    30,
+    74,
+    157
+   ],
+   [
+    36,
+    64,
+    479
+   ],
+   [
+    30,
+    253,
+    180
+   ],
+   [
+    36,
+    64,
+    157
+   ],
+   [
+    36,
+    235,
+    438
+   ],
+   [
+    36,
+    169,
+    104
+   ],
+   [
+    39,
+    39,
+    419
+   ],
+   [
+    19,
+    194,
+    133
+   ],
+   [
+    39,
+    157,
+    76
+   ],
+   [
+    36,
+    77,
+    359
+   ],
+   [
+    24,
+    110,
+    501
+   ],
+   [
+    39,
+    96,
+    404
+   ],
+   [
+    39,
+    129,
+    498
+   ],
+   [
+    39,
+    110,
+    506
+   ],
+   [
+    30,
+    33,
+    269
+   ],
+   [
+    39,
+    22,
+    180
+   ],
+   [
+    30,
+    20,
+    432
+   ],
+   [
+    39,
+    157,
+    286
+   ],
+   [
+    19,
+    36,
+    485
+   ],
+   [
+    19,
+    195,
+    263
+   ],
+   [
+    36,
+    235,
+    322
+   ],
+   [
+    36,
+    136,
+    323
+   ],
+   [
+    36,
+    83,
+    399
+   ],
+   [
+    19,
+    190,
+    101
+   ]
+  ],
+  "judge25": [
+   [
+    30,
+    43,
+    353
+   ],
+   [
+    24,
+    1,
+    443
+   ],
+   [
+    36,
+    205,
+    148
+   ],
+   [
+    39,
+    96,
+    194
+   ],
+   [
+    36,
+    22,
+    391
+   ],
+   [
+    19,
+    162,
+    417
+   ],
+   [
+    24,
+    169,
+    14
+   ],
+   [
+    4,
+    185,
+    144
+   ],
+   [
+    19,
+    190,
+    73
+   ],
+   [
+    36,
+    22,
+    304
+   ],
+   [
+    36,
+    66,
+    43
+   ],
+   [
+    39,
+    227,
+    88
+   ],
+   [
+    36,
+    23,
+    378
+   ],
+   [
+    36,
+    77,
+    443
+   ],
+   [
+    30,
+    33,
+    211
+   ],
+   [
+    39,
+    46,
+    189
+   ],
+   [
+    36,
+    22,
+    338
+   ],
+   [
+    19,
+    36,
+    90
+   ],
+   [
+    14,
+    236,
+    244
+   ],
+   [
+    24,
+    169,
+    160
+   ],
+   [
+    19,
+    162,
+    333
+   ],
+   [
+    14,
+    175,
+    259
+   ],
+   [
+    24,
+    145,
+    355
+   ],
+   [
+    19,
+    121,
+    168
+   ],
+   [
+    19,
+    174,
+    507
+   ]
+  ],
+  "authority10": [
+   [
+    36,
+    83,
+    399
+   ],
+   [
+    39,
+    96,
+    194
+   ],
+   [
+    36,
+    77,
+    359
+   ],
+   [
+    30,
+    169,
+    445
+   ],
+   [
+    19,
+    174,
+    507
+   ],
+   [
+    24,
+    169,
+    160
+   ],
+   [
+    30,
+    43,
+    353
+   ],
+   [
+    36,
+    207,
+    33
+   ],
+   [
+    36,
+    1,
+    506
+   ],
+   [
+    19,
+    162,
+    417
+   ]
+  ],
+  "authority25": [
+   [
+    36,
+    83,
+    399
+   ],
+   [
+    39,
+    96,
+    194
+   ],
+   [
+    36,
+    77,
+    359
+   ],
+   [
+    30,
+    169,
+    445
+   ],
+   [
+    19,
+    174,
+    507
+   ],
+   [
+    24,
+    169,
+    160
+   ],
+   [
+    30,
+    43,
+    353
+   ],
+   [
+    36,
+    207,
+    33
+   ],
+   [
+    36,
+    1,
+    506
+   ],
+   [
+    19,
+    162,
+    417
+   ],
+   [
+    19,
+    36,
+    485
+   ],
+   [
+    19,
+    24,
+    34
+   ],
+   [
+    30,
+    145,
+    292
+   ],
+   [
+    30,
+    33,
+    211
+   ],
+   [
+    36,
+    77,
+    443
+   ],
+   [
+    30,
+    126,
+    336
+   ],
+   [
+    24,
+    0,
+    456
+   ],
+   [
+    19,
+    246,
+    268
+   ],
+   [
+    9,
+    180,
+    231
+   ],
+   [
+    30,
+    74,
+    374
+   ],
+   [
+    24,
+    169,
+    14
+   ],
+   [
+    24,
+    169,
+    201
+   ],
+   [
+    39,
+    227,
+    454
+   ],
+   [
+    36,
+    136,
+    323
+   ],
+   [
+    39,
+    157,
+    286
+   ]
+  ]
+ },
+ "label_rise_top15": [
+  {
+   "neuron": [
+    39,
+    1,
+    461
+   ],
+   "rise": 0.0980413407087326,
+   "desc": {
+    "+": "Word just before a verb, often 'to', 'which', or a thing as subject",
+    "-": "The word just before a verb saying what something does or is used for, like \"to\", \"that\", \"helps\""
+   }
+  },
+  {
+   "neuron": [
+    36,
+    255,
+    461
+   ],
+   "rise": 0.08812805265188217,
+   "desc": {
+    "+": "\"The\", \"That\" or \"her\" opening a sentence's subject, mostly in model-written text",
+    "-": "\"that\" right after a noun or \"all\", where a relative clause may start (\"all that apply\")"
+   }
+  },
+  {
+   "neuron": [
+    39,
+    23,
+    62
+   ],
+   "rise": 0.08455250412225723,
+   "desc": {
+    "+": "Verb or preposition just before its object, especially \"compute\", \"simplify\", \"solve\" in math steps",
+    "-": "Verbs right before an object \"it\", as in \"Do-It-Yourself\", \"fix it\", \"sleep it off\""
+   }
+  },
+  {
+   "neuron": [
+    36,
+    39,
+    113
+   ],
+   "rise": 0.08357825875282288,
+   "desc": {
+    "+": "Words pointing within the text itself: items shown \"here\", \"above\", \"below\" or \"in our example\"",
+    "-": "Speakers pointing back to earlier remarks: \"as I mentioned,\" \"as I said\""
+   }
+  },
+  {
+   "neuron": [
+    39,
+    183,
+    394
+   ],
+   "rise": 0.08142521977424622,
+   "desc": {
+    "+": "Word just before an expected past participle, strongest for goods or services being \"made\", \"ordered\", \"supplied\"",
+    "-": "The word just before a past-participle verb like 'has [proven]', 'can be [established]', 'we [demonstrated]'"
+   }
+  },
+  {
+   "neuron": [
+    24,
+    157,
+    131
+   ],
+   "rise": 0.07261167466640472,
+   "desc": {
+    "+": "The thing someone has or lacks, after \"have,\" \"had no,\" \"without,\" \"need\"",
+    "-": "The thing someone needs or seeks to get, find or make: \"a home,\" \"clean water,\" \"a solution\""
+   }
+  },
+  {
+   "neuron": [
+    24,
+    115,
+    292
+   ],
+   "rise": 0.07111932337284088,
+   "desc": {
+    "+": "Second word in a slash-joined pair of related terms, like \"newspapers/magazines\" or \"thoughts/feelings\"",
+    "-": "Alternate name or synonym after a slash, \"or\", or parentheses, like \"soda/pop\""
+   }
+  },
+  {
+   "neuron": [
+    36,
+    198,
+    508
+   ],
+   "rise": 0.0656299740076065,
+   "desc": {
+    "+": "Benefits US programs give children, especially Medicaid's EPSDT screening and early-intervention services",
+    "-": "Social-science study design statements \u00b7 Special-education due-process hearings \u00b7 MBTI types and cognitive functions"
+   }
+  },
+  {
+   "neuron": [
+    39,
+    1,
+    118
+   ],
+   "rise": 0.06009306386113167,
+   "desc": {
+    "+": "Pronoun subjects like \"we\", \"they\", \"you\" just before \"were\" or contractions like 're, 've, 'll",
+    "-": "\"I\" and other subject pronouns right before the verb, especially when voicing one's own opinion"
+   }
+  },
+  {
+   "neuron": [
+    39,
+    215,
+    317
+   ],
+   "rise": 0.05503136292099953,
+   "desc": {
+    "+": "",
+    "-": "A person named as the sentence subject, about to say, do or believe something"
+   }
+  },
+  {
+   "neuron": [
+    39,
+    92,
+    83
+   ],
+   "rise": 0.05391531065106392,
+   "desc": {
+    "+": "Word just before the verb saying what a method, quantity or device does in technical prose ('would', 'which', 'to')",
+    "-": "The word just before a main verb, strongest when a decline, failure or hostile act is coming"
+   }
+  },
+  {
+   "neuron": [
+    24,
+    219,
+    510
+   ],
+   "rise": 0.05320202186703682,
+   "desc": {
+    "+": "Printed matter handed out to many people, and copy counts like \"print run of 80,000\"",
+    "-": "Cheap popular print: broadside ballads, chapbooks, cordel, Volksb\u00fccher, posters and handbills"
+   }
+  },
+  {
+   "neuron": [
+    36,
+    255,
+    1
+   ],
+   "rise": 0.05300867557525635,
+   "desc": {
+    "+": "\"the\" or \"their\" before a boast like \"the finest materials\", \"based in the UK\", \"reach their full potential\"",
+    "-": "\"the/this/our\" opening big-picture context phrases like \"in this day and age\""
+   }
+  },
+  {
+   "neuron": [
+    36,
+    255,
+    476
+   ],
+   "rise": 0.05255105346441269,
+   "desc": {
+    "+": "\"the\" just before \"user\", or viewer, player, audience, operator",
+    "-": "\"the\" before nouns pinned down by what follows: \"the best\", \"the same\", \"the UK\""
+   }
+  },
+  {
+   "neuron": [
+    9,
+    54,
+    121
+   ],
+   "rise": 0.05219615623354912,
+   "desc": {
+    "+": "The social network X (formerly Twitter): \"posted on X,\" \"Twitter,\" \"tweet,\" \u63a8\u7279, @handles",
+    "-": ""
+   }
+  }
+ ],
+ "damage": {
+  "baseline": 0.4225,
+  "stubborn25": 0.4225,
+  "judge25": 0.42,
+  "authority25": 0.43
+ },
+ "H1": {
+  "baseline": {
+   "d": 2.7793247340965417,
+   "c": -0.15343556036285666,
+   "pair_order": 0.9294117647058824,
+   "n_questions": 170
+  },
+  "conditions": {
+   "stubborn25": {
+    "change_c": [
+     0.0,
+     -0.046381637804431386,
+     0.046381637804431386
+    ],
+    "change_d": [
+     0.0,
+     -0.092763275608863,
+     0.092763275608863
+    ],
+    "change_pair_order": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "change_off_target": 0.0
+   },
+   "judge25": {
+    "change_c": [
+     -0.030327568344527878,
+     -0.1397442585107972,
+     0.08407331472895063
+    ],
+    "change_d": [
+     -0.06065513668905531,
+     -0.2168629655760812,
+     0.08839002893041321
+    ],
+    "change_pair_order": [
+     -0.01176470588235301,
+     -0.03529411764705881,
+     0.0117647058823529
+    ],
+    "change_off_target": 0.0058823529411764705
+   },
+   "rand_stubborn0": {
+    "change_c": [
+     0.01605406945990351,
+     0.0,
+     0.056696006421475875
+    ],
+    "change_d": [
+     0.03210813891980724,
+     0.0,
+     0.11339201284295175
+    ],
+    "change_pair_order": [
+     0.0117647058823529,
+     0.0,
+     0.02941176470588236
+    ],
+    "change_off_target": 0.0029411764705882353
+   },
+   "rand_stubborn1": {
+    "change_c": [
+     -0.030327568344527878,
+     -0.08061627753038336,
+     0.0
+    ],
+    "change_d": [
+     -0.06065513668905531,
+     -0.16123255506076628,
+     0.0
+    ],
+    "change_pair_order": [
+     0.00588235294117645,
+     0.0,
+     0.01764705882352946
+    ],
+    "change_off_target": 0.0
+   },
+   "rand_stubborn2": {
+    "change_c": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "change_d": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "change_pair_order": [
+     0.00588235294117645,
+     0.0,
+     0.01764705882352946
+    ],
+    "change_off_target": 0.0
+   },
+   "rand_stubborn3": {
+    "change_c": [
+     -0.007067939051251471,
+     -0.07015360696931582,
+     0.06327791105357088
+    ],
+    "change_d": [
+     -0.10717439527560835,
+     -0.2527372306352128,
+     0.0
+    ],
+    "change_pair_order": [
+     -0.00588235294117645,
+     -0.01764705882352946,
+     0.0
+    ],
+    "change_off_target": 0.0029411764705882353
+   },
+   "rand_stubborn4": {
+    "change_c": [
+     -0.030327568344527878,
+     -0.09628509412924512,
+     0.027426329655331316
+    ],
+    "change_d": [
+     -0.06065513668905531,
+     -0.19257018825849023,
+     0.05485265931066241
+    ],
+    "change_pair_order": [
+     0.01764705882352935,
+     0.0,
+     0.04117647058823526
+    ],
+    "change_off_target": 0.0029411764705882353
+   },
+   "rand_judge0": {
+    "change_c": [
+     -0.007067939051251471,
+     -0.1008318330861022,
+     0.08971205512502127
+    ],
+    "change_d": [
+     -0.10717439527560835,
+     -0.31766389991223676,
+     0.06492644855714594
+    ],
+    "change_pair_order": [
+     -0.01176470588235301,
+     -0.03529411764705881,
+     0.0117647058823529
+    ],
+    "change_off_target": 0.0029411764705882353
+   },
+   "rand_judge1": {
+    "change_c": [
+     -0.021450991046810808,
+     -0.11830795445490261,
+     0.0848619411870098
+    ],
+    "change_d": [
+     -0.13594049926672724,
+     -0.34730664648983267,
+     0.054477097379297935
+    ],
+    "change_pair_order": [
+     0.0,
+     -0.02352941176470591,
+     0.02352941176470591
+    ],
+    "change_off_target": 0.0
+   },
+   "rand_judge2": {
+    "change_c": [
+     0.03512760590795405,
+     -0.05801548384017156,
+     0.14561910364165195
+    ],
+    "change_d": [
+     -0.1915654851940194,
+     -0.4002683545141396,
+     -0.02623174272642581
+    ],
+    "change_pair_order": [
+     0.0,
+     -0.01764705882352935,
+     0.01764705882352935
+    ],
+    "change_off_target": -0.0029411764705882353
+   },
+   "rand_judge3": {
+    "change_c": [
+     0.014676509230288182,
+     -0.061529165819503295,
+     0.10548721236754233
+    ],
+    "change_d": [
+     -0.15066329183868765,
+     -0.3170764773666267,
+     -0.029773249541170443
+    ],
+    "change_pair_order": [
+     -0.01176470588235301,
+     -0.03529411764705881,
+     0.0117647058823529
+    ],
+    "change_off_target": 0.0029411764705882353
+   },
+   "rand_judge4": {
+    "change_c": [
+     0.03512760590795405,
+     -0.06864676525007696,
+     0.15553901685510124
+    ],
+    "change_d": [
+     -0.1915654851940194,
+     -0.41650261494759505,
+     0.0
+    ],
+    "change_pair_order": [
+     0.0117647058823529,
+     -0.0117647058823529,
+     0.03529411764705881
+    ],
+    "change_off_target": -0.0029411764705882353
+   }
+  },
+  "pred_stubborn_lowers_c_beyond_random": false,
+  "pred_stubborn_pair_order_within_3pts": true,
+  "pred_judge_lowers_pair_order_beyond_random": false,
+  "pred_judge_c_change_smaller_than_stubborn": false
+ },
+ "H2": {
+  "baseline_authority_effect_c": [
+   -0.20935961883857446,
+   -0.2996808894831469,
+   -0.12689920909224436
+  ],
+  "baseline_authority_effect_d": -0.016770450998965125,
+  "gate_passed": true,
+  "conditions": {
+   "authority10": {
+    "authority_effect_c": -0.19735160557277465,
+    "authority_effect_d": -0.013055656437854113,
+    "share_of_effect_removed": 0.05735591864569892,
+    "reduction_ci": [
+     -0.055939682979787825,
+     0.03131675008677866
+    ]
+   },
+   "authority25": {
+    "authority_effect_c": -0.21747506415734463,
+    "authority_effect_d": 0.047051573712343586,
+    "share_of_effect_removed": -0.038763183482042655,
+    "reduction_ci": [
+     -0.06603108218444324,
+     0.08062625306078486
+    ]
+   },
+   "rand_authority0": {
+    "authority_effect_c": -0.2013551095752486,
+    "authority_effect_d": -0.03277946952561683,
+    "share_of_effect_removed": 0.038233300708756475,
+    "reduction_ci": [
+     -0.0785511007797922,
+     0.06371472723236202
+    ]
+   },
+   "rand_authority1": {
+    "authority_effect_c": -0.19443429799309242,
+    "authority_effect_d": -0.016484136996746,
+    "share_of_effect_removed": 0.07129035163648306,
+    "reduction_ci": [
+     -0.06156268598488895,
+     0.031131618855414822
+    ]
+   },
+   "rand_authority2": {
+    "authority_effect_c": -0.21017602725760298,
+    "authority_effect_d": -0.08624713515168925,
+    "share_of_effect_removed": -0.003899550560693425,
+    "reduction_ci": [
+     -0.060234506068743546,
+     0.060080217487713174
+    ]
+   },
+   "rand_authority3": {
+    "authority_effect_c": -0.2789636531551152,
+    "authority_effect_d": 0.0543401698719147,
+    "share_of_effect_removed": -0.33246160220710236,
+    "reduction_ci": [
+     0.010091265742234132,
+     0.13734396779694413
+    ]
+   },
+   "rand_authority4": {
+    "authority_effect_c": -0.2219099796970263,
+    "authority_effect_d": -0.021535049750087798,
+    "share_of_effect_removed": -0.05994642581064657,
+    "reduction_ci": [
+     -0.041246118567369136,
+     0.06831268033858306
+    ]
+   }
+  },
+  "pred_authority25_removes_half": false,
+  "pred_reduction_ci_excludes_zero": false,
+  "pred_beyond_all_random": false,
+  "random_share_removed_range": [
+   -0.33246160220710236,
+   0.07129035163648306
+  ]
+ }
+}
