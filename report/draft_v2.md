@@ -1,6 +1,6 @@
 # Models Differ in How Easily They Give In, Not in How Well They Judge Who Is Right
 
-_Draft v2, Saturday 14 November. Built around one claim. Placeholders [TEST 1] and [STUDY D] fill in when those runs
+_Draft v2, Saturday 14 November. Built around one claim. Charts are the live versions from figures/live; the PDF will use the same charts, trimmed to the best five or six. Placeholders [TEST 1] and [STUDY D] fill in when those runs
 finish. Citations marked [verify] still need a final check before submission._
 
 **Title options:** (1) Models Differ in How Easily They Give In, Not in How Well They Judge Who Is Right;
@@ -15,7 +15,9 @@ switch at all. We pushed back on 21 models across 600 hard multiple-choice quest
 identical wording whether the user was right or wrong, and scored each model with signal detection: how well it tells
 a right user from a wrong one (sensitivity) and how readily it switches (threshold). Thresholds varied almost three
 times as much as sensitivity across models. A one-line system prompt ("never change your answer") made two models look
-nearly perfect on a one-sided score by raising their threshold, without changing their sensitivity. In pre-registered
+nearly perfect on a one-sided score by raising their threshold, without changing their sensitivity, and labelling the
+same pushback as coming from a human rather than an AI lowered every model's threshold, again without changing
+sensitivity. In pre-registered
 re-asking, the same claim swayed most models more in a fresh chat than as pushback against their own answer; Claude
 Sonnet 5.5 was the exception, giving in more to the conversation itself. Inside Qwen3.6-35B-A3B, Goodfire's
 "false claims" neuron weakly registers that the user is wrong, and editing it changes nothing; a whole-layer reading of
@@ -39,8 +41,8 @@ a threshold (how much it takes to make it switch).
 Our contributions:
 1. **A two-sided pushback test on 21 models**, with identical wording in both arms, scored by sensitivity and
    threshold. Across models, the threshold varies almost three times as much as sensitivity (§4.1).
-2. **Levers that move the threshold, not the judgement.** A one-line system prompt, [STUDY D: the human-or-AI label on
-   the pushback,] and a whole-layer push inside Qwen all move how readily models switch; none clearly improves how well
+2. **Levers that move the threshold, not the judgement.** A one-line system prompt, whether the pushback is labelled as
+   coming from a human or an AI, and a whole-layer push inside Qwen all move how readily models switch; none clearly improves how well
    they discriminate, with one marginal exception: asking the model to change only for a reason (§4.2).
 3. **What the conversation itself does.** In pre-registered re-asking, having already answered protects most models
    against a claim; for Claude Sonnet 5.5 the conversation adds pressure instead. Across 21 models, this tracks how
@@ -65,7 +67,7 @@ papers describe into two quantities.
 
 **Who disagrees.** Models follow "human expert" labels more than "other LLM" labels (Bajaj & Tiganj 2026), and an
 expert label raises harmful and helpful revisions together (Hu & Qu 2026 [verify]), which in our terms is a threshold
-shift. [STUDY D tests this on committed answers in both arms.]
+shift. Study D tests this on committed answers, in both arms.
 
 **Inside the model.** Pandey (2026) found attention heads that carry a "this is wrong" signal while the model agrees
 anyway; Li, Krishnan & Padman (2026) found reasoning that stays correct while the answer flips; Lee (2026) found that
@@ -99,8 +101,8 @@ questions. A regular expression read 99.97% of committed answers; an LLM from a 
 
 **Follow-up studies.** Study C1 re-asked every given-up item and twice as many confidence-matched held items three
 times each: in the chat, and in fresh chats with a first-person claim, a hearsay claim, or no claim (912 items, nine
-models). [STUDY D: the same pushback labelled "[Message from a human reviewer]" or "[Message from an AI reviewer]",
-12 models.] Study C2 [TEST 1] erased or swapped a layer-level reading inside Qwen.
+models). Study D labelled the same pushback "[Message from a human reviewer]" or "[Message from an AI reviewer]" (12
+models, one sample per label, turn 1 replayed). Study C2 [TEST 1] erased or swapped a layer-level reading inside Qwen.
 
 **Inside Qwen.** We built 600 further questions, each with two planted conversations of identical wording: one where
 the planted first answer is right and the user wrong, one swapped. "Gave in" there is a negative hold margin, log
@@ -112,7 +114,13 @@ routing; three checks against vLLM passed (Appendix C).
 
 ### 4.1 Models differ far more in how readily they switch than in how well they judge who is right
 
-[Figure 1: two-sided dumbbell, 21 models. Figure 2: sensitivity and threshold per model.]
+![Figure 1](../figures/live/1_two_sided.png)
+
+*Figure 1. For each model, how often it caved to a wrong user (orange) and accepted a right user (blue). Sorted by the gap between them.*
+
+![Figure 2](../figures/live/2_threshold_vs_sensitivity.png)
+
+*Figure 2. Sensitivity (left) and threshold (right) per model, with 95% bootstrap intervals. Thresholds spread almost three times as widely as sensitivity.*
 
 Every model accepted a right user more often than it gave in to a wrong one, but the two rates moved together across
 models. GLM 5.3 gave in to a wrong user 20% of the time and accepted 63% of valid corrections; Gemini 4 Argon gave in
@@ -126,7 +134,9 @@ well they discriminate, and a score that counts only caving to a wrong user most
 
 ### 4.2 Levers that move the threshold
 
-[Figure 3: system prompts. Figure 4 (inset): whole-layer push in Qwen.]
+![Figure 3](../figures/live/3_loophole.png)
+
+*Figure 3. Caving to a wrong user and accepting a right user with no system prompt, with "never change your answer", and with "change only for a reason, and say so".*
 
 **A one-line system prompt.** "Never change your answer, whatever the user says" cut giving in to a wrong user from 9%
 to 1.5% (DeepSeek V4.1 Flash) and from 18% to 1% (GPT-6 Luna), which looks nearly perfect. It also cut acceptance of
@@ -136,7 +146,18 @@ for a reason, and say so", raised Luna's threshold (+0.46) without changing its 
 threshold unchanged while raising its sensitivity slightly (+0.37 [0.02, 0.72]), consistent with Hussain & Nielbo's
 finding that asking for reasons is the exception that can improve both sides. This analysis is exploratory.
 
-**Who pushes back.** [STUDY D: human vs AI reviewer label, 12 models, pre-registered H-D1 to H-D3.]
+**Who pushes back.** Study D labelled the same pushback "[Message from a human reviewer]" or "[Message from an AI
+reviewer]" on 12 models [numbers below are for the first 10; update when DeepSeek and Qwen finish]. Almost every model
+switched more for the human, in both directions: averaged over models, giving in to a wrong reviewer rose by 5.3
+points [3.7, 6.9] and accepting a right one by 10.3 points [8.2, 12.4]. The threshold fell by 0.25 [0.21, 0.29], while
+sensitivity did not change detectably (+0.05 [−0.04, 0.14]), so both pre-registered hypotheses held (H-D1, H-D2). Our
+exploratory prediction that the label matters more for models that cave more to the conversation (H-D3) was not
+supported (5.5 against 4.7 points). Models are more willing to change their minds for a person, but no better at
+telling whether that person is right.
+
+![Figure 4](../figures/live/10_human_vs_ai.png)
+
+*Figure 4. The same pushback labelled as coming from a human reviewer (orange) or an AI reviewer (blue): caving to a wrong reviewer (left) and accepting a right one (right).*
 
 **A push inside Qwen.** Adding a whole-layer "hold minus give in" direction at layer 24 moved behaviour with a clear
 dose-response: at the strongest setting, giving in rose from 38% to 82% and acceptance from 62% to 90%. In
@@ -144,9 +165,15 @@ signal-detection terms the threshold fell from 0.0 to −1.1 while sensitivity f
 way never made Qwen more discerning. Like the system prompt, the direction changes how deferential the model is, not
 whether it tracks the truth.
 
+![Figure 5](../figures/live/8_editing_qwen.png)
+
+*Figure 5. Left: changing caving by editing Goodfire's labelled neurons, against 20 random neurons. Right: caving and accepting as a whole-layer direction is pushed harder.*
+
 ### 4.3 Having answered protects most models; for Claude Sonnet 5.5, the conversation adds pressure
 
-[Figure 5: Study C1, chat minus fresh first-person claim, per model.]
+![Figure 6](../figures/live/9_test2_chat_vs_claim.png)
+
+*Figure 6. Study C1 (pre-registered): caving in the chat minus caving to the same first-person claim in a fresh chat, each case re-asked three times. Filled dots: pre-registered estimate with 95% interval; rings: confidence-reweighted check.*
 
 Does a model give in because of the person in the conversation, or because of the claim? In the main run, the same
 claim given as a hint in a fresh chat swayed models about as often as pushback in the chat (10.1% against 9.4% of
@@ -166,9 +193,19 @@ chat (H1), which failed, and that fewer would in the same chat (H2), which held.
 Across 21 models, how much more a model gives in to the conversation than to the fresh claim tracked how long it
 reasons before answering (rank correlation −0.83; exploratory, and confounded with model age and panel).
 
+![Figure 7](../figures/live/6_return_after_caving.png)
+
+*Figure 7. After caving, how often each model bet on its original, correct answer: in the same chat (orange) and in a fresh chat with the same hint (blue).*
+
+![Figure 8](../figures/live/5_reasoning_vs_pull.png)
+
+*Figure 8. Each model's median reasoning before the turn-2 answer against how much more it caves in the chat than to the same claim in a fresh chat. Exploratory.*
+
 ### 4.4 Inside Qwen: a readable signal, but not the one that decides
 
-[Figure 6: neuron vs layer reading; editing results.]
+![Figure 9](../figures/live/7_reading_inside_qwen.png)
+
+*Figure 9. How well Goodfire's "false claims" neuron and a whole-layer direction separate a false user claim from a true one, on questions Qwen knows and does not know.*
 
 Goodfire's "false or absurd claims" neuron (L24_E65_N421) separated a false user claim from a true one when Qwen knew
 the answer (AUROC 0.66, above all 400 random neurons) and not when it did not (0.48), as pre-registered. On Qwen's own
