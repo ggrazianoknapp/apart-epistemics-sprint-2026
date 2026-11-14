@@ -89,3 +89,8 @@ Every place where what we ran differs from `PREREGISTRATION.md` (tag `prereg-A`)
     kept reasoning in its visible reply with thinking disabled (median about 1,060 tokens), so Study E's Qwen
     comparison was visible reasoning against hidden reasoning, not off against on. Smoke tests of each new script
     (1-4 items) were discarded before the real runs.
+
+16. **An eighth set of tests was pre-registered on GG's request** (`PREREGISTRATION_H.md`, tag `prereg-H`): groups of
+    Goodfire's labelled neurons removed as Goodfire removes them, for stubbornness vs judgement (H1) and for the
+    authority label (H2). A 3-question dry run (discarded) showed the two H1 groups could share a neuron, so the
+    judgement group was made disjoint before the tag.
