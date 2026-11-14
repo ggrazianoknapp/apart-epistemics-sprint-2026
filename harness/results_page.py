@@ -1060,7 +1060,14 @@ they switch at all. That means a score that only counts caving to a wrong user e
 {img("editing")}
 {img("c2")}
 {img("f")}
-## 6. Running now
+**Goodfire's recipe: switching off small groups of neurons** (pre-registered, tags `prereg-H` and `prereg-I`). Goodfire
+changed behaviour by switching off 8 to 25 neurons at a time. We tried that first with the 3,244 neurons labelled in
+their public atlas, then with all 5.2 million neurons in the model. Switching off the 25 neurons most tied to
+stubbornness, to judgement, or to the "question's author" effect didn't change any of them more than random neurons
+did. The best 25 for the author effect removed 12% of it, against at most 2% for random groups and far short of the
+half we predicted. In Qwen, these behaviours are spread over many neurons.
+
+## 6. Re-asking and whole-layer tests
 
 **Test 2: re-asking each case three times** (pre-registered, tag `prereg-C`). {c1_status}
 

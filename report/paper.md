@@ -13,18 +13,18 @@
 <!-- GG: rewrite in your own voice; keep it between 150 and 250 words -->
 When a user tells a language model it is wrong, a good model should hold its answer if the user is wrong and switch
 if the user is right. Most sycophancy evaluations only measure the first half, so they reward models that rarely
-switch at all. We pushed back on 21 models with identical wording whether the user was right or wrong, on 600
+switch. We pushed back on 21 models with identical wording whether the user was right or wrong, on 600
 multiple-choice questions (300 for 12 older models), and scored each model with signal detection: how well it tells a
 right user from a wrong one (judgement) and how readily it switches (stubbornness). Models differed almost three times
 as much in stubbornness as in judgement. A one-line system prompt made two models look nearly perfect on a one-sided
 score by making them stubborn, with no change in judgement. Labelling the same pushback as coming from a human, a
 professor or the question's author made models progressively easier to move, again with no loss of judgement. Letting
-models reason before replying was the one change that made them better judges, in all five models tested. In
-pre-registered re-asking, having already answered made five of nine models harder to move, while Claude Sonnet 5.5
-gave in more inside the conversation. Inside Qwen3.6-35B-A3B, a neuron from Goodfire's public atlas labelled for false
-claims weakly registers that the user is wrong but does not drive the decision; a whole-layer reading is far stronger,
-and swapping it lowered Qwen's judgement without changing its stubbornness. Pushback evaluations should report both
-arms and separate the two quantities. (238 words)
+models reason before replying was the one change that made them better judges, in all five models tested. Having
+already answered made five of nine models harder to move, while Claude Sonnet 5.5
+gave in more inside the conversation. Inside Qwen3.6-35B-A3B, neither a neuron that Goodfire's atlas labels for false
+claims nor small groups of neurons chosen with Goodfire's own recipe drive the decision; a whole-layer reading is far
+stronger, and swapping it lowered Qwen's judgement without changing its stubbornness. Pushback evaluations should report both
+arms and separate the two quantities.
 
 ## 1. Introduction
 
@@ -51,9 +51,10 @@ Our main contributions are:
    models better judges, in all five models tested (§4.2).
 3. **What the conversation itself does.** Having already answered protects most models' answers; for Claude Sonnet
    5.5 the conversation adds pressure instead (§4.3).
-4. **Inside Qwen3.6-35B-A3B,** using Goodfire's neuron atlas: labelled neurons carry the "user is wrong" signal weakly
-   and do not drive the decision, while editing a whole-layer reading lowers judgement without touching stubbornness,
-   the mirror image of the outside levers (§4.4).
+4. **Inside Qwen3.6-35B-A3B,** using Goodfire's neuron atlas and recipe: labelled neurons carry the "user is wrong"
+   signal weakly and do not drive the decision, and removing the most implicated groups of neurons, chosen from all
+   5.2 million, moves neither stubbornness, judgement nor the authority effect. Editing a whole-layer reading instead
+   lowers judgement without touching stubbornness, the mirror image of the outside levers (§4.4).
 
 Every follow-up study was pre-registered in git before its data existed (tags `prereg-A` to `prereg-I`), and we
 report the predictions that failed (Appendix B).
@@ -201,7 +202,7 @@ on only about 7% of its replies to the pushback. Switching reasoning on within t
 towards zero from both sides (Sonnet's extra in-chat giving in fell from +7.3 to +1.9 points, a drop of 5.4 [2.2,
 8.7]): a model that reasons treats the same claim more alike wherever it meets it.
 
-### 4.4 Inside Qwen: a readable signal that labelled neurons do not carry
+### 4.4 Inside Qwen: the signal is spread across a layer, not held by a few neurons
 
 ![Figure 5](../figures/live/7_reading_inside_qwen.png){: style="width:68%"}
 
@@ -231,12 +232,18 @@ in stubbornness alone cannot move). None of the four pre-registered tests passed
 relied on its own belief, which helped on questions it does not know (+20.4 points [+11.7, +29.1]) and hurt on
 questions it knows (−25.9 [−34.1, −17.6]), but did not add judgement overall.
 
-**Goodfire's recipe: groups of neurons.** Goodfire changed behaviour by removing groups of 8–25 neurons chosen by
-their effect on an output. With all 3,244 labelled neurons in the public atlas (about 0.06% of the model; Study H),
-removing the 25 with the strongest push towards Qwen's own answer changed stubbornness by +0.00 [−0.05, +0.05], and
-removing the 10 or 25 most tied to the author label removed 6% and −4% of its effect (−0.21 [−0.30, −0.13] in c), no
-more than random groups; the labelled neurons that respond most to the author label describe grammar ("word just
-before a verb"), not authority. [STUDY I: all-neuron result, filled in when the run finishes.]
+**Goodfire's recipe: small groups of neurons.** Goodfire changed behaviour by removing groups of 8–25 neurons chosen
+by their direct effect on an output. We applied that recipe to the 3,244 neurons labelled in the public atlas (about
+0.06% of the model; Study H) and to all 5.2 million routed-expert neurons (Study I), choosing neurons on the 200
+selection questions and testing on the 400 held-out ones against groups of equally active random neurons. Neither
+found a small group that carries the behaviour. Removing the 25 neurons with the strongest push towards Qwen's own
+answer changed stubbornness by +0.00 [−0.05, +0.05] (labelled neurons) and −0.01 [−0.10, +0.08] (all neurons), and
+removing the 25 that push towards the correct answer left pair order unchanged in both. The author label lowered
+Qwen's threshold against the AI label (−0.21 [−0.30, −0.13]). The 25 neurons across the whole model most tied to that
+shift removed 12% of it, more than any of four random groups of 25 (at most 2%) but far short of the half we
+predicted, with an interval that includes zero, and removing the top 100 removed no more (11%). Among labelled
+neurons, the ones that respond most to the author label describe grammar ("word just before a verb"), not authority.
+In this model, stubbornness, judgement and the authority effect are spread over many neurons.
 
 ## 5. Discussion and Limitations
 
@@ -251,8 +258,10 @@ asserts a human or expert source. Reasoning before replying is the only lever we
 argues against cutting reasoning on follow-up turns to save cost.
 
 **For interpretability.** A neuron labelled for exactly the right concept carried the signal weakly and did not drive
-the decision, and no edit made Qwen a better judge; the information sits in layer-level directions that are partly
-used and partly redundant.
+the decision, and Goodfire's own recipe, run over every neuron, found no small group behind stubbornness, judgement or
+the authority effect. The information sits in layer-level directions that are partly used and partly redundant, and
+no edit made Qwen a better judge. Neuron labels are a good place to start looking, but behaviours like these may need
+tools that work on whole populations of neurons.
 
 **Limitations** (full list in Appendix A). Multiple-choice questions make answers checkable but are less natural than
 open advice, and the pushback is one message with one main wording. Signal-detection measures assume an equal-variance
@@ -270,7 +279,8 @@ the answer or because it weighs the claim.
 Across 21 models, what separates good and bad behaviour under pushback is mostly how readily a model switches, not how
 well it can tell a right user from a wrong one. Prompts and claimed authority move the first and leave the second
 alone; reasoning before replying is the one change that raised the second in every model we tested. Inside Qwen, the
-signal that the user is wrong is readable but spread across a layer rather than held by labelled neurons. Pushback
+signal that the user is wrong is readable but spread across a layer rather than held by a few neurons, labelled or
+not. Pushback
 evaluations should measure both arms, so that a model is rewarded for changing its mind for the right reasons rather
 than for rarely changing it.
 
@@ -356,6 +366,10 @@ than for rarely changing it.
 - **Study F failed throughout:** no pre-registered edit made Qwen a better judge on questions it knows.
 - **Study H failed throughout:** groups of 25 labelled neurons moved neither stubbornness, judgement nor the authority
   effect beyond random groups.
+- **Study I failed its main predictions:** over all 5.2 million neurons, the 25 most tied to the authority effect
+  removed 12% of it (predicted at least half, with an interval excluding zero), although more than every random group
+  of 25; the stubbornness and judgement groups moved nothing beyond random groups. Removing the top 100 authority
+  neurons cost 1.5 points of plain accuracy, within the limit of 2.
 
 ## Appendix C: Prompts, Settings, Neuron Checks and Cost
 

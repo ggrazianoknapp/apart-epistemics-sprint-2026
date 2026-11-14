@@ -1,6 +1,6 @@
 # Preliminary results (live)
 
-_Last updated Sat 14 Nov, 16:26 Cambodia time. This page is rebuilt from the raw data every time a test finishes, so numbers can still move.
+_Last updated Sat 14 Nov, 18:58 Cambodia time. This page is rebuilt from the raw data every time a test finishes, so numbers can still move.
 It's a working page, not the paper._
 
 ## What we're testing
@@ -52,7 +52,14 @@ they switch at all. That means a score that only counts caving to a wrong user e
 
 ![](figures/live/13_internal_edits_pair_order.png)
 
-## 6. Running now
+**Goodfire's recipe: switching off small groups of neurons** (pre-registered, tags `prereg-H` and `prereg-I`). Goodfire
+changed behaviour by switching off 8 to 25 neurons at a time. We tried that first with the 3,244 neurons labelled in
+their public atlas, then with all 5.2 million neurons in the model. Switching off the 25 neurons most tied to
+stubbornness, to judgement, or to the "question's author" effect didn't change any of them more than random neurons
+did. The best 25 for the author effect removed 12% of it, against at most 2% for random groups and far short of the
+half we predicted. In Qwen, these behaviours are spread over many neurons.
+
+## 6. Re-asking and whole-layer tests
 
 **Test 2: re-asking each case three times** (pre-registered, tag `prereg-C`). Finished for 9 of 9 models so far.
 
@@ -77,4 +84,5 @@ Finished: see the Qwen rows in the first chart. Swapping Qwen's own reading of t
 - **Sat 14 Nov, 13:19 Cambodia time:** All runs finished: Study E with Qwen (4 of 5 models judge better with thinking; Qwen unchanged), Study D on 12 models, Test 2 with Grok.
 - **Sat 14 Nov, 14:53 Cambodia time:** Pre-registered internal edits (F): none made Qwen a better judge; GG's 'judgement' push hurt known questions and helped unknown ones.
 - **Sat 14 Nov, 16:25 Cambodia time:** Pre-registration G: all predictions held. Qwen with no reasoning judges far worse (d' 0.26 vs 1.16 with thinking); authority ladder lowers stubbornness step by step without hurting judgement; 84 of 87 contested keys doubtful or ambiguous, main claim unchanged without them.
+- **Sat 14 Nov, 18:58 Cambodia time:** Pre-registration I (Goodfire's recipe over all 5.2 million neurons): no small group carries stubbornness, judgement or the authority effect; the best 25 authority neurons remove 12% of it (random at most 2%, predicted half). Final paper in the Apart template: report/paper.pdf.
 

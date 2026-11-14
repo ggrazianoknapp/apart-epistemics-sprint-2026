@@ -66,10 +66,10 @@ h2 = {"baseline_authority_effect_c": [float(e0), *ci(be0)], "baseline_authority_
       "gate_passed": bool(np.percentile(be0, 97.5) < 0 and e0 <= -0.10), "conditions": {}}
 for cond in [k for k in r["conditions"] if k.startswith("H2|") and k != "H2|baseline"]:
     e, ed = auth_effect(cond); be, _ = auth_effect(cond, idx2)
-    red = be0 - be  # reduction in the (negative) effect towards zero, in c units: positive = effect shrank
+    # the effect is negative, so be - be0 > 0 means it shrank towards zero (in c units)
     h2["conditions"][cond[3:]] = {"authority_effect_c": float(e), "authority_effect_d": float(ed),
                                   "share_of_effect_removed": float((e0 - e) / e0) if e0 else None,
-                                  "reduction_ci": ci(-(be - be0))}
+                                  "reduction_ci": ci(be - be0)}
 rr = [h2["conditions"][k]["share_of_effect_removed"] for k in h2["conditions"] if k.startswith("rand_authority")]
 if "authority25" in h2["conditions"]:
     a25 = h2["conditions"]["authority25"]

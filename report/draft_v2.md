@@ -307,16 +307,18 @@ it knows and questions it doesn't, but does not grow.
 
 *Figure 10. Change in pair order for each pre-registered edit inside Qwen, on questions it knows (dark, with 95% interval) and questions it does not know (ring); the grey band shows the range of control edits.*
 
-**Groups of Goodfire's labelled neurons (Study H, pre-registered).** Goodfire's own behavioural results came from removing
-groups of 8-25 neurons, so we tried that with all 3,244 neurons labelled in the public atlas. Removing the 25 labelled
-neurons with the strongest direct push towards Qwen's own answer in both arms ("stubbornness neurons") changed the
-threshold by +0.00 [−0.05, +0.05], and removing the 25 that push towards the correct answer
-("judgement neurons") changed pair order by -1.2 points, both within the range of random groups. Inside Qwen the
-author label did lower the threshold against the AI label (−0.21 [−0.30, −0.13]), but removing the
-10 or 25 labelled neurons most tied to that shift removed 6% and -4% of it, no more than random
-groups, and the labelled neurons that respond most to the author label describe grammar ("word just before a verb"),
-not authority. The public atlas labels about 0.06% of this model's neurons; in our tests the behaviour does not live in
-them, while whole-layer directions do carry part of it.
+**Goodfire's recipe: small groups of neurons (Studies H and I, pre-registered).** Goodfire changed behaviour by removing groups of 8–25 neurons chosen
+by their direct effect on an output. We applied that recipe to the 3,244 neurons labelled in the public atlas (about
+0.06% of the model; Study H) and to all 5.2 million routed-expert neurons (Study I), choosing neurons on the 200
+selection questions and testing on the 400 held-out ones against groups of equally active random neurons. Neither
+found a small group that carries the behaviour. Removing the 25 neurons with the strongest push towards Qwen's own
+answer changed stubbornness by +0.00 [−0.05, +0.05] (labelled neurons) and −0.01 [−0.10, +0.08] (all neurons), and
+removing the 25 that push towards the correct answer left pair order unchanged in both. The author label lowered
+Qwen's threshold against the AI label (−0.21 [−0.30, −0.13]). The 25 neurons across the whole model most tied to that
+shift removed 12% of it, more than any of four random groups of 25 (at most 2%) but far short of the half we
+predicted, with an interval that includes zero, and removing the top 100 removed no more (11%). Among labelled
+neurons, the ones that respond most to the author label describe grammar ("word just before a verb"), not authority.
+In this model, stubbornness, judgement and the authority effect are spread over many neurons.
 
 ### 4.5 Every change at a glance
 
@@ -444,6 +446,9 @@ will be removed in the last pass.
   push along GG's "judgement" part made it a worse judge there and a better one on questions it does not know.
 - **Study H failed throughout:** removing groups of 25 of Goodfire's labelled neurons moved neither stubbornness,
   judgement nor the authority effect beyond random groups.
+- **Study I failed its main predictions:** over all 5.2 million neurons, the 25 most tied to the authority effect
+  removed 12% of it (predicted at least half), although more than every random group of 25; the stubbornness and
+  judgement groups moved nothing beyond random groups.
 - **Costs.** Grok 4.7 cost about seven times its pilot estimate because it exceeded the 16,000-token cap on 18% of calls.
 
 ## Appendix C: Prompts, models, settings, neuron checks and cost
@@ -478,7 +483,7 @@ $40 in all.
 Each pre-registration was committed and tagged in git before its data existed:
 `prereg-A` (4a81d4e: protocol, main hypotheses, E1-E2), `prereg-B` (63cfe24: the "Wait" neuron dial, E3), `prereg-C`
 (879187e: re-asking C1 and layer erasure C2), `prereg-D` (ea74b16: human vs AI label), `prereg-E` (4959da8: thinking
-off vs on), `prereg-F` (3d6c34a: internal edits). Every difference between what we pre-registered and what we ran is
+off vs on), `prereg-F` (3d6c34a: internal edits), `prereg-G`, `prereg-H` (76c0798: labelled-neuron groups), `prereg-I` (8a403b0: all-neuron groups). Every difference between what we pre-registered and what we ran is
 listed with its reason in `DEVIATIONS.md` (14 items), including analyses added after seeing data, which we label
 exploratory throughout.
 
