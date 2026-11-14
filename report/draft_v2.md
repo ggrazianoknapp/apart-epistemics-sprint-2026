@@ -36,7 +36,7 @@ corrected.
 
 We ask a simple question with a two-sided design: when models handle pushback badly, is it because they cannot tell a
 right user from a wrong one, or because they switch too readily (or too reluctantly) regardless? Signal-detection
-theory separates exactly these two things (Macmillan & Creelman 2005 [verify]). We treat "accepting a right user" as a
+theory separates exactly these two things (Macmillan & Creelman 2004). We treat "accepting a right user" as a
 hit and "caving to a wrong user" as a false alarm, so each model gets a sensitivity (how well it discriminates) and
 a threshold (how much it takes to make it switch).
 
@@ -69,9 +69,10 @@ answers more than a/(1−a) times as often as right ones) and find no model clea
 a signal-detection decomposition across 21 current models under user pushback, which separates the frontier those
 papers describe into two quantities.
 
-**Who disagrees.** Models follow "human expert" labels more than "other LLM" labels (Bajaj & Tiganj 2026), and an
-expert label raises harmful and helpful revisions together (Hu & Qu 2026 [verify]), which in our terms is a threshold
-shift. Study D tests this on committed answers, in both arms.
+**Who disagrees.** Models follow "human expert" labels more than "other LLM" labels (Bajaj & Tiganj 2026). Hu & Qu
+(2026) found that most conformity needs no speaker at all: the same asserted answer with the speaker removed already
+causes most harmful revisions, and an expert-panel framing raises them further. Study D tests the source label on
+committed answers, in both arms.
 
 **Inside the model.** Pandey (2026) found attention heads that carry a "this is wrong" signal while the model agrees
 anyway; Li, Krishnan & Padman (2026) found reasoning that stays correct while the answer flips; Lee (2026) found that
@@ -205,7 +206,7 @@ claim in a new chat. A first-person claim swayed models slightly more than hears
 confirmed).
 
 So for most models (five of nine, with two more leaning the same way), having committed to an answer protects it, a choice-supportive pattern also seen by Kumaran et
-al. (2025) [verify]. The protection is itself a threshold shift: thinking models also accept a right user less often
+al. (2025). The protection is itself a threshold shift: thinking models also accept a right user less often
 in the chat than in a new chat (Qwen3.6: 48% against 65%), and Qwen's thinking cites its own earlier answer in 62%
 of chat traces against 1% in new chats. After a model caves, the same stickiness works against it: asked to bet in the same chat, only 22% of given-up answers (720 cases, 21 models) went back to the
 original, against 40% in a new chat with the same hint. We had pre-registered that most would come back in the new
@@ -237,9 +238,9 @@ Goodfire's "false or absurd claims" neuron (L24_E65_N421) separated a false user
 the answer (AUROC 0.66, above all 400 random neurons) and not when it did not (0.48), as pre-registered. On Qwen's own
 301 real conversations it predicted holding (AUROC 0.71 [0.61, 0.81]), but Qwen's stated turn-1 confidence predicted
 it better (0.81 [0.73, 0.88]). Removing the neuron or boosting it four-fold moved caving by under one point, inside
-the range of 20 matched random neurons; the seven labelled neurons together moved it by under two. The atlas suggests
-why: on the user's claim the neuron stayed far below the activation level Goodfire report for its own examples
-[verify the θ numbers], so our edits worked on a weak part of its range. Goodfire's self-questioning "Wait" neuron
+the range of 20 matched random neurons; the seven labelled neurons together moved it by under two. The atlas suggests why: on the user's claim the neuron peaked at about a fifth of the firing threshold
+Goodfire's atlas gives it (θ = 1.14, by our measurement on all 1,200 conversations), so even the four-fold boost kept
+it below its normal firing range. Goodfire's self-questioning "Wait" neuron
 fired on 98% of "Wait" tokens, but turning it up or down did not change how often Qwen wrote "Wait", so we stopped that
 experiment as pre-registered.
 
@@ -291,9 +292,41 @@ correlational.
 
 ## References
 
-[Carry over the verified list from draft.md, plus: Hussain & Nielbo 2026 (arXiv 2608.11247, verified 14 Nov);
-Bajaj & Tiganj 2026 (arXiv 2602.13568, verified 14 Nov); Tang & Lin 2026 (arXiv 2611.16694, verified 14 Nov);
-Zhang et al. 2026 (verified earlier); Hu & Qu 2026 (arXiv 2607.05545) [verify]; Macmillan & Creelman 2005 [verify].]
+Format: Author(s), Year, Title, Venue, URL. Every entry was opened and checked; entries not cited in the final text
+will be removed in the last pass.
+
+1. Apart Research, 2026, AI x Epistemics Research Sprint (13–15 November 2026), Track 1: Model Epistemics & Decision-Making Evals, sprint page, https://apartresearch.com/sprints/ai-x-epistemics-research-sprint-2026-11-13-to-2026-11-15
+2. Qwen Team, 2026, Qwen3.6-35B-A3B, model card, Hugging Face, https://huggingface.co/Qwen/Qwen3.6-35B-A3B
+3. Curt Tigges, Matthew Kowal, Thomas McGrath, Owen Lewis, Nick Cammarata, 2026, Neurons as an Interpretable Basis, Goodfire research post (10 November 2026), https://www.goodfire.com/research/neurons-as-an-interpretable-basis
+4. Richard Ren et al., 2025, The MASK Benchmark: Disentangling Honesty From Accuracy in AI Systems, arXiv:2503.03750, https://arxiv.org/abs/2503.03750
+5. Curt Tigges et al., 2026, Neuron Atlas – Qwen3.6, Goodfire (10 November 2026), https://www.goodfire.com/research/public_neuron_atlas
+6. Aaron Fanous et al., 2025, SycEval: Evaluating LLM Sycophancy, Proceedings of the AAAI/ACM Conference on AI, Ethics, and Society 8(1): 893–900, https://doi.org/10.1609/aies.v8i1.36598
+7. Leyuan Tang, Kangda Wei, Tianyu Jiang, Ruihong Huang, 2026, SPINE: Measuring LLM Sycophancy under Sustained Multi-Turn Pressure, arXiv:2609.09090, https://arxiv.org/abs/2609.09090
+8. Jiseung Hong, Grace Byun, Seungone Kim, Kai Shu, 2025, Measuring Sycophancy of Language Models in Multi-turn Dialogues, Findings of the Association for Computational Linguistics: EMNLP 2025, pp. 2239–2259, https://doi.org/10.18653/v1/2025.findings-emnlp.121
+9. Debu Sinha, 2026, SycoBench-600: Measuring Sycophancy and Correction Selectivity in LLM Assistants, Findings of the Association for Computational Linguistics: ACL 2026, pp. 35278–35284, https://doi.org/10.18653/v1/2026.findings-acl.1759
+10. Nora Petrova, John Burden, 2026, Pressure Reveals Character: Behavioural Alignment Evaluation at Depth, ICML 2026 (poster), arXiv:2602.20813, https://arxiv.org/abs/2602.20813
+11. Arka Pal, Teo Kitanovski, Arthur Liang, Akilesh Potti, Micah Goldblum, 2025, Knowing What You Know Is Not Enough: Large Language Model Confidences Don't Align With Their Actions, arXiv:2511.13240, https://arxiv.org/abs/2511.13240
+12. Jiarui Yao, Shweta Parihar, Nghia Tuan Bui, Guergana K. Savova, Lijing Wang, 2026, Locating Sycophancy Across Training Stages in Open Language Models, arXiv:2610.37788, https://arxiv.org/abs/2610.37788
+13. Adi Shnaidman, 2026, Reset Is Not Recovery: Evaluating Recoverability from False Conversational Context via Sycophancy Hysteresis, arXiv:2609.33672, https://arxiv.org/abs/2609.33672
+14. Manav Pandey, 2026, LLMs Know They're Wrong and Agree Anyway: The Shared Sycophancy-Lying Circuit, arXiv:2604.19117, https://arxiv.org/abs/2604.19117
+15. Yubo Li, Ramayya Krishnan, Rema Padman, 2026, The Chain Holds, the Answer Folds: Trace-Answer Dissociation in Reasoning Models Under Adversarial Pressure, arXiv:2605.29087, https://arxiv.org/abs/2605.29087
+16. Ook Lee, 2026, Room to Reconsider: Reply Length Decides Whether Pushback Makes Language Models Sycophantic or Self-Correcting, arXiv:2611.11035, https://arxiv.org/abs/2611.11035
+17. Nick Cammarata, 2026, Neural Networks Are Already Clean, Goodfire essay (15 October 2026, revised 30 October 2026), https://already-clean.goodfire.com/
+18. M-A-P Team, Xinrun Du, et al., 2025, SuperGPQA: Scaling LLM Evaluation across 285 Graduate Disciplines, arXiv:2502.14739, https://arxiv.org/abs/2502.14739
+19. Yubo Wang et al., 2024, MMLU-Pro: A More Robust and Challenging Multi-Task Language Understanding Benchmark, NeurIPS 2024 Datasets and Benchmarks Track, https://arxiv.org/abs/2406.01574
+20. Woosuk Kwon et al., 2023, Efficient Memory Management for Large Language Model Serving with PagedAttention, Proceedings of the 29th Symposium on Operating Systems Principles (SOSP '23), pp. 611–626, https://doi.org/10.1145/3600006.3613165
+21. OpenRouter, 2026, OpenRouter (API service), https://openrouter.ai (accessed 14 November 2026)
+22. Scale AI, 2026, Scale Labs Leaderboard: MASK (private 500-example split), https://labs.scale.com/leaderboard/mask (accessed 14 November 2026)
+23. Kenny Easwaran, Luke Fenton-Glynn, Christopher Hitchcock, Joel D. Velasco, 2016, Updating on the Credences of Others: Disagreement, Agreement, and Synergy, Philosophers' Imprint 16(11): 1–39, http://hdl.handle.net/2027/spo.3521354.0016.011
+24. Itai Shapira, Myra Cheng, Hadas Orgad, 2026, Is Sycophancy a Form of In-Context Updating?, arXiv:2610.28325, https://arxiv.org/abs/2610.28325
+25. Matthew R. DeVerna, Harry Yaojun Yan, Kai-Cheng Yang, Filippo Menczer, 2024, Fact-checking information from large language models can decrease headline discernment, Proceedings of the National Academy of Sciences 121(50): e2322823121, https://doi.org/10.1073/pnas.2322823121
+26. Daniel H. Zhang, Ashton Chew, Ryan Soe, Ahmed Taha, Ruizhe Li, Aditya Shah, Maheep Chaudhary, 2026, Stubborn or Sycophantic? Auditing What Sycophancy Evaluations Measure, NeurIPS 2026 Workshop "Can We Trust AI Evaluation?", https://neurips.cc/virtual/2026/178274
+27. Zafar Hussain, Kristoffer Nielbo, 2026, Conformity Mitigations in Large Language Models Lie on a Single Resistance-Receptivity Frontier, arXiv:2608.11247, https://arxiv.org/abs/2608.11247
+28. Anooshka Bajaj, Zoran Tiganj, 2026, Who Do LLMs Trust? Human Experts Matter More Than Other LLMs, arXiv:2602.13568, https://arxiv.org/abs/2602.13568
+29. Yupeng Tang, Mingfeng Lin, 2026, When Expert Disagreement Hurts: Prestige and Selectivity in LLM Decision Revision, NeurIPS 2026, arXiv:2611.16694, https://arxiv.org/abs/2611.16694
+30. Yibo Hu, Jiaming Qu, 2026, Most LLM Conformity Needs No Speaker: Measuring the Speaker-Free Floor in Peer-Pressure Benchmarks, arXiv:2607.05545, https://arxiv.org/abs/2607.05545
+31. Dharshan Kumaran, Stephen M. Fleming, Larisa Markeeva, Joe Heyward, Andrea Banino, Mrinal Mathur, Razvan Pascanu, Simon Osindero, Benedetto de Martino, Petar Velickovic, Viorica Patraucean, 2025, How Overconfidence in Initial Choices and Underconfidence Under Criticism Modulate Change of Mind in Large Language Models, arXiv:2507.03120, https://arxiv.org/abs/2507.03120
+32. Neil A. Macmillan, C. Douglas Creelman, 2004, Detection Theory: A User's Guide (2nd revised edition), Psychology Press, https://books.google.com/books?id=2_V5AgAAQBAJ
 
 ## Appendix A: Limitations and dual-use / ethical considerations (required)
 
