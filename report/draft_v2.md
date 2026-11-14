@@ -135,9 +135,9 @@ well they discriminate, and a score that counts only caving to a wrong user most
 
 ### 4.2 Levers that move the threshold
 
-![Figure 3](../figures/live/3_loophole.png)
+![Figure 2](../figures/live/3_loophole.png)
 
-*Figure 3. Caving to a wrong user (orange) and accepting a right user (blue) under three system prompts. "Never change your answer" nearly stops caving but also nearly stops valid corrections.*
+*Figure 2. Caving to a wrong user (orange) and accepting a right user (blue) under three system prompts. "Never change your answer" nearly stops caving but also nearly stops valid corrections.*
 
 **A one-line system prompt.** "Never change your answer, whatever the user says" cut giving in to a wrong user from 9%
 to 1.5% (DeepSeek V4.1 Flash) and from 18% to 1% (GPT-6 Luna), which looks nearly perfect. It also cut acceptance of
@@ -157,9 +157,9 @@ held (H-D1, H-D2). Our exploratory prediction that the label matters more for mo
 (H-D3) was not supported. Models are more willing to change their minds for a person, but no better at telling whether
 that person is right.
 
-![Figure 4](../figures/live/10_human_vs_ai.png)
+![Figure 3](../figures/live/10_human_vs_ai.png)
 
-*Figure 4. The same pushback labelled as coming from a human or an AI reviewer. Left: how many more points each model caved to a wrong reviewer (orange) and accepted a right one (blue) when the label said human. Right: the change in judgement (sensitivity), which stays near zero. Bars are 95% intervals.*
+*Figure 3. The same pushback labelled as coming from a human or an AI reviewer. Left: how many more points each model caved to a wrong reviewer (orange) and accepted a right one (blue) when the label said human. Right: the change in judgement (sensitivity), which stays near zero. Bars are 95% intervals.*
 
 **Letting the model think.** Study E replayed each model's first answer and asked the same pushback twice, once with
 thinking switched off and once on (GPT-6 Luna, Claude Haiku 5.5 and DeepSeek V4.1 Flash at effort "none" against
@@ -171,9 +171,9 @@ pre-registered prediction that sensitivity would not change (H-E1) failed, in th
 we tried, letting the model think first is the only change that made models clearly better at telling a right user
 from a wrong one.
 
-![Figure T](../figures/live/12_thinking_on_off.png)
+![Figure 4](../figures/live/12_thinking_on_off.png)
 
-*Figure T. The same models and questions with thinking switched off and on: change in stubbornness (left) and judgement (right), with 95% intervals. Thinking made every model a better judge, and most a little more stubborn.*
+*Figure 4. The same models and questions with thinking switched off and on: change in stubbornness (left) and judgement (right), with 95% intervals. Thinking made every model a better judge, and most a little more stubborn.*
 
 **A push inside Qwen.** Adding a whole-layer "hold minus give in" direction at layer 24 moved behaviour with a clear
 dose-response: at the strongest setting, giving in rose from 38% to 82% and acceptance from 62% to 90%. In
@@ -251,13 +251,13 @@ smaller than the pre-registered bar (a drop of 0.20), erasing cost 3.3 points of
 2), and after erasure the signal could still be read from the layer (refit AUROC 0.80, against a required 0.65 or
 less). By our pre-registered rules the necessity test is therefore not passed; the swap result stands as a partial,
 specific effect on judgement. It is the only change in the study that lowered sensitivity without moving the threshold
-(Figure 1).
+(Figure 10).
 
 ### 4.5 Every change at a glance
 
-![Figure 9](../figures/live/11_lever_map.png)
+![Figure 10](../figures/live/11_lever_map.png)
 
-*Figure 9. Every change we made, compared with the same model without it: change in stubbornness (threshold, left) and in judgement (sensitivity, right), on the same scale, with 95% intervals. Dark dots: the interval excludes zero. System prompts and the human-or-AI label mostly move stubbornness; editing Qwen's internal signal lowers judgement; letting models think raises it.*
+*Figure 10. Every change we made, compared with the same model without it: change in stubbornness (threshold, left) and in judgement (sensitivity, right), on the same scale, with 95% intervals. Dark dots: the interval excludes zero. System prompts and the human-or-AI label mostly move stubbornness; editing Qwen's internal signal lowers judgement; letting models think raises it.*
 
 
 ## 5. Discussion
