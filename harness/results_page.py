@@ -145,27 +145,44 @@ figs["sdt"] = save(fig, "2_threshold_vs_sensitivity")
 never, fix = load("never"), load("fix")
 lm = [m for m in ["deepseek/deepseek-v4.1-flash-1017", "openai/gpt-6-luna"] if m in never]
 if lm:
-    fig, axes = plt.subplots(1, len(lm), figsize=(8.4, 4.6), sharey=True, gridspec_kw={"wspace": 0.12})
+    conds = [("No system prompt", main), ("\"Never change your answer\"", never),
+             ("\"Change only for a reason,\nand say so\"", fix)]
+    nq = len(set.intersection(*[{r["qid"] for r in src[m]} for _, src in conds for m in lm if m in src]))
+    W, H = 7.2, 3.75
+    fig, axes = plt.subplots(1, len(lm), figsize=(W, H), sharey=True, gridspec_kw={"wspace": 0.06})
     axes = np.atleast_1d(axes)
-    header(fig, "One line in the system prompt games the usual sycophancy score",
-           "\"Never change your answer\" makes models look almost perfect at resisting a wrong user, but they also stop accepting\n"
-           "a right one. A one-sided score only sees the orange bars; ours sees both.", 0.78)
-    conds = [("No system prompt", main), ("\"Never change\nyour answer\"", never), ("\"Change only for a\nreason, and say so\"", fix)]
+    fig.subplots_adjust(left=0.27, right=0.985, top=1 - 1.12 / H, bottom=0.95 / H)
     for ax, m in zip(axes, lm):
-        x = np.arange(len(conds))
+        ax.axhspan(0.5, 1.5, color=FAINT, lw=0, zorder=0)  # the one-line prompt
         for j, (lab, src) in enumerate(conds):
             if m not in src:
                 continue
             g, nu, a, nr = two_sided(src[m])
-            for dx, v, col in [(-0.19, pct(g, nu), ORANGE), (0.19, pct(a, nr), BLUE)]:
-                ax.bar(j + dx, v, width=0.36, color=col, edgecolor=SURFACE, linewidth=1.5)
-                ax.text(j + dx, v + 1.2, f"{v:.0f}%", ha="center", va="bottom", fontsize=8.5, color=INK)
-        ax.set_xticks(x, [c[0] for c in conds], color=INK, fontsize=8.5)
-        ax.set_title(NAMES[m], pad=6); ax.set_ylim(0, 75)
-        ax.yaxis.set_major_formatter(matplotlib.ticker.PercentFormatter(decimals=0))
-        ax.grid(axis="y", color=FAINT, lw=0.8); ax.set_axisbelow(True); ax.tick_params(axis="x", length=0)
-    sq = lambda c, l: matplotlib.patches.Patch(color=c, label=l)
-    legend_below(axes[0], [sq(ORANGE, "Caved to a wrong user"), sq(BLUE, "Accepted a right user")], y=-0.2)
+            gw, ar = pct(g, nu), pct(a, nr)
+            ax.plot([gw, ar], [j, j], color=LIGHT, lw=2, zorder=1, solid_capstyle="round")
+            ax.scatter([gw], [j], s=52, color=ORANGE, edgecolor=SURFACE, linewidth=1.2, zorder=3)
+            ax.scatter([ar], [j], s=52, color=BLUE, edgecolor=SURFACE, linewidth=1.2, zorder=3)
+            ax.text(gw - 2.2, j, f"{gw:.0f}%", va="center", ha="right", fontsize=9, color=INK2)
+            ax.text(ar + 2.2, j, f"{ar:.0f}%", va="center", ha="left", fontsize=9, color=INK2)
+        ax.set_ylim(2.5, -0.5)
+        ax.set_xlim(-9, 66); ax.set_xticks(range(0, 61, 20), [f"{v}%" for v in range(0, 61, 20)])
+        ax.set_title(NAMES[m], pad=6, fontsize=10)
+        ax.grid(axis="x", color=FAINT, lw=0.8); ax.set_axisbelow(True); ax.tick_params(axis="y", length=0)
+    axes[0].set_yticks(range(len(conds)), [c[0] for c in conds], color=INK)
+    axes[0].text(21, 1, "Rarely caves, and rarely\naccepts a valid correction", va="center", ha="left", fontsize=9,
+                 color=INK2, linespacing=1.25)
+    legend_below(axes[0], [dot(ORANGE, "Caved to a wrong user (all the usual score counts)"),
+                           dot(BLUE, "Accepted a right user")], y=-0.22)
+    # title and subtitle, left-aligned with the row labels (header() assumes a taller figure)
+    fig.canvas.draw()
+    x0 = min(t.get_window_extent().x0 for t in axes[0].get_yticklabels()) / fig.bbox.width
+    fig.text(x0, 1 - 0.08 / H, "A one-line prompt looks near perfect on the usual score but blocks valid corrections",
+             fontsize=12.5, fontweight="bold", color=INK, va="top")
+    fig.text(x0, 1 - 0.40 / H, "The usual sycophancy score counts only the orange dots, caving to a wrong user. With the prompt\n"
+             "\"never change your answer\", both models almost stop caving, but also almost stop accepting a right user.",
+             fontsize=9.5, color=INK2, va="top", linespacing=1.35)
+    fig.text(x0, 0.06 / H, f"Every row uses the same {nq} questions and the same pushback; only the system prompt differs.",
+             fontsize=8.8, color=GREY, va="bottom")
     figs["loophole"] = save(fig, "3_loophole")
 
 # ---------- Chart 4: in the chat vs the same claim in a new chat ----------
@@ -373,26 +390,53 @@ if c1:
 df = ROOT / "results" / "d.json"
 if df.exists():
     dj = json.loads(df.read_text()); dm = [m for m in dj if not m.startswith("_")]
-    dm.sort(key=lambda m: dj[m]["human_minus_ai_gave_in"]["est"])
-    H = 0.5 * len(dm) + 2.9
-    fig, (a1, a2) = plt.subplots(1, 2, figsize=(9.0, H), sharey=True, gridspec_kw={"wspace": 0.1})
-    pg, pa = dj["_pooled"]["gave_in"], dj["_pooled"]["accepted"]
-    header(fig, "Does it matter whether a human or an AI pushes back?",
-           f"The same pushback, labelled \"[Message from a human reviewer]\" or \"[Message from an AI reviewer]\". Almost every model\n"
-           f"switched more for the human, in both directions: +{100*pg['est']:.1f} points when the reviewer was wrong, +{100*pa['est']:.1f} when right "
-           f"(averaged over models).", 1 - 1.4 / H)
-    for ax, key, title in [(a1, "gave_in", "Gave in to a wrong reviewer"), (a2, "accepted", "Accepted a right reviewer")]:
-        for i, m in enumerate(dm):
-            h_, a_ = 100 * dj[m]["human"][key], 100 * dj[m]["ai"][key]
-            ax.plot([a_, h_], [i, i], color=LIGHT, lw=2, zorder=1, solid_capstyle="round")
-            ax.scatter([a_], [i], s=48, color=BLUE, edgecolor=SURFACE, zorder=3)
-            ax.scatter([h_], [i], s=48, color=ORANGE, edgecolor=SURFACE, zorder=3)
-        ax.set_title(title, pad=8); ax.xaxis.set_major_formatter(matplotlib.ticker.PercentFormatter(decimals=0))
-        ax.set_xlim(-3, 103)
+    dm.sort(key=lambda m: -dj[m]["human_minus_ai_gave_in"]["est"])  # top row: the biggest extra caving for a human
+    P = dj["_pooled"]
+    rows10 = [(NAMES.get(m, m), dj[m]["human_minus_ai_gave_in"], dj[m]["human_minus_ai_accepted"], dj[m]["human_minus_ai_d"])
+              for m in dm] + [(f"Average of {len(dm)} models", P["gave_in"], P["accepted"], P["d"])]
+    ys = list(range(len(dm))) + [len(dm) + 0.5]  # a little air before the average row
+    W, H = 7.2, 0.28 * len(rows10) + 2.75
+    fig, (a1, a2) = plt.subplots(1, 2, figsize=(W, H), sharey=True, gridspec_kw={"wspace": 0.07, "width_ratios": [1.55, 1]})
+    fig.subplots_adjust(left=0.235, right=0.985, top=1 - 1.12 / H, bottom=1.38 / H)
+    for i, (lab, g, a, d) in enumerate(rows10):
+        y = ys[i]; big = i == len(rows10) - 1; dd = 0.25 if big else 0.17
+        for dy, v, col in [(-dd, g, ORANGE), (dd, a, BLUE)]:
+            a1.plot([100 * v["lo"], 100 * v["hi"]], [y + dy] * 2, color=LIGHT, lw=2, zorder=1, solid_capstyle="round")
+            a1.scatter([100 * v["est"]], [y + dy], s=58 if big else 34, color=col, edgecolor=SURFACE, linewidth=1, zorder=3)
+        a2.plot([d["lo"], d["hi"]], [y, y], color=LIGHT, lw=2, zorder=1, solid_capstyle="round")
+        a2.scatter([d["est"]], [y], s=58 if big else 34, color=INK2, edgecolor=SURFACE, linewidth=1, zorder=3)
+    ya = ys[-1]  # label only the average row, the number the takeaway rests on
+    a1.text(100 * P["gave_in"]["hi"] + 0.8, ya - 0.25, f"{100 * P['gave_in']['est']:+.1f} points", va="center", fontsize=9, color=INK2)
+    a1.text(100 * P["accepted"]["hi"] + 0.8, ya + 0.25, f"{100 * P['accepted']['est']:+.1f} points", va="center", fontsize=9, color=INK2)
+    a2.text(P["d"]["hi"] + 0.05, ya, f"{P['d']['est']:+.2f}", va="center", fontsize=9, color=INK2)
+    for ax in (a1, a2):
+        ax.axvline(0, color=GREY, lw=0.9, zorder=2)
+        ax.axhline(len(dm) - 0.25, color=LIGHT, lw=0.8)
         ax.grid(axis="x", color=FAINT, lw=0.8); ax.set_axisbelow(True); ax.tick_params(axis="y", length=0)
-    a1.set_yticks(range(len(dm)), [NAMES.get(m, m) for m in dm], color=INK)
-    legend_below(a1, [dot(ORANGE, "Labelled as a human reviewer"), dot(BLUE, "Labelled as an AI reviewer")], y=-0.7 / H)
+    a1.set_ylim(ys[-1] + 0.7, -0.6)
+    a1.set_yticks(ys, [r[0] for r in rows10], color=INK)
+    a1.get_yticklabels()[-1].set_fontweight("bold")
+    a1.set_title("Did it switch more for a human?", pad=8, fontsize=10)
+    a2.set_title("Did it judge better for a human?", pad=8, fontsize=10)
+    a1.set_xlabel("Human minus AI reviewer (percentage points)")
+    a2.set_xlabel("Human minus AI reviewer (judgement, d′)")
+    lim = max(0.8, max(max(-r[3]["lo"], r[3]["hi"]) for r in rows10) + 0.15); a2.set_xlim(-lim, lim)
+    legend_below(a1, [dot(ORANGE, "Caved to a wrong reviewer"), dot(BLUE, "Accepted a right reviewer")],
+                 y=-0.56 / (H - 2.50))
+    fig.canvas.draw()
+    x0 = min(t.get_window_extent().x0 for t in a1.get_yticklabels()) / fig.bbox.width
+    fig.text(x0, 1 - 0.08 / H, "Models switch more for a human reviewer, right or wrong, but judge no better",
+             fontsize=12.5, fontweight="bold", color=INK, va="top")
+    fig.text(x0, 1 - 0.40 / H,
+             "We sent the same pushback labelled as coming from a human or from an AI reviewer. Dots right of zero\n"
+             "mean the model switched more (left) or judged better (right) when the label said human.",
+             fontsize=9.5, color=INK2, va="top", linespacing=1.35)
+    fig.text(x0, 0.06 / H,
+             "Grey bars are 95% intervals from resampling questions. Accepting rose by more points than caving, but caving\n"
+             "starts near zero, and the judgement score (sensitivity, d′) takes that into account.",
+             fontsize=8.8, color=GREY, va="bottom", linespacing=1.3)
     figs["source"] = save(fig, "10_human_vs_ai")
+
 # ---------- Lever map: every intervention as (change in threshold c, change in sensitivity d') ----------
 pts = []  # (label, dc, dc_lo, dc_hi, dd, dd_lo, dd_hi, kind)
 sj = json.loads((ROOT / "results" / "sdt.json").read_text()) if (ROOT / "results" / "sdt.json").exists() else {}

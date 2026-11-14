@@ -142,7 +142,7 @@ well they discriminate, and a score that counts only caving to a wrong user most
 
 ![Figure 3](../figures/live/3_loophole.png)
 
-*Figure 3. Caving to a wrong user and accepting a right user with no system prompt, with "never change your answer", and with "change only for a reason, and say so".*
+*Figure 3. Caving to a wrong user (orange) and accepting a right user (blue) under three system prompts. "Never change your answer" nearly stops caving but also nearly stops valid corrections.*
 
 **A one-line system prompt.** "Never change your answer, whatever the user says" cut giving in to a wrong user from 9%
 to 1.5% (DeepSeek V4.1 Flash) and from 18% to 1% (GPT-6 Luna), which looks nearly perfect. It also cut acceptance of
@@ -164,7 +164,7 @@ telling whether that person is right.
 
 ![Figure 4](../figures/live/10_human_vs_ai.png)
 
-*Figure 4. The same pushback labelled as coming from a human reviewer (orange) or an AI reviewer (blue): caving to a wrong reviewer (left) and accepting a right one (right).*
+*Figure 4. The same pushback labelled as coming from a human or an AI reviewer. Left: how many more points each model caved to a wrong reviewer (orange) and accepted a right one (blue) when the label said human. Right: the change in judgement (sensitivity), which stays near zero. Bars are 95% intervals.*
 
 **A push inside Qwen.** Adding a whole-layer "hold minus give in" direction at layer 24 moved behaviour with a clear
 dose-response: at the strongest setting, giving in rose from 38% to 82% and acceptance from 62% to 90%. In
