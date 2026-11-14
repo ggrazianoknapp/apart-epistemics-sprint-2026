@@ -1,1 +1,2 @@
 - **Sat 14 Nov, 09:17 Cambodia time:** First version: eight charts from the main run, the honesty panel, the loophole test and the neuron experiments.
+- **Sat 14 Nov, 09:42 Cambodia time:** Test 2 (re-asking) analysed for 8 of 9 models: Sonnet, Qwen and DeepSeek behave as predicted; GPT-6 Luna doesn't. Grok still running.

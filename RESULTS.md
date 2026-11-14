@@ -1,6 +1,6 @@
 # Preliminary results (live)
 
-_Last updated Sat 14 Nov, 09:18 Cambodia time. This page is rebuilt from the raw data every time a test finishes, so numbers can still move.
+_Last updated Sat 14 Nov, 09:43 Cambodia time. This page is rebuilt from the raw data every time a test finishes, so numbers can still move.
 It's a working page, not the paper._
 
 ## What we're testing
@@ -40,7 +40,7 @@ they switch at all. That means a score that only counts caving to a wrong user e
 
 ## 5. Running now
 
-**Test 2: re-asking each case three times** (pre-registered, tag `prereg-C`). Finished for 5 of 9 models so far.
+**Test 2: re-asking each case three times** (pre-registered, tag `prereg-C`). Finished for 8 of 9 models so far.
 
 ![](figures/live/9_test2_chat_vs_claim.png)
 
@@ -50,4 +50,5 @@ Being built now; results expected mid-afternoon Cambodia time.
 ## Update log
 
 - **Sat 14 Nov, 09:17 Cambodia time:** First version: eight charts from the main run, the honesty panel, the loophole test and the neuron experiments.
+- **Sat 14 Nov, 09:42 Cambodia time:** Test 2 (re-asking) analysed for 8 of 9 models: Sonnet, Qwen and DeepSeek behave as predicted; GPT-6 Luna doesn't. Grok still running.
 

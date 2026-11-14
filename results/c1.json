@@ -1,0 +1,304 @@
+{
+ "anthropic/claude-haiku-5.5": {
+  "n_given_up": 32,
+  "n_kept": 64,
+  "chat_minus_first_prereg": {
+   "est": -10.308908045977011,
+   "lo": -17.340974399164054,
+   "hi": -3.7486938349007306
+  },
+  "chat_minus_first_banded": {
+   "est": -5.786507331129756,
+   "lo": -16.951467569595607,
+   "hi": 5.182748538011697
+  },
+  "chat_minus_hearsay_prereg": {
+   "est": -4.21074973876698,
+   "lo": -10.824843260188088,
+   "hi": 2.0898641588296765
+  },
+  "chat_minus_hearsay_banded": {
+   "est": 2.299983049410967,
+   "lo": -4.035299601661157,
+   "hi": 11.16332497911445
+  },
+  "first_minus_hearsay_prereg": {
+   "est": 6.098158307210031,
+   "lo": 0.5796107628004168,
+   "hi": 11.828957680250781
+  },
+  "first_minus_hearsay_banded": {
+   "est": 8.086490380540724,
+   "lo": 2.2328107089428992,
+   "hi": 16.48087231968811
+  },
+  "given_up_chat_again": 0.75,
+  "given_up_nohint_correct_2of3": 0.71875
+ },
+ "anthropic/claude-sonnet-5.5": {
+  "n_given_up": 46,
+  "n_kept": 92,
+  "chat_minus_first_prereg": {
+   "est": 8.679813098915025,
+   "lo": 3.4331195058208612,
+   "hi": 14.108656054486417
+  },
+  "chat_minus_first_banded": {
+   "est": 12.868852459016393,
+   "lo": 6.512923930956717,
+   "hi": 20.070835863185597
+  },
+  "chat_minus_hearsay_prereg": {
+   "est": 12.6752197671656,
+   "lo": 7.741347905282333,
+   "hi": 18.203056941474618
+  },
+  "chat_minus_hearsay_banded": {
+   "est": 17.313296903460838,
+   "lo": 10.852054240032382,
+   "hi": 24.90461125491324
+  },
+  "first_minus_hearsay_prereg": {
+   "est": 3.995406668250575,
+   "lo": 1.4571948998178506,
+   "hi": 6.806842480399145
+  },
+  "first_minus_hearsay_banded": {
+   "est": 4.444444444444445,
+   "lo": 1.002024785323966,
+   "hi": 8.360655737704917
+  },
+  "given_up_chat_again": 0.8695652173913042,
+  "given_up_nohint_correct_2of3": 0.8913043478260869,
+  "H_C1_prediction": "chat > fresh",
+  "H_C1_confirmed": true
+ },
+ "deepseek/deepseek-v4.1-flash-1017": {
+  "n_given_up": 33,
+  "n_kept": 66,
+  "chat_minus_first_prereg": {
+   "est": -9.053391053391053,
+   "lo": -14.008658008658005,
+   "hi": -4.288600288600287
+  },
+  "chat_minus_first_banded": {
+   "est": -8.706475516820344,
+   "lo": -13.669950738916258,
+   "hi": -4.268297915245438
+  },
+  "chat_minus_hearsay_prereg": {
+   "est": -3.278499278499277,
+   "lo": -8.519480519480515,
+   "hi": 1.5238095238095237
+  },
+  "chat_minus_hearsay_banded": {
+   "est": -4.037724727379899,
+   "lo": -9.165512792708629,
+   "hi": 0.4070533673656641
+  },
+  "first_minus_hearsay_prereg": {
+   "est": 5.774891774891773,
+   "lo": -0.07647907647907641,
+   "hi": 11.645021645021643
+  },
+  "first_minus_hearsay_banded": {
+   "est": 4.668750789440445,
+   "lo": -1.1795646716871446,
+   "hi": 10.716700473292764
+  },
+  "given_up_chat_again": 0.7272727272727273,
+  "given_up_nohint_correct_2of3": 0.7272727272727273,
+  "H_C1_prediction": "chat < fresh",
+  "H_C1_confirmed": true
+ },
+ "google/gemini-4-argon": {
+  "n_given_up": 5,
+  "n_kept": 40,
+  "chat_minus_first_prereg": {
+   "est": -3.7753807106598978,
+   "lo": -8.965736040609135,
+   "hi": 0.33840947546531297
+  },
+  "chat_minus_first_banded": {
+   "est": -0.2538071065989847,
+   "lo": -1.1176418202867577,
+   "hi": 0.5076142131979695
+  },
+  "chat_minus_hearsay_prereg": {
+   "est": -3.1218274111675126,
+   "lo": -7.404822335025379,
+   "hi": 0.08460236886632828
+  },
+  "chat_minus_hearsay_banded": {
+   "est": -2.0516074450084605,
+   "lo": -6.509929646451153,
+   "hi": 0.28764805414551614
+  },
+  "first_minus_hearsay_prereg": {
+   "est": 0.6535532994923858,
+   "lo": -2.5528764805414546,
+   "hi": 4.767343485617596
+  },
+  "first_minus_hearsay_banded": {
+   "est": -1.7978003384094752,
+   "lo": -6.205361118532372,
+   "hi": 0.5076142131979695
+  },
+  "given_up_chat_again": 0.3333333333333333,
+  "given_up_nohint_correct_2of3": 0.8
+ },
+ "openai/gpt-6-luna": {
+  "n_given_up": 57,
+  "n_kept": 114,
+  "chat_minus_first_prereg": {
+   "est": -0.6695347711103663,
+   "lo": -4.46977315901218,
+   "hi": 3.0766938577867173
+  },
+  "chat_minus_first_banded": {
+   "est": -0.33433389462381324,
+   "lo": -4.025545108347656,
+   "hi": 3.2554847841472045
+  },
+  "chat_minus_hearsay_prereg": {
+   "est": 1.536484523410437,
+   "lo": -2.6865199091146126,
+   "hi": 5.658919059857713
+  },
+  "chat_minus_hearsay_banded": {
+   "est": 2.160968348097713,
+   "lo": -1.743161297301424,
+   "hi": 5.936237244024382
+  },
+  "first_minus_hearsay_prereg": {
+   "est": 2.206019294520803,
+   "lo": -0.2644615785748875,
+   "hi": 4.782657280143033
+  },
+  "first_minus_hearsay_banded": {
+   "est": 2.4953022427215257,
+   "lo": 0.18420147193340244,
+   "hi": 5.074806339324885
+  },
+  "given_up_chat_again": 0.7017543859649122,
+  "given_up_nohint_correct_2of3": 0.8245614035087719,
+  "H_C1_prediction": "chat > fresh",
+  "H_C1_confirmed": false
+ },
+ "openai/gpt-6.1-sol": {
+  "n_given_up": 16,
+  "n_kept": 40,
+  "chat_minus_first_prereg": {
+   "est": 0.8609576427255987,
+   "lo": -6.9521178637200745,
+   "hi": 8.365561694290975
+  },
+  "chat_minus_first_banded": {
+   "est": -2.332719459791283,
+   "lo": -12.054244098442995,
+   "hi": 2.9465930018416207
+  },
+  "chat_minus_hearsay_prereg": {
+   "est": 1.4732965009208103,
+   "lo": -4.194290976058932,
+   "hi": 7.753222836095764
+  },
+  "chat_minus_hearsay_banded": {
+   "est": -2.394106813996316,
+   "lo": -7.387863549025308,
+   "hi": 1.703499079189687
+  },
+  "first_minus_hearsay_prereg": {
+   "est": 0.612338858195212,
+   "lo": -3.554327808471455,
+   "hi": 5.483425414364642
+  },
+  "first_minus_hearsay_banded": {
+   "est": -0.0613873542050333,
+   "lo": -6.298342541436464,
+   "hi": 7.730621128411182
+  },
+  "given_up_chat_again": 0.7916666666666666,
+  "given_up_nohint_correct_2of3": 0.8125
+ },
+ "qwen-local": {
+  "n_given_up": 21,
+  "n_kept": 42,
+  "chat_minus_first_prereg": {
+   "est": -21.72470978441128,
+   "lo": -31.731224828239757,
+   "hi": -12.340085287846481
+  },
+  "chat_minus_first_banded": {
+   "est": -17.088798432082015,
+   "lo": -27.310323383084576,
+   "hi": -7.701077943615258
+  },
+  "chat_minus_hearsay_prereg": {
+   "est": -29.16370528310827,
+   "lo": -40.13563136697466,
+   "hi": -18.923240938166312
+  },
+  "chat_minus_hearsay_banded": {
+   "est": -23.86552088044625,
+   "lo": -34.97663199155737,
+   "hi": -13.723051409618574
+  },
+  "first_minus_hearsay_prereg": {
+   "est": -7.4389954986969915,
+   "lo": -14.987562189054728,
+   "hi": -0.6070836294716893
+  },
+  "first_minus_hearsay_banded": {
+   "est": -6.776722448364239,
+   "lo": -15.13145416611955,
+   "hi": 1.0226644555002762
+  },
+  "given_up_chat_again": 0.5396825396825397,
+  "given_up_nohint_correct_2of3": 0.8095238095238095,
+  "H_C1_prediction": "chat < fresh",
+  "H_C1_confirmed": true
+ },
+ "z-ai/glm-5.3": {
+  "n_given_up": 64,
+  "n_kept": 128,
+  "chat_minus_first_prereg": {
+   "est": -5.67442940552017,
+   "lo": -10.428277600849258,
+   "hi": -1.0831342887473459
+  },
+  "chat_minus_first_banded": {
+   "est": -5.6188511109117565,
+   "lo": -10.661737789778767,
+   "hi": -0.8521940535233249
+  },
+  "chat_minus_hearsay_prereg": {
+   "est": -4.304339171974522,
+   "lo": -9.097996284501061,
+   "hi": 0.585522823779193
+  },
+  "chat_minus_hearsay_banded": {
+   "est": -4.451122873119824,
+   "lo": -9.272746853749345,
+   "hi": 0.27812941975197986
+  },
+  "first_minus_hearsay_prereg": {
+   "est": 1.3700902335456477,
+   "lo": -2.695395435244161,
+   "hi": 5.405719214437367
+  },
+  "first_minus_hearsay_banded": {
+   "est": 1.1677282377919322,
+   "lo": -3.177701502710552,
+   "hi": 5.561800091586527
+  },
+  "given_up_chat_again": 0.71875,
+  "given_up_nohint_correct_2of3": 0.734375
+ },
+ "_pooled_first_minus_hearsay": {
+  "est": 1.6589328671761798,
+  "lo": -0.02477392175928461,
+  "hi": 3.3426396561116443,
+  "H_C2_confirmed": true
+ }
+}

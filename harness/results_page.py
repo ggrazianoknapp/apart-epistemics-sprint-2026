@@ -332,41 +332,37 @@ if e2p.exists() and pcp.exists():
     a2.set_title("Whole-layer direction at layer 24", pad=8); a2.grid(color=FAINT, lw=0.8); a2.set_axisbelow(True)
     figs["editing"] = save(fig, "8_editing_qwen")
 
-# ---------- Test 2 (study C1): live ----------
-done = {}
-for f in sorted((ROOT / "runs" / "resample").glob("*.jsonl")):
-    if not f.name.startswith("calls__"):
-        recs = [json.loads(l) for l in f.open()]
-        if recs:
-            done[recs[0]["model"]] = recs
-share = lambda samples, letter: sum(s["letter"] == letter for s in samples) / len(samples)
+# ---------- Test 2 (study C1): from the pre-registered analysis (harness/analyze_c1.py -> results/c1.json) ----------
+c1f = ROOT / "results" / "c1.json"
 c1 = []
-for m in MAIN:
-    if m not in done:
-        continue
-    items = done[m]
-    def est(its):
-        w = np.array([it["weight"] for it in its])
-        dif = np.array([share(it["chat"], it["pushed"]) - share(it["fresh_first"], it["pushed"]) for it in its])
-        return float((w * dif).sum() / w.sum() * 100)
-    g = [it for it in items if it["set"] == "given_up"]; k = [it for it in items if it["set"] == "kept"]
-    bs = sorted(est([rng.choice(g) for _ in g] + [rng.choice(k) for _ in k]) for _ in range(1000))
-    c1.append((m, est(items), bs[25], bs[974]))
+if c1f.exists():
+    c1j = json.loads(c1f.read_text())
+    for m in MAIN:
+        if m in c1j:
+            r = c1j[m]; a, b = r["chat_minus_first_prereg"], r["chat_minus_first_banded"]
+            c1.append((m, a["est"], a["lo"], a["hi"], b["est"], r.get("H_C1_prediction"), r.get("H_C1_confirmed")))
 if c1:
     c1.sort(key=lambda r: r[1])
-    fig, ax = plt.subplots(figsize=(8.0, 0.55 * len(c1) + 2.4))
+    H = 0.55 * len(c1) + 2.6
+    fig, ax = plt.subplots(figsize=(8.4, H))
     header(fig, "Test 2: re-asked three times, does the chat pull harder than the same claim in a new chat?",
-           "Each item re-asked 3× in the chat and 3× in a new chat with the same first-person claim (\"I'm fairly sure it's C\").\n"
-           "Right of zero: the conversation pulls harder. Left: the claim alone pulls harder. Bars are 95% intervals.",
-           1 - 1.0 / (0.55 * len(c1) + 2.4))
-    for i, (m, e, lo, hi) in enumerate(c1):
+           "Each case re-asked 3× in the chat and 3× in a new chat with the same first-person claim (\"I'm fairly sure it's C\").\n"
+           "Right of zero: the conversation pulls harder. Left: the same claim pulls harder in a new chat.", 1 - 1.05 / H)
+    xr = max(max(r[3], r[4]) for r in c1) + 2.5  # one aligned column for the value labels
+    for i, (m, e, lo, hi, eb, pred, ok) in enumerate(c1):
         ax.plot([lo, hi], [i, i], color=LIGHT, lw=2.4, solid_capstyle="round", zorder=1)
-        ax.scatter([e], [i], s=54, color=BLUE if e > 0 else ORANGE, edgecolor=SURFACE, zorder=3)
-        ax.text(hi + 0.6, i, f"{e:+.1f} pts", va="center", fontsize=8, color=INK2)
+        ax.scatter([e], [i], s=56, color=BLUE, edgecolor=SURFACE, zorder=3)
+        ax.scatter([eb], [i], s=56, facecolor="none", edgecolor=INK2, linewidth=1.1, zorder=4)
+        tag = "" if pred is None else ("   as predicted" if ok else "   not as predicted")
+        ax.text(xr, i, f"{e:+.1f} pts{tag}", va="center", fontsize=8, color=INK2)
     ax.axvline(0, color=GREY, lw=0.9)
     ax.set_yticks(range(len(c1)), [NAMES[r[0]] for r in c1], color=INK); ax.tick_params(axis="y", length=0)
-    ax.set_xlabel("Caving in the chat minus caving to the same claim in a new chat (points, weighted to all items)")
+    ax.set_xlabel("Caving in the chat minus caving to the same claim in a new chat (points)")
+    ax.set_xlim(min(r[2] for r in c1) - 3, xr + 15)
     ax.grid(axis="x", color=FAINT, lw=0.8); ax.set_axisbelow(True)
+    legend_below(ax, [dot(BLUE, "Pre-registered estimate (grey bar: 95% interval)"),
+                      plt.Line2D([], [], marker="o", ls="", ms=7, markerfacecolor="none", markeredgecolor=INK2,
+                                 label="Re-weighted by confidence (check)")], y=-0.6 / H)
     figs["c1"] = save(fig, "9_test2_chat_vs_claim")
 e4 = ROOT / "runs" / "neuro" / "e4_results.json"
 
@@ -377,7 +373,7 @@ if len(sys.argv) > 1:
     with open(log_path, "a") as f:
         f.write(f"- **{stamp}:** {sys.argv[1]}\n")
 img = lambda k: f"![]({figs[k]})\n" if k in figs else "_Chart not available yet._\n"
-c1_status = (f"Finished for {len(c1)} of 9 models so far." if c1 else "Running now; results expected around 13:00 Cambodia time.")
+c1_status = (f"Finished for {len(c1)} of 9 models so far." if c1 else "Running now.")
 page = f"""# Preliminary results (live)
 
 _Last updated {stamp}. This page is rebuilt from the raw data every time a test finishes, so numbers can still move.
