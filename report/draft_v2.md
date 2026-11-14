@@ -16,8 +16,9 @@ identical wording whether the user was right or wrong, and scored each model wit
 a right user from a wrong one (sensitivity) and how readily it switches (threshold). Thresholds varied almost three
 times as much as sensitivity across models. A one-line system prompt ("never change your answer") made two models look
 nearly perfect on a one-sided score by raising their threshold, without changing their sensitivity, and labelling the
-same pushback as coming from a human rather than an AI lowered every model's threshold, again without changing
-sensitivity. In pre-registered
+same pushback as coming from a human rather than an AI lowered models' thresholds, again without changing
+sensitivity. Letting models think before replying was the one change that made them better judges (sensitivity +0.40
+across four models), though it also made them slightly more stubborn. In pre-registered
 re-asking, the same claim swayed four of eight models clearly more in a fresh chat than as pushback against their own
 answer, and only Claude Sonnet 5.5 gave in more to the conversation itself. Inside Qwen3.6-35B-A3B, Goodfire's
 "false claims" neuron weakly registers that the user is wrong, and editing it changes nothing; a whole-layer reading of
@@ -42,12 +43,13 @@ a threshold (how much it takes to make it switch).
 Our contributions:
 1. **A two-sided pushback test on 21 models**, with identical wording in both arms, scored by sensitivity and
    threshold. Across models, the threshold varies almost three times as much as sensitivity (§4.1).
-2. **Levers that move the threshold, not the judgement.** A one-line system prompt, whether the pushback is labelled as
-   coming from a human or an AI, and a whole-layer push inside Qwen all move how readily models switch; none clearly improves how well
-   they discriminate, with one marginal exception: asking the model to change only for a reason (§4.2).
+2. **Levers that move the threshold, not the judgement, and one that moves judgement.** A one-line system prompt,
+   whether the pushback is labelled as coming from a human or an AI, and a whole-layer push inside Qwen all move how
+   readily models switch without improving how well they discriminate. Letting the model think before replying is
+   the exception: in a pre-registered test it made all four models tested better judges (§4.2).
 3. **What the conversation itself does.** In pre-registered re-asking, having already answered makes most models
    harder to move, against right and wrong users alike; for Claude Sonnet 5.5, which barely thought at our setting,
-   the conversation adds pressure instead. [STUDY E: whether switching thinking off and on reproduces this] (§4.3).
+   the conversation adds pressure instead. Switching thinking off and on within models did not reproduce this, so it is a difference between models (§4.3).
 4. **Inside Qwen3.6.** Using Goodfire's neuron atlas, a labelled "false claims" neuron weakly reads that the user is
    wrong but does not drive the decision. A layer-level reading is far stronger, and swapping it lowers judgement
    without changing willingness, the mirror image of the outside levers (§4.4).
@@ -166,11 +168,25 @@ telling whether that person is right.
 
 *Figure 4. The same pushback labelled as coming from a human or an AI reviewer. Left: how many more points each model caved to a wrong reviewer (orange) and accepted a right one (blue) when the label said human. Right: the change in judgement (sensitivity), which stays near zero. Bars are 95% intervals.*
 
+**Letting the model think.** Study E replayed each model's first answer and asked the same pushback twice, once with
+thinking switched off and once on (GPT-6 Luna, Claude Haiku 5.5 and DeepSeek V4.1 Flash at effort "none" against
+"high"; Claude Sonnet 5.5 at "low" against "high"; Qwen3.6 [TBD]). Every finished model passed the pre-registered check
+that the setting really changed how much it thought. Thinking made all four better judges: sensitivity rose by 0.41
+[0.10, 0.72] for Haiku, 0.25 [0.01, 0.49] for Sonnet, 0.40 [0.08, 0.73] for DeepSeek and 0.54 [0.29, 0.81] for Luna,
+or 0.40 [0.26, 0.54] on average. It also made them a little more stubborn (threshold +0.16 [0.09, 0.24]). Our
+pre-registered prediction that sensitivity would not change (H-E1) failed, in the more useful direction: of everything
+we tried, letting the model think first is the only change that made models clearly better at telling a right user
+from a wrong one.
+
+![Figure T](../figures/live/12_thinking_on_off.png)
+
+*Figure T. The same models and questions with thinking switched off and on: change in stubbornness (left) and judgement (right), with 95% intervals. Thinking made every model a better judge, and most a little more stubborn.*
+
 **A push inside Qwen.** Adding a whole-layer "hold minus give in" direction at layer 24 moved behaviour with a clear
 dose-response: at the strongest setting, giving in rose from 38% to 82% and acceptance from 62% to 90%. In
 signal-detection terms the threshold fell from 0.0 to −1.1, and at the strongest settings sensitivity also fell, from
 0.60 to 0.34. Pushing towards giving in mostly made Qwen more deferential, and at high doses also a worse judge; pushing
-the other way never made it more discerning.
+the other way never made it meaningfully more discerning.
 
 ![Figure 5](../figures/live/8_editing_qwen.png)
 
@@ -204,7 +220,8 @@ turn, 7 caved more inside the chat; the exception was Gemini 4 Argon, which thou
 at the pushback (−0.3 points). Claude Sonnet 5.5 is in this group: at our setting it thought on only about 5% of calls.
 Only 4 of the 13 thinking models caved more inside the chat (one-sided Fisher exact p = 0.017) (rank correlation with reasoning length −0.80 across 21 models; exploratory). Within a
 model, though, samples of the same question that happened to reason longer were no more likely to hold, so this is a
-difference between models. Study E switches thinking off and on within five models to test it directly [STUDY E].
+difference between models. But switching thinking off and on within the same models (Study E, §4.2) did not change this pull (−0.2 points
+[−2.7, 2.3]; H-E2 not supported), so it is a difference between models, not an effect of thinking.
 
 ![Figure 7](../figures/live/6_return_after_caving.png)
 
