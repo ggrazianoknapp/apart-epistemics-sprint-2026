@@ -74,3 +74,10 @@ Every place where what we ran differs from `PREREGISTRATION.md` (tag `prereg-A`)
     of main-run calls at effort "medium" (below its default); Gemini 4 Argon thought on about 1% of follow-up turns;
     Grok 4.7 exceeded the 16,000-token cap on 18% of calls; and 6 of the 12 honesty-panel models reasoned by default,
     not the 3 named in item 2.
+
+14. **A sixth set of tests, internal edits to Qwen, was pre-registered after a fleet review** (`PREREGISTRATION_F.md`,
+    tag `prereg-F`): GG's split of the hold direction into shared and difference parts (F1), a push guided by Qwen's own
+    earlier belief (F2) and attention-head edits (F3). Free checks on existing activations were run first and are
+    reported as exploratory (`neurons/f0_free_checks.py`). A dry run on 8 conversations per condition found and fixed
+    two bugs (gradients left on, and an infinite loop when drawing layer-matched random heads, now falling back to other
+    layers when a layer has no free heads); dry-run data are not used.
