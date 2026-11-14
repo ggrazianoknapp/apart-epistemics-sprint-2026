@@ -44,9 +44,9 @@ Our contributions:
 2. **Levers that move the threshold, not the judgement.** A one-line system prompt, whether the pushback is labelled as
    coming from a human or an AI, and a whole-layer push inside Qwen all move how readily models switch; none clearly improves how well
    they discriminate, with one marginal exception: asking the model to change only for a reason (§4.2).
-3. **What the conversation itself does.** In pre-registered re-asking, having already answered protects most models
-   against a claim; for Claude Sonnet 5.5 the conversation adds pressure instead. Across 21 models, this tracks how
-   long they reason (§4.3).
+3. **What the conversation itself does.** In pre-registered re-asking, having already answered makes most models
+   harder to move, against right and wrong users alike; for Claude Sonnet 5.5, which barely thought at our setting,
+   the conversation adds pressure instead. [STUDY E: whether switching thinking off and on reproduces this] (§4.3).
 4. **Inside Qwen3.6.** Using Goodfire's neuron atlas, a labelled "false claims" neuron weakly reads that the user is
    wrong but does not drive the decision; a layer-level reading is far stronger, and [TEST 1] (§4.4).
 
@@ -143,8 +143,9 @@ to 1.5% (DeepSeek V4.1 Flash) and from 18% to 1% (GPT-6 Luna), which looks nearl
 a right user from 32% to 8% and from 54% to 5%. The threshold rose by 0.88 [0.66, 1.17] and 1.50 [1.27, 1.82];
 sensitivity did not change detectably (−0.09 [−0.62, 0.48] and −0.43 [−0.95, 0.12]). A milder prompt, "change only
 for a reason, and say so", raised Luna's threshold (+0.46) without changing its sensitivity, and left DeepSeek's
-threshold unchanged while raising its sensitivity slightly (+0.37 [0.02, 0.72]), consistent with Hussain & Nielbo's
-finding that asking for reasons is the exception that can improve both sides. This analysis is exploratory.
+threshold unchanged while raising its sensitivity slightly (+0.37 [0.02, 0.72]), in the same direction as Hussain & Nielbo's finding that
+reasoning first was the one mitigation that improved both sides, on questions a model can work out for itself. This
+analysis is exploratory.
 
 **Who pushes back.** Study D labelled the same pushback "[Message from a human reviewer]" or "[Message from an AI
 reviewer]" on 12 models [numbers below are for the first 10; update when DeepSeek and Qwen finish]. Almost every model
@@ -185,13 +186,18 @@ apparent extra in-chat caving in the main run came from the hearsay wording of t
 conversation. Of the four models without a prediction, Claude Haiku 5.5 and GLM 5.3 also gave in more to the fresh
 claim. A first-person claim swayed models slightly more than hearsay (+1.7 points [0.0, 3.3], pooled; H-C2 confirmed).
 
-So for most models, having committed to an answer protects it. After a model gives in, the same stickiness works
-against it: asked to bet in the same chat, only 22% of given-up answers (720 cases, 21 models) went back to the
+So for most models, having committed to an answer protects it, a choice-supportive pattern also seen by Kumaran et
+al. (2025) [verify]. The protection is itself a threshold shift: thinking models also accept a right user less often
+in the chat than in a fresh chat (Qwen3.6: 48% against 65%), and Qwen's thinking cites its own earlier answer in 62%
+of chat traces against 1% in fresh chats. After a model gives in, the same stickiness works against it: asked to bet in the same chat, only 22% of given-up answers (720 cases, 21 models) went back to the
 original, against 40% in a fresh chat with the same hint. We had pre-registered that most would come back in the fresh
 chat (H1), which failed, and that fewer would in the same chat (H2), which held.
 
-Across 21 models, how much more a model gives in to the conversation than to the fresh claim tracked how long it
-reasons before answering (rank correlation −0.83; exploratory, and confounded with model age and panel).
+Whether a model thinks before replying lines up with this split. All 7 models that did not think at the pushback turn
+(including Claude Sonnet 5.5, which at our setting thought on only about 5% of calls) caved more inside the chat; only
+4 of the 13 thinking models did (rank correlation with reasoning length −0.80 across 21 models; exploratory). Within a
+model, though, samples of the same question that happened to reason longer were no more likely to hold, so this is a
+difference between models. Study E switches thinking off and on within five models to test it directly [STUDY E].
 
 ![Figure 7](../figures/live/6_return_after_caving.png)
 
