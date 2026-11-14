@@ -81,3 +81,11 @@ Every place where what we ran differs from `PREREGISTRATION.md` (tag `prereg-A`)
     reported as exploratory (`neurons/f0_free_checks.py`). A dry run on 8 conversations per condition found and fixed
     two bugs (gradients left on, and an infinite loop when drawing layer-matched random heads, now falling back to other
     layers when a layer has no free heads); dry-run data are not used.
+
+15. **A seventh set of tests was pre-registered after an anomaly review** (`PREREGISTRATION_G.md`, tag `prereg-G`):
+    Qwen3.6 with no reasoning at all and its cut-off replies redone (G1), a blind check of contested answer keys (G2),
+    an authority ladder (G3) and an effort ladder (G4). The review itself (research/deliberation6) is exploratory.
+    It found that Study E's pre-registered manipulation check for Qwen counted only hidden reasoning tokens, while Qwen
+    kept reasoning in its visible reply with thinking disabled (median about 1,060 tokens), so Study E's Qwen
+    comparison was visible reasoning against hidden reasoning, not off against on. Smoke tests of each new script
+    (1-4 items) were discarded before the real runs.

@@ -58,7 +58,7 @@ class Client:
         return self._usage - BASELINE_USAGE
 
     async def chat(self, model, messages, step_id, max_tokens=16000, reasoning="medium", temperature=None,
-                   provider=None):
+                   provider=None, extra=None):
         """One chat completion, cached by step_id so reruns resume instead of paying twice."""
         ck = hashlib.sha1(f"{model}|{step_id}".encode()).hexdigest()
         if ck in self.cache:
@@ -79,6 +79,8 @@ class Client:
                 body["reasoning"] = {"effort": reasoning}
             if provider:  # pin one provider so a model is never served by differently quantised copies
                 body["provider"] = {"order": [provider], "allow_fallbacks": False}
+        if extra:  # e.g. study G1: pre-filled reply on our own vLLM server
+            body.update(extra)
         url = f"{VLLM if local else OPENROUTER}/chat/completions"
         headers = {} if local else {"Authorization": f"Bearer {self.key}"}
         async with self.sem:
