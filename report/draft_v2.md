@@ -201,7 +201,7 @@ high). What matters is whether a model reasons, not how long.
 
 ![Figure 4](../figures/live/12_thinking_on_off.png)
 
-*Figure 4. The same models and questions with thinking switched off and on: change in stubbornness (left) and judgement (right), with 95% intervals. Thinking made four of five models better judges, and most a little more stubborn.*
+*Figure 4. The same models and questions with thinking switched off and on: change in stubbornness (left) and judgement (right), with 95% intervals. Thinking made four of five models better judges, and most a little more stubborn; Qwen3.6 kept reasoning in its visible reply when its thinking was off, and against no reasoning at all it too judged far better (Study G1).*
 
 **A push inside Qwen.** Adding a whole-layer "hold minus cave" direction at layer 24 moved behaviour with a clear
 dose-response: at the strongest setting, caving rose from 38% to 82% and acceptance from 62% to 90%. In
