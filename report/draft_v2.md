@@ -255,13 +255,32 @@ smaller than the pre-registered bar (a drop of 0.20), erasing cost 3.3 points of
 2), and after erasure the signal could still be read from the layer (refit AUROC 0.80, against a required 0.65 or
 less). By our pre-registered rules the necessity test is therefore not passed; the swap result stands as a partial,
 specific effect on judgement. It is the only change in the study that lowered sensitivity without moving the threshold
-(Figure 10).
+(Figure 11).
+
+**Can an edit make Qwen a better judge? (Study F, pre-registered.)** A free check first showed that no linear reading of
+Qwen's activations separates a wrong user from a right one better than its own final decision does (best 0.94 at layer
+27, against 0.975), so we expected little room. We then tried three kinds of edit on the held-out questions Qwen
+knows, scored by pair order, the share of questions where it holds harder against the wrong user than the right one,
+which a change in stubbornness alone cannot move. Splitting the last-token "hold or cave" direction into the part the
+two arms share and the part where they differ (GG's suggestion) gave a clean split at layers 28-34: the shared part did
+not predict a correct decision (0.50) and the differing part did (about 0.70). But pushing along the differing part
+made Qwen a worse judge on questions it knows (pair order −25.9 [−34.1, −17.6] points) and a better one on questions it
+does not know (+20.4 [+11.7, +29.1]). A push guided by Qwen's own earlier belief changed pair order by
++4.1 [−0.6, +8.8], within the range of its shuffled controls, and strengthening 13 "judgement" attention heads
+(+0.0 [−2.9, +2.9]) or silencing 13 "claim-copying" heads (+0.6 [−2.9, +4.1]) did nothing. None of the four
+pre-registered tests passed. The pattern across edits is that they shift how much Qwen relies on its own belief rather
+than the user: that helps where its belief is wrong and hurts where it is right, so judgement moves between questions
+it knows and questions it doesn't, but does not grow.
+
+![Figure 10](../figures/live/13_internal_edits_pair_order.png)
+
+*Figure 10. Change in pair order for each pre-registered edit inside Qwen, on questions it knows (dark, with 95% interval) and questions it does not know (ring); the grey band shows the range of control edits.*
 
 ### 4.5 Every change at a glance
 
-![Figure 10](../figures/live/11_lever_map.png)
+![Figure 11](../figures/live/11_lever_map.png)
 
-*Figure 10. Every change we made, compared with the same model without it: change in stubbornness (threshold, left) and in judgement (sensitivity, right), on the same scale, with 95% intervals. Dark dots: the interval excludes zero. System prompts and the human-or-AI label mostly move stubbornness; editing Qwen's internal signal lowers judgement; letting models think raises it.*
+*Figure 11. Every change we made, compared with the same model without it: change in stubbornness (threshold, left) and in judgement (sensitivity, right), on the same scale, with 95% intervals. Dark dots: the interval excludes zero. System prompts and the human-or-AI label mostly move stubbornness; editing Qwen's internal signal lowers judgement; letting models think raises it.*
 
 
 ## 5. Discussion
@@ -277,7 +296,8 @@ they meet it in a new chat. This matters for agent pipelines, where claims arriv
 than as a user disagreeing.
 
 **For interpretability.** A neuron labelled for exactly the right concept carried the signal weakly and did not drive
-the decision. A layer-level reading was far stronger, and swapping it was the only change in the study that lowered
+the decision, and no edit we tried made Qwen a better judge: edits moved judgement between what it knows and what
+it doesn't, without adding to it. A layer-level reading was far stronger, and swapping it was the only change in the study that lowered
 judgement without touching willingness, the mirror image of every outside lever. Qwen has other routes to the same
 information, so the reading is used in part, not as a single switch.
 
@@ -377,7 +397,8 @@ will be removed in the last pass.
 - **H-D3 was not supported;** the human label mattered about equally for models pulled by the conversation and the rest.
 - **H-E1's prediction failed** in the useful direction: thinking raised sensitivity (we predicted no change). **H-E2 was
   not supported:** switching thinking off did not make the conversation pull harder.
-- **Study F:** [results pending].
+- **Study F failed throughout:** no pre-registered edit inside Qwen made it a better judge on questions it knows; the
+  push along GG's "judgement" part made it a worse judge there and a better one on questions it does not know.
 - **Costs.** Grok 4.7 cost about seven times its pilot estimate because it exceeded the 16,000-token cap on 18% of calls.
 
 ## Appendix C: Prompts, models, settings, neuron checks and cost

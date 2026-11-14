@@ -966,6 +966,42 @@ if e4j.exists():
                handlelength=1.2, columnspacing=1.6, labelcolor=INK2)
     figs["c2"] = save(fig, "12_c2_layer_edits")
 
+# ---------- Study F: internal edits, scored by pair order (results/f.json) ----------
+ffj = ROOT / "results" / "f.json"
+if ffj.exists():
+    fj = json.loads(ffj.read_text()); FK = fj["population"]["known"]["conditions"]; FU = fj["population"]["unknown"]["conditions"]
+    rowsF = [("F1_difference_+0.5", "Push along the \u201cjudgement\u201d part", "F1_random"),
+             ("F1_shared_+0.5", "Push along the \u201cstubbornness\u201d part", "F1_random"),
+             ("F2_belief_+0.5", "Push guided by Qwen's own earlier belief", "F2_"),
+             ("F3_boost_judgement_heads", "Strengthen 13 \u201cjudgement\u201d heads", "F3_random"),
+             ("F3_cut_copy_heads", "Silence 13 \u201cclaim-copying\u201d heads", "F3_random")]
+    rowsF = [r for r in rowsF if r[0] in FK]
+    H = 0.62 * len(rowsF) + 2.9
+    fig, ax = plt.subplots(figsize=(7.4, H))
+    header(fig, "No edit inside Qwen made it a better judge on questions it knows",
+           "Pair order: the share of questions where Qwen holds harder against a wrong user than a right one (being more\n"
+           "stubborn alone cannot change it). Dark: questions Qwen knows; ring: questions it doesn't. Grey band: control edits.",
+           1 - 1.25 / H)
+    for i, (k, lab, ctl) in enumerate(rowsF):
+        y = len(rowsF) - 1 - i
+        cs = [v["change_pair_order"][0] * 100 for c, v in FK.items() if c.startswith(ctl) and c != k and
+              ("random" in c or c in ("F2_shuffled_+0.5", "F2_constant_+0.5"))]
+        if cs:
+            ax.add_patch(matplotlib.patches.Rectangle((min(cs), y - 0.28), max(cs) - min(cs) + 0.2, 0.56, color=FAINT, zorder=0))
+        e, lo, hi = [100 * x for x in FK[k]["change_pair_order"]]
+        ax.plot([lo, hi], [y, y], color=LIGHT, lw=2.2, solid_capstyle="round", zorder=1)
+        ax.scatter([e], [y], s=56, color=INK2, edgecolor=SURFACE, zorder=3)
+        if k in FU:
+            ax.scatter([100 * FU[k]["change_pair_order"][0]], [y], s=50, facecolor="none", edgecolor=INK2, linewidth=1.2, zorder=3)
+    ax.axvline(0, color=GREY, lw=0.9)
+    ax.set_yticks(range(len(rowsF)), [r[1] for r in rowsF][::-1], color=INK); ax.tick_params(axis="y", length=0)
+    ax.set_xlabel("Change in pair order (percentage points)")
+    ax.grid(axis="x", color=FAINT, lw=0.8); ax.set_axisbelow(True)
+    legend_below(ax, [dot(INK2, "Questions Qwen knows (95% interval in grey)"),
+                      plt.Line2D([], [], marker="o", ls="", ms=7, markerfacecolor="none", markeredgecolor=INK2, label="Questions it doesn't know"),
+                      matplotlib.patches.Patch(color=FAINT, label="Range of control edits")], ncol=3, y=-0.55 / H * 2)
+    figs["f"] = save(fig, "13_internal_edits_pair_order")
+
 # ---------- the page ----------
 log_path = ROOT / "results" / "iterations.md"
 stamp = time.strftime("%a %d %b, %H:%M") + " Cambodia time"
@@ -1013,6 +1049,7 @@ they switch at all. That means a score that only counts caving to a wrong user e
 {img("reading")}
 {img("editing")}
 {img("c2")}
+{img("f")}
 ## 6. Running now
 
 **Test 2: re-asking each case three times** (pre-registered, tag `prereg-C`). {c1_status}
