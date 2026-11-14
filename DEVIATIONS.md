@@ -94,3 +94,7 @@ Every place where what we ran differs from `PREREGISTRATION.md` (tag `prereg-A`)
     Goodfire's labelled neurons removed as Goodfire removes them, for stubbornness vs judgement (H1) and for the
     authority label (H2). A 3-question dry run (discarded) showed the two H1 groups could share a neuron, so the
     judgement group was made disjoint before the tag.
+
+17. **A ninth set of tests was pre-registered on GG's request after Study H's nulls** (`PREREGISTRATION_I.md`, tag
+    `prereg-I`): Goodfire's recipe over all routed neurons, for the authority effect (I1, primary) and for stubbornness
+    vs judgement (I2). A 3-question dry run (discarded) checked the code.
