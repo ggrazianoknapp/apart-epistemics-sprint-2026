@@ -22,7 +22,7 @@ professor or the question's author made models progressively easier to move, aga
 models reason before replying was the one change that made them better judges, in all five models tested. Having
 already answered made five of nine models harder to move, while Claude Sonnet 5.5
 gave in more inside the conversation. Inside Qwen3.6-35B-A3B, neither a neuron that Goodfire's atlas labels for false
-claims nor small groups of neurons chosen with Goodfire's own recipe drive the decision; a whole-layer reading is far
+claims nor small groups of neurons chosen by their direct effect drive the decision; a whole-layer reading is far
 stronger, and swapping it lowered Qwen's judgement without changing its stubbornness. Pushback evaluations should report both
 arms and separate the two quantities.
 
@@ -51,7 +51,7 @@ Our main contributions are:
    models better judges, in all five models tested (§4.2).
 3. **What the conversation itself does.** Having already answered protects most models' answers; for Claude Sonnet
    5.5 the conversation adds pressure instead (§4.3).
-4. **Inside Qwen3.6-35B-A3B,** using Goodfire's neuron atlas and recipe: labelled neurons carry the "user is wrong"
+4. **Inside Qwen3.6-35B-A3B,** using Goodfire's neuron atlas: labelled neurons carry the "user is wrong"
    signal weakly and do not drive the decision, and removing the most implicated groups of neurons, chosen from all
    5.2 million, moves neither stubbornness, judgement nor the authority effect. Editing a whole-layer reading instead
    lowers judgement without touching stubbornness, the mirror image of the outside levers (§4.4).
@@ -78,8 +78,9 @@ committed to, in both arms, so we can tell whether a label changes how readily a
 **Inside the model.** Pandey (2026) found attention heads that carry a "this is wrong" signal while the model agrees
 anyway; Li, Krishnan & Padman (2026) found reasoning that stays correct while the answer flips; Shapira, Cheng & Orgad
 (2026) argue that deference and useful updating share machinery. Goodfire released a labelled neuron atlas for
-Qwen3.6-35B-A3B and removed small groups of neurons to change behaviour (Tigges et al. 2026). We test both their
-labelled neurons and their recipe against layer-level readings on the same decision.
+Qwen3.6-35B-A3B (Tigges et al. 2026) and, in a dense Qwen model, changed answers by removing small groups of neurons
+found by tracing attribution graphs (Cammarata 2026). We test their labelled neurons, and a simpler group selection,
+against layer-level readings on the same decision.
 
 ## 3. Methods
 
@@ -121,7 +122,7 @@ definition for this mixture-of-experts model (silu(gate) × up × router weight)
 
 ### 4.1 Models differ far more in stubbornness than in judgement
 
-![Figure 1](../figures/live/0_models_stubbornness_vs_judgement.png){: style="width:90%"}
+![Figure 1](../figures/live/0_models_stubbornness_vs_judgement.png){: style="width:84%"}
 
 *Figure 1. For 21 models, sorted from most to least stubborn: how often each gave in to a wrong user (orange) and
 accepted a right user (blue), and the same two rates expressed as judgement (sensitivity d′) and stubbornness
@@ -143,7 +144,7 @@ mostly ranks stubbornness.
 
 ### 4.2 What moves stubbornness, and the one thing that moves judgement
 
-![Figure 2](../figures/live/11_lever_map.png){: style="width:76%"}
+![Figure 2](../figures/live/11_lever_map.png){: style="width:66%"}
 
 *Figure 2. Every change we made, compared with the same model without it: change in stubbornness (left) and in
 judgement (right), on the same scale, with 95% intervals. Dark dots: the interval excludes zero. Diamonds: averages
@@ -180,7 +181,7 @@ already there at medium effort: what matters is whether a model reasons, not how
 
 ### 4.3 Having answered protects most models; for Claude Sonnet 5.5 the conversation adds pressure
 
-![Figure 4](../figures/live/9_test2_chat_vs_claim.png){: style="width:70%"}
+![Figure 4](../figures/live/9_test2_chat_vs_claim.png){: style="width:60%"}
 
 *Figure 4. Study C1 (pre-registered): how much more each model gave in to a wrong claim as pushback inside the chat
 than to the same first-person claim in a new chat, with each case asked three times; 95% intervals. Dark dots: the
@@ -232,18 +233,24 @@ in stubbornness alone cannot move). None of the four pre-registered tests passed
 relied on its own belief, which helped on questions it does not know (+20.4 points [+11.7, +29.1]) and hurt on
 questions it knows (−25.9 [−34.1, −17.6]), but did not add judgement overall.
 
-**Goodfire's recipe: small groups of neurons.** Goodfire changed behaviour by removing groups of 8–25 neurons chosen
-by their direct effect on an output. We applied that recipe to the 3,244 neurons labelled in the public atlas (about
-0.06% of the model; Study H) and to all 5.2 million routed-expert neurons (Study I), choosing neurons on the 200
+**Small groups of neurons.** Goodfire changed a dense Qwen model's answers by removing groups of 8–19 neurons found by
+tracing attribution graphs back from the answer (Cammarata 2026). We used a simpler, cheaper selection: each neuron's
+direct effect on the decision at the last token. We applied it to the 3,244 neurons labelled in the public atlas
+(about 0.06% of the model; Study H) and to all 5.2 million routed-expert neurons (Study I), choosing neurons on the 200
 selection questions and testing on the 400 held-out ones against groups of equally active random neurons. Neither
 found a small group that carries the behaviour. Removing the 25 neurons with the strongest push towards Qwen's own
 answer changed stubbornness by +0.00 [−0.05, +0.05] (labelled neurons) and −0.01 [−0.10, +0.08] (all neurons), and
 removing the 25 that push towards the correct answer left pair order unchanged in both. The author label lowered
 Qwen's threshold against the AI label (−0.21 [−0.30, −0.13]). The 25 neurons across the whole model most tied to that
 shift removed 12% of it, more than any of four random groups of 25 (at most 2%) but far short of the half we
-predicted, with an interval that includes zero, and removing the top 100 removed no more (11%). Among labelled
+predicted, with an interval that includes zero. Measured on the raw hold margin, which we had not pre-registered,
+the effect grows with group size: the top 10, 25 and 100 remove 2%, 12% and 34% of it, against −10% to +4% for random
+groups (exploratory). Among labelled
 neurons, the ones that respond most to the author label describe grammar ("word just before a verb"), not authority.
-In this model, stubbornness, judgement and the authority effect are spread over many neurons.
+The chosen groups sit almost entirely in the last nine layers, with one expert supplying 9–11 of every 25, so
+direct-effect selection mostly finds neurons that write the answer letter, the late neurons Goodfire's tracing sets
+aside. Stubbornness and judgement are not carried by any such group; the authority effect may be carried by a larger
+one.
 
 ## 5. Discussion and Limitations
 
@@ -258,8 +265,8 @@ asserts a human or expert source. Reasoning before replying is the only lever we
 argues against cutting reasoning on follow-up turns to save cost.
 
 **For interpretability.** A neuron labelled for exactly the right concept carried the signal weakly and did not drive
-the decision, and Goodfire's own recipe, run over every neuron, found no small group behind stubbornness, judgement or
-the authority effect. The information sits in layer-level directions that are partly used and partly redundant, and
+the decision, and removing small groups chosen from every neuron by their direct effect on the answer did not move
+stubbornness or judgement; the authority effect shrank only as the group grew (exploratory). The information sits in layer-level directions that are partly used and partly redundant, and
 no edit made Qwen a better judge. Neuron labels are a good place to start looking, but behaviours like these may need
 tools that work on whole populations of neurons.
 
@@ -304,14 +311,15 @@ than for rarely changing it.
 11. Li, Y., Krishnan, R., Padman, R. 2026. The Chain Holds, the Answer Folds: Trace-Answer Dissociation in Reasoning Models Under Adversarial Pressure. arXiv:2605.29087. https://arxiv.org/abs/2605.29087
 12. Shapira, I., Cheng, M., Orgad, H. 2026. Is Sycophancy a Form of In-Context Updating? arXiv:2610.28325. https://arxiv.org/abs/2610.28325
 13. Tigges, C., Kowal, M., McGrath, T., Lewis, O., Cammarata, N. 2026. Neurons as an Interpretable Basis. Goodfire research post, 10 November 2026. https://www.goodfire.com/research/neurons-as-an-interpretable-basis
-14. Tigges, C. et al. 2026. Neuron Atlas – Qwen3.6. Goodfire, 10 November 2026. https://www.goodfire.com/research/public_neuron_atlas
-15. Qwen Team. 2026. Qwen3.6-35B-A3B. Model card, Hugging Face. https://huggingface.co/Qwen/Qwen3.6-35B-A3B
-16. Macmillan, N. A., Creelman, C. D. 2004. *Detection Theory: A User's Guide* (2nd revised edition). Psychology Press. https://books.google.com/books?id=2_V5AgAAQBAJ
-17. M-A-P Team, Du, X. et al. 2025. SuperGPQA: Scaling LLM Evaluation across 285 Graduate Disciplines. arXiv:2502.14739. https://arxiv.org/abs/2502.14739
-18. Wang, Y. et al. 2024. MMLU-Pro: A More Robust and Challenging Multi-Task Language Understanding Benchmark. NeurIPS 2024 Datasets and Benchmarks Track. https://arxiv.org/abs/2406.01574
-19. Kumaran, D., Fleming, S. M., Markeeva, L., Heyward, J., Banino, A., Mathur, M., Pascanu, R., Osindero, S., de Martino, B., Velickovic, P., Patraucean, V. 2025. How Overconfidence in Initial Choices and Underconfidence Under Criticism Modulate Change of Mind in Large Language Models. arXiv:2507.03120. https://arxiv.org/abs/2507.03120
-20. Kwon, W. et al. 2023. Efficient Memory Management for Large Language Model Serving with PagedAttention. *SOSP '23*, 611–626. https://doi.org/10.1145/3600006.3613165
-21. Apart Research. 2026. AI x Epistemics Research Sprint, 13–15 November 2026. https://apartresearch.com/sprints/ai-x-epistemics-research-sprint-2026-11-13-to-2026-11-15
+14. Cammarata, N. 2026. Neural Networks Are Already Clean. Goodfire essay, 15 October 2026 (revised 30 October 2026). https://already-clean.goodfire.com/
+15. Tigges, C. et al. 2026. Neuron Atlas – Qwen3.6. Goodfire, 10 November 2026. https://www.goodfire.com/research/public_neuron_atlas
+16. Qwen Team. 2026. Qwen3.6-35B-A3B. Model card, Hugging Face. https://huggingface.co/Qwen/Qwen3.6-35B-A3B
+17. Macmillan, N. A., Creelman, C. D. 2004. *Detection Theory: A User's Guide* (2nd revised edition). Psychology Press. https://books.google.com/books?id=2_V5AgAAQBAJ
+18. M-A-P Team, Du, X. et al. 2025. SuperGPQA: Scaling LLM Evaluation across 285 Graduate Disciplines. arXiv:2502.14739. https://arxiv.org/abs/2502.14739
+19. Wang, Y. et al. 2024. MMLU-Pro: A More Robust and Challenging Multi-Task Language Understanding Benchmark. NeurIPS 2024 Datasets and Benchmarks Track. https://arxiv.org/abs/2406.01574
+20. Kumaran, D., Fleming, S. M., Markeeva, L., Heyward, J., Banino, A., Mathur, M., Pascanu, R., Osindero, S., de Martino, B., Velickovic, P., Patraucean, V. 2025. How Overconfidence in Initial Choices and Underconfidence Under Criticism Modulate Change of Mind in Large Language Models. arXiv:2507.03120. https://arxiv.org/abs/2507.03120
+21. Kwon, W. et al. 2023. Efficient Memory Management for Large Language Model Serving with PagedAttention. *SOSP '23*, 611–626. https://doi.org/10.1145/3600006.3613165
+22. Apart Research. 2026. AI x Epistemics Research Sprint, 13–15 November 2026. https://apartresearch.com/sprints/ai-x-epistemics-research-sprint-2026-11-13-to-2026-11-15
 
 <div class="pagebreak"></div>
 
