@@ -21,7 +21,8 @@ sensitivity. In pre-registered
 re-asking, the same claim swayed most models more in a fresh chat than as pushback against their own answer; Claude
 Sonnet 5.5 was the exception, giving in more to the conversation itself. Inside Qwen3.6-35B-A3B, Goodfire's
 "false claims" neuron weakly registers that the user is wrong, and editing it changes nothing; a whole-layer reading of
-the same signal is far stronger, and [TEST 1]. Pushback evaluations should report both arms, and separate how easily a
+the same signal is far stronger, and swapping it lowered Qwen's
+judgement without changing its willingness, the only change in the study to do so. Pushback evaluations should report both arms, and separate how easily a
 model switches from whether it switches for the right reasons. (~220 words)
 
 ## 1. Introduction
@@ -48,7 +49,8 @@ Our contributions:
    harder to move, against right and wrong users alike; for Claude Sonnet 5.5, which barely thought at our setting,
    the conversation adds pressure instead. [STUDY E: whether switching thinking off and on reproduces this] (§4.3).
 4. **Inside Qwen3.6.** Using Goodfire's neuron atlas, a labelled "false claims" neuron weakly reads that the user is
-   wrong but does not drive the decision; a layer-level reading is far stronger, and [TEST 1] (§4.4).
+   wrong but does not drive the decision. A layer-level reading is far stronger, and swapping it lowers judgement
+   without changing willingness, the mirror image of the outside levers (§4.4).
 
 All four studies were pre-registered in git before their data existed (tags `prereg-A` to `prereg-D`), and we report
 the predictions that failed (Appendix B).
@@ -113,6 +115,10 @@ routing; three checks against vLLM passed (Appendix C).
 ## 4. Results
 
 ### 4.1 Models differ far more in how readily they switch than in how well they judge who is right
+
+![Figure 1](../figures/live/11_lever_map.png)
+
+*Figure 1. Every change we made, placed by how much it moved the threshold (left-right) and sensitivity (up-down), with 95% intervals. Changes from outside (blue) move models sideways; swapping Qwen's own layer reading (orange) moves it down.*
 
 ![Figure 1](../figures/live/1_two_sided.png)
 
@@ -224,9 +230,17 @@ fired on 98% of "Wait" tokens, but turning it up or down did not change how ofte
 experiment as pre-registered.
 
 A single direction across the whole layer read the same signal far better (AUROC 0.90 on known questions, 0.46 on
-unknown ones), but it is largely Qwen's knowledge of the answer. [TEST 1: erasing / swapping that reading across
-layers 23–32: effect on sensitivity and threshold on known questions, against 10 random directions each; manipulation
-check; damage.]
+unknown ones), but it is largely Qwen's knowledge of the answer. Study C2 edited that reading at every layer where it
+was strong (layers 23–29, 31 and 32, chosen by the pre-registered rule), on held-out questions Qwen knows.
+Swapping in the reading from the opposite conversation lowered Qwen's sensitivity (d′ −0.63 [−0.98, −0.35]) without
+moving its threshold (c −0.04 [−0.18, 0.11]); erasing it lowered sensitivity (−0.59) and raised the threshold
+(+0.39); amplifying it four-fold moved only the threshold (+0.30). In discernment terms, swapping and erasing cut it
+from 0.84 to 0.71 and 0.72, while 10 random directions each moved it by at most 0.02. These effects are specific but
+smaller than the pre-registered bar (a drop of 0.20), erasing cost 3.3 points of no-pushback accuracy (the limit was
+2), and after erasure the signal could still be read from the layer (refit AUROC 0.80, against a required 0.65 or
+less). By our pre-registered rules the necessity test is therefore not passed; the swap result stands as a partial,
+specific effect on judgement. It is the only change in the study that moved sensitivity without moving the threshold
+(Figure 1).
 
 ## 5. Discussion
 
@@ -241,7 +255,9 @@ they meet it fresh. This matters for agent pipelines, where claims arrive as too
 than as a user disagreeing.
 
 **For interpretability.** A neuron labelled for exactly the right concept carried the signal weakly and did not drive
-the decision; a layer-level reading was far stronger. [TEST 1 interpretation.]
+the decision. A layer-level reading was far stronger, and swapping it was the only change in the study that lowered
+judgement without touching willingness, the mirror image of every outside lever. Qwen has other routes to the same
+information, so the reading is used in part, not as a single switch.
 
 **Limitations** (full list in Appendix A). Multiple-choice questions make answers checkable but are less natural than
 open advice. The pushback is one message with one wording. The neuron work uses one model and planted conversations

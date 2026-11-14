@@ -393,6 +393,48 @@ if df.exists():
     a1.set_yticks(range(len(dm)), [NAMES.get(m, m) for m in dm], color=INK)
     legend_below(a1, [dot(ORANGE, "Labelled as a human reviewer"), dot(BLUE, "Labelled as an AI reviewer")], y=-0.7 / H)
     figs["source"] = save(fig, "10_human_vs_ai")
+# ---------- Lever map: every intervention as (change in threshold c, change in sensitivity d') ----------
+pts = []  # (label, dc, dc_lo, dc_hi, dd, dd_lo, dd_hi, kind)
+sj = json.loads((ROOT / "results" / "sdt.json").read_text()) if (ROOT / "results" / "sdt.json").exists() else {}
+short = {"deepseek/deepseek-v4.1-flash-1017": "DeepSeek", "openai/gpt-6-luna": "Luna"}
+for k, v in sj.get("levers", {}).items():
+    if k.startswith(("never|", "fix|")):
+        run, m = k.split("|")
+        lab = ("\"Never change\"" if run == "never" else "\"Change only for a reason\"") + f" ({short.get(m, m)})"
+        pts.append((lab, v["c_change"], v["c_change_lo"], v["c_change_hi"], v["d_change"], v["d_change_lo"], v["d_change_hi"], "out"))
+if df.exists():
+    pd_ = dj["_pooled"]
+    pts.append(("Human rather than AI reviewer", pd_["c"]["est"], pd_["c"]["lo"], pd_["c"]["hi"],
+                pd_["d"]["est"], pd_["d"]["lo"], pd_["d"]["hi"], "out"))
+e4j = ROOT / "results" / "e4.json"
+if e4j.exists():
+    ej = json.loads(e4j.read_text())["conditions"]
+    for k, lab in [("interchange", "Qwen: swap its layer reading"), ("erase", "Qwen: erase its layer reading"),
+                   ("amplify_x4", "Qwen: amplify its layer reading ×4")]:
+        v = ej[k]
+        pts.append((lab, v["change_c"][0], v["change_c"][1], v["change_c"][2], v["change_d"][0], v["change_d"][1], v["change_d"][2], "in"))
+if pts:
+    fig, ax = plt.subplots(figsize=(8.6, 6.4))
+    header(fig, "What moves willingness, and what moves judgement?",
+           "Each point is one change we made. Left-right: how much harder (right) or easier (left) it made the model to move.\n"
+           "Up-down: how much better (up) or worse (down) it got at telling a right user from a wrong one. Bars: 95% intervals.", 0.84)
+    ax.axhline(0, color=GREY, lw=0.9); ax.axvline(0, color=GREY, lw=0.9)
+    LABEL_POS = {"Human rather than AI reviewer": ((8, -14), "left"), "Qwen: swap its layer reading": ((-9, -3), "right"),
+                 "Qwen: amplify its layer reading ×4": ((7, -15), "left")}
+    for lab, c_, cl, ch, d_, dl, dh, kind in pts:
+        col = BLUE if kind == "out" else ORANGE
+        ax.plot([cl, ch], [d_, d_], color=col, alpha=0.35, lw=2, solid_capstyle="round")
+        ax.plot([c_, c_], [dl, dh], color=col, alpha=0.35, lw=2, solid_capstyle="round")
+        ax.scatter([c_], [d_], s=60, color=col, edgecolor=SURFACE, zorder=3)
+        off, ha = LABEL_POS.get(lab.split(" (")[0] if lab.startswith("Human") else lab, ((7, 6), "left"))
+        ax.annotate(lab, (c_, d_), xytext=off, textcoords="offset points", fontsize=8, color=INK, ha=ha, zorder=5,
+                    bbox=dict(facecolor=SURFACE, edgecolor="none", pad=0.8, alpha=0.9))
+    ax.set_xlim(left=min(p_[2] for p_ in pts) - 0.55)
+    ax.set_xlabel("Change in threshold (c): positive = harder to move")
+    ax.set_ylabel("Change in sensitivity (d′): positive = better judgement")
+    ax.grid(color=FAINT, lw=0.8); ax.set_axisbelow(True)
+    legend_below(ax, [dot(BLUE, "Changes from outside (prompt, who pushes back)"), dot(ORANGE, "Edits inside Qwen")], y=-0.12)
+    figs["map"] = save(fig, "11_lever_map")
 e4 = ROOT / "runs" / "neuro" / "e4_results.json"
 
 # ---------- the page ----------
@@ -418,6 +460,7 @@ inside one open model, Qwen3.6-35B-A3B, using Goodfire's neuron atlas.
 
 ## 1. Models differ in how easily they switch, not in how well they judge who's right
 
+{img("map")}
 {img("two_sided")}
 {img("sdt")}
 Every model accepts a right user more often than it caves to a wrong one. What really separates them is how easily
@@ -444,7 +487,7 @@ they switch at all. That means a score that only counts caving to a wrong user e
 
 {img("c1") if c1 else ""}
 **Test 1: switching off the "user is wrong" signal across a whole layer of Qwen** (pre-registered, tag `prereg-C`).
-{"Results are in; chart coming in the next update." if e4.exists() else "Being built now; results expected mid-afternoon Cambodia time."}
+{"Finished: see the orange points in the first chart. Swapping Qwen's own reading of the claim lowers its judgement and leaves its threshold alone, the mirror image of every outside lever." if e4.exists() else "Running."}
 
 ## Update log
 

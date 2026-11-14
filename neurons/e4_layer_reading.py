@@ -79,9 +79,7 @@ def make_hook(L):
             return out
         hf = h[0].float()
         for g in S["groups"]:
-            pos = S["pos"][g]
-            if g == "all":
-                pos = torch.arange(hf.shape[0], device=hf.device)
+            pos = torch.arange(hf.shape[0], device=hf.device) if g == "all" else S["pos"][g]
             u, v, c = S["u"][L][g], S["v"][L][g], S["c"][L][g]
             proj = hf[pos] @ u
             delta = (c - proj) if S["op"] == "erase" else (S["target"][L][g] - proj.mean()).expand_as(proj)

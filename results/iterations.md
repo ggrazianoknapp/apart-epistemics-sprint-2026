@@ -1,3 +1,4 @@
 - **Sat 14 Nov, 09:17 Cambodia time:** First version: eight charts from the main run, the honesty panel, the loophole test and the neuron experiments.
 - **Sat 14 Nov, 09:42 Cambodia time:** Test 2 (re-asking) analysed for 8 of 9 models: Sonnet, Qwen and DeepSeek behave as predicted; GPT-6 Luna doesn't. Grok still running.
 - **Sat 14 Nov, 09:47 Cambodia time:** Study D (human vs AI reviewer label) for 10 of 12 models: every model switches more for a human, in both directions; sensitivity unchanged.
+- **Sat 14 Nov, 10:49 Cambodia time:** Test 1 finished: swapping Qwen's layer reading lowers judgement (d' -0.63) without moving the threshold; new lever map chart.
