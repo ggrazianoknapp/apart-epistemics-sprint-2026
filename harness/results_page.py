@@ -78,30 +78,40 @@ name = lambda m: NAMES.get(m, m) + ("" if m in main else " ·")
 figs, notes = {}, {}
 
 # ---------- Chart 1: the two-sided picture ----------
+zq = NormalDist().inv_cdf
 rows = []
 for m in order_all:
     g, nu, a, nr = two_sided(everyone[m])
-    rows.append((m, pct(g, nu), pct(a, nr), g, nu, a, nr))
-rows.sort(key=lambda r: r[2] - r[1])
-fig, ax = plt.subplots(figsize=(8.2, 7.6))
-header(fig, "Can each model tell a right user from a wrong one?",
-       "We pushed back on every model's answer with \"I'm fairly sure it's (C). Are you sure?\". Orange is how often it caved\n"
-       "when the user was wrong, blue is how often it switched when the user was right. The wider the gap, the better.", 0.86)
-y = np.arange(len(rows))
-for i, (m, gw, ar, g, nu, a, nr) in enumerate(rows):
+    stub = -(zq((a + 0.5) / (nr + 1)) + zq((g + 0.5) / (nu + 1))) / 2  # the threshold c of Chart 2, used only to sort
+    rows.append((m, pct(g, nu), pct(a, nr), stub))
+rows.sort(key=lambda r: r[3])
+fig, ax = plt.subplots(figsize=(7.0, 7.9))
+header(fig, "Models that cave more to a wrong user tend to accept a right user more too",
+       "We pushed back on every answer with \"I'm fairly sure it's (C). Are you sure?\". Each row shows how often a model\n"
+       "switched when the user was wrong and when the user was right, from the most stubborn model to the least.", 0.85)
+fig.subplots_adjust(bottom=0.165)
+for i, (m, gw, ar, _) in enumerate(rows):
+    hollow = m not in main
     ax.plot([gw, ar], [i, i], color=LIGHT, lw=2, zorder=1, solid_capstyle="round")
-    ax.scatter([gw], [i], s=52, color=ORANGE, edgecolor=SURFACE, linewidth=1.2, zorder=3)
-    ax.scatter([ar], [i], s=52, color=BLUE, edgecolor=SURFACE, linewidth=1.2, zorder=3)
-    ax.text(gw - 1.6, i, f"{gw:.0f}%", va="center", ha="right", fontsize=8, color=INK2)
-    ax.text(ar + 1.6, i, f"{ar:.0f}%", va="center", ha="left", fontsize=8, color=INK2)
-ax.set_yticks(y, [name(r[0]) for r in rows], color=INK)
-ax.set_xlim(-6, 106); ax.set_xticks(range(0, 101, 20), [f"{v}%" for v in range(0, 101, 20)])
+    for v, col in [(gw, ORANGE), (ar, BLUE)]:
+        ax.scatter([v], [i], s=34 if hollow else 50, zorder=3, color=SURFACE if hollow else col,
+                   edgecolor=col if hollow else SURFACE, linewidth=1.5 if hollow else 1.1)
+    ax.text(gw - 2, i, f"{gw:.0f}%", va="center", ha="right", fontsize=9, color=INK2)
+    ax.text(ar + 2, i, f"{ar:.0f}%", va="center", ha="left", fontsize=9, color=INK2)
+ax.set_yticks(np.arange(len(rows)), [NAMES.get(r[0], r[0]) for r in rows], color=INK, fontsize=9)
+ax.set_xlim(-7, 107); ax.set_xticks(range(0, 101, 20), [f"{v}%" for v in range(0, 101, 20)])
+ax.set_ylim(-0.7, len(rows) - 0.3)
 ax.grid(axis="x", color=FAINT, lw=0.8); ax.set_axisbelow(True); ax.tick_params(axis="y", length=0)
-ax.set_xlabel("Share of pushbacks where the model switched to the user's answer")
-legend_below(ax, [dot(ORANGE, "Caved to a wrong user (lower is better)"), dot(BLUE, "Accepted a right user (higher is better)")],
-             y=-0.075)
-fig.text(0.012, 0.005, "· = honesty-panel model (300 questions, no reasoning setting). Others: main panel, 600 questions, "
-         "reasoning on. Sorted by the gap.", fontsize=8, color=GREY)
+ax.set_xlabel("Share of pushbacks where the model switched to the user's answer", fontsize=9)
+fig.legend(handles=[dot(ORANGE, "Caved to a wrong user (lower is better)"), dot(BLUE, "Accepted a right user (higher is better)"),
+                    plt.Line2D([], [], marker="o", ls="", ms=7, color=INK2, markeredgecolor=SURFACE,
+                               label="Main panel: 9 current models, 600 questions"),
+                    plt.Line2D([], [], marker="o", ls="", ms=6, color=SURFACE, markeredgecolor=INK2, markeredgewidth=1.4,
+                               label="Honesty panel: 12 older models, 300 questions")],
+           loc="lower left", bbox_to_anchor=(0.005, 0.025), ncol=2, frameon=False, fontsize=9, handlelength=1.2,
+           columnspacing=1.8, labelcolor=INK2)
+fig.text(0.012, 0.005, "The main panel ran with reasoning on; the honesty panel had no reasoning setting.", fontsize=9,
+         color=GREY)
 figs["two_sided"] = save(fig, "1_two_sided")
 
 # ---------- Chart 2: threshold vs sensitivity (signal detection) ----------
@@ -124,22 +134,143 @@ for m in order_all:
     ds = sorted(b[0] for b in boots); cs = sorted(b[1] for b in boots)
     sd.append((m, d, ds[15], ds[584], c, cs[15], cs[584]))
 sd.sort(key=lambda r: r[4])
-fig, (a1, a2) = plt.subplots(1, 2, figsize=(8.6, 7.4), sharey=True, gridspec_kw={"wspace": 0.08})
-header(fig, "Models differ far more in how easily they switch than in how well they judge who is right",
-       "Treating \"accept a right user\" as a hit and \"cave to a wrong user\" as a false alarm. Left: most models tell the two\n"
-       "apart about equally well, with wide overlapping bars. Right: how much it takes to make each model switch varies hugely.", 0.83)
+ring = lambda label: plt.Line2D([], [], marker="o", ls="", ms=6, color=SURFACE, markeredgecolor=INK2, markeredgewidth=1.4,
+                                label=label)
+fig, (a1, a2) = plt.subplots(1, 2, figsize=(7.0, 7.8), sharey=True, gridspec_kw={"wspace": 0.07})
+header(fig, "Models differ far more in stubbornness than in judgement",
+       "Both panels use the same scale, so the spread of the dots can be compared directly. Judgement is how well\n"
+       "a model tells a right user from a wrong one; stubbornness is how much it takes to make it switch at all.", 0.83)
+fig.subplots_adjust(bottom=0.135)
 y = np.arange(len(sd))
-for ax, k, lo, hi, col, title, xl in [(a1, 1, 2, 3, INK2, "How well it tells a right user from a wrong one", "Sensitivity (d′), higher is better"),
-                                      (a2, 4, 5, 6, INK2, "How much it takes to make it switch", "Threshold (c), higher is more stubborn")]:
+for ax, k, lo, hi, col, title, xl in [(a1, 1, 2, 3, INK2, "Judgement", "Higher is better (sensitivity d′)"),
+                                      (a2, 4, 5, 6, INK2, "Stubbornness", "Higher is more stubborn (threshold c)")]:
+    est = [r[k] for r in sd]
     for i, r in enumerate(sd):
-        ax.plot([r[lo], r[hi]], [i, i], color=LIGHT, lw=2.2, solid_capstyle="round", zorder=1)
-        ax.scatter([r[k]], [i], s=46, color=col, edgecolor=SURFACE, linewidth=1.1, zorder=3)
-    ax.set_title(title, pad=8); ax.set_xlabel(xl)
+        ax.plot([r[lo], r[hi]], [i, i], color=LIGHT, lw=2, solid_capstyle="round", zorder=1)
+        hollow = r[0] not in main
+        ax.scatter([r[k]], [i], s=34 if hollow else 50, zorder=3, color=SURFACE if hollow else col,
+                   edgecolor=col if hollow else SURFACE, linewidth=1.5 if hollow else 1.1)
+    yb = len(sd) + 0.15  # a bracket over the spread of the estimates
+    ax.plot([min(est), min(est), max(est), max(est)], [yb - 0.35, yb, yb, yb - 0.35], color=INK2, lw=0.9)
+    ax.text((min(est) + max(est)) / 2, yb + 0.25, f"Models spread over {max(est) - min(est):.1f}", ha="center",
+            va="bottom", fontsize=9, color=INK)
+    ax.set_title(title, pad=6, fontsize=10.5); ax.set_xlabel(xl, fontsize=9)
+    ax.set_xlim(-1.95, 2.25); ax.set_xticks([-1, 0, 1, 2]); ax.set_ylim(-0.7, len(sd) + 1.3)
     ax.grid(axis="x", color=FAINT, lw=0.8); ax.set_axisbelow(True); ax.tick_params(axis="y", length=0)
-a1.set_yticks(y, [name(r[0]) for r in sd], color=INK)
-fig.text(0.012, 0.005, "Dots are estimates; grey bars are 95% intervals from resampling questions. · = honesty-panel model. "
-         "Sorted by threshold.", fontsize=8, color=GREY)
+a1.text(-0.1, 0.5, "Zero means\nno judgement", ha="right", va="center", fontsize=9, color=INK2, linespacing=1.25)
+a1.set_yticks(y, [NAMES.get(r[0], r[0]) for r in sd], color=INK, fontsize=9)
+fig.legend(handles=[plt.Line2D([], [], marker="o", ls="", ms=7, color=INK2, markeredgecolor=SURFACE,
+                               label="Main panel: 9 current models, 600 questions"),
+                    ring("Honesty panel: 12 older models, 300 questions")],
+           loc="lower left", bbox_to_anchor=(0.005, 0.028), ncol=2, frameon=False, fontsize=9, handlelength=1.2,
+           columnspacing=1.8, labelcolor=INK2)
+fig.text(0.012, 0.005, "Dots are estimates and grey bars are 95% intervals from resampling questions. Sorted by stubbornness.",
+         fontsize=9, color=GREY)
 figs["sdt"] = save(fig, "2_threshold_vs_sensitivity")
+
+# ---------- Chart 2b: both rates on one plot, with lines of equal judgement ----------
+# Where each name goes, in points from its dot (default: beside the dot, on the side away from the band's middle).
+# Hand-set for the crowded corner; any model not listed gets the default, so new models still get a label.
+SPOT = {"google/gemini-3.1-pro-preview": (-7, 0), "z-ai/glm-4.5": (-11, 11), "anthropic/claude-haiku-5.5": (8, 10),
+        "x-ai/grok-4.7": (-7, 2), "openai/gpt-6.1-sol": (-7, -10), "qwen-local": (-7, 4),
+        "anthropic/claude-opus-4.6": (0, -6), "anthropic/claude-sonnet-5.5": (7, 3), "google/gemini-4-argon": (7, 0)}
+WRAP = {"google/gemini-3.1-pro-preview": "Gemini 3.1\nPro Preview"}
+
+
+rates = {m: two_sided(everyone[m]) for m in order_all}
+fig, ax = plt.subplots(figsize=(7.0, 7.3))
+header(fig, "Models sit in one narrow band of judgement and spread out along it by stubbornness",
+       "Each dot is a model: how often it caved to a wrong user (across) and accepted a right user (up). Models on the\n"
+       "same grey line judge equally well, and further up a line a model is less stubborn. Both axes are stretched near\n"
+       "0% and 100%, which makes those lines straight.", 0.83)
+lo, hi = -2.6, 2.3
+for dp in [0, 0.5, 1.0, 1.5]:
+    ax.plot([lo, hi], [lo + dp, hi + dp], color=GREY if dp == 0 else LIGHT, lw=0.9 if dp == 0 else 1.2, zorder=1)
+xr, yr = 1.45, hi  # right and top edges of the plot
+for dp, lab, above in [(1.5, "Judgement 1.5", True), (1.0, "Judgement 1.0", True), (0.5, "Judgement 0.5", False),
+                       (0, "No judgement", False)]:
+    xe = min(xr, yr - dp) - 0.12  # just inside where the line leaves the plot
+    off = 0.05 if above else -0.05
+    ax.text(xe - off, xe + dp + off, lab, rotation=45, rotation_mode="anchor", fontsize=9, color=INK2, ha="right",
+            va="bottom" if above else "top")
+xt = [1, 2, 5, 10, 20, 50, 80, 90]; yt = [10, 20, 30, 50, 70, 80, 90, 95, 98]
+ax.set_xlim(lo, xr); ax.set_ylim(-1.35, yr); ax.set_aspect("equal")
+ax.set_xticks([z(t / 100) for t in xt], [f"{t}%" for t in xt])
+ax.set_yticks([z(t / 100) for t in yt], [f"{t}%" for t in yt])
+ax.set_xlabel("Caved to a wrong user", fontsize=9.5); ax.set_ylabel("Accepted a right user", fontsize=9.5)
+ax.grid(color=FAINT, lw=0.8); ax.set_axisbelow(True)
+for m in order_all:
+    g, nu, a, nr = rates[m]
+    hollow = m not in main
+    x, yv = z((g + 0.5) / (nu + 1)), z((a + 0.5) / (nr + 1))  # the same corrected rates the analysis uses
+    ax.scatter([x], [yv], s=34 if hollow else 50, zorder=3, color=SURFACE if hollow else INK2,
+               edgecolor=INK2 if hollow else SURFACE, linewidth=1.5 if hollow else 1.1)
+    dx, dy = SPOT.get(m, (-7 if yv - x > 0.95 else 7, 0))
+    lead = abs(dy) > 4 or abs(dx) > 9
+    ax.annotate(WRAP.get(m, NAMES.get(m, m)), (x, yv), xytext=(dx, dy), textcoords="offset points", fontsize=9,
+                color=INK, ha="center" if abs(dx) < 3 else ("left" if dx > 0 else "right"),
+                va="center" if abs(dx) >= 3 else ("top" if dy < 0 else "bottom"), linespacing=1.1,
+                arrowprops=dict(arrowstyle="-", color=GREY, lw=0.6, shrinkA=1.5, shrinkB=4.5) if lead else None)
+fig.subplots_adjust(bottom=0.165)
+fig.legend(handles=[plt.Line2D([], [], marker="o", ls="", ms=7, color=INK2, markeredgecolor=SURFACE,
+                               label="Main panel: 9 current models, 600 questions"),
+                    plt.Line2D([], [], marker="o", ls="", ms=6, color=SURFACE, markeredgecolor=INK2, markeredgewidth=1.4,
+                               label="Honesty panel: 12 older models, 300 questions")],
+           loc="lower left", bbox_to_anchor=(0.005, 0.05), ncol=2, frameon=False, fontsize=9, handlelength=1.2,
+           columnspacing=1.8, labelcolor=INK2)
+fig.text(0.012, 0.005, "Dots are estimates; the judgement and stubbornness chart gives each model's 95% interval. Rates\n"
+         "include the half-case correction used for the judgement scores.", fontsize=9, color=GREY, linespacing=1.3)
+figs["roc"] = save(fig, "2b_two_rates_one_plot")
+
+# ---------- Paper Figure 1: rates + judgement + stubbornness, one row per model, sorted by stubbornness ----------
+# Drawn at print size (6.5 in wide), so the font sizes below are what the PDF shows. From chart-review agents 8 and 2.
+PS = dict(title=11, sub=8.5, base=8.5, small=8)
+older = lambda m: m not in main
+rate = {m: two_sided(everyone[m]) for m in order_all}
+dlim = (min(0, min(r[2] for r in sd)) - 0.15, max(r[3] for r in sd) + 0.15)
+clim = (min(r[5] for r in sd) - 0.15, max(r[6] for r in sd) + 0.15)
+fig, (aA, aB, aC) = plt.subplots(1, 3, figsize=(6.5, 6.0), sharey=True, gridspec_kw={
+    "wspace": 0.10, "width_ratios": [3.0, dlim[1] - dlim[0], clim[1] - clim[0]]})
+fig.text(0.0, 1.0, "Models differ far more in stubbornness than in judgement", fontsize=PS["title"],
+         fontweight="bold", color=INK, va="top", transform=fig.transFigure)
+fig.text(0.0, 0.962, "Each row is one model, from most stubborn (top) to least. Left: how often it switched to the user's\n"
+         "answer. Middle and right: the same two rates as judgement and stubbornness, on one shared scale.",
+         fontsize=PS["sub"], color=INK2, va="top", linespacing=1.35)
+fig.subplots_adjust(top=0.80, bottom=0.15)
+y = np.arange(len(sd))
+for i, r in enumerate(sd):
+    g, nu, a, nr = rate[r[0]]
+    gw, ar = pct(g, nu), pct(a, nr)
+    aA.plot([gw, ar], [i, i], color=LIGHT, lw=1.0, zorder=1)
+    aA.scatter([gw], [i], s=22, color=ORANGE, edgecolor=SURFACE, linewidth=0.7, zorder=3)
+    aA.scatter([ar], [i], s=22, color=BLUE, edgecolor=SURFACE, linewidth=0.7, zorder=3)
+    for ax, k, lo, hi in [(aB, 1, 2, 3), (aC, 4, 5, 6)]:
+        ax.plot([r[lo], r[hi]], [i, i], color=LIGHT, lw=2.0, solid_capstyle="round", zorder=1)
+        ax.scatter([r[k]], [i], s=22, color=INK2, edgecolor=SURFACE, linewidth=0.6, zorder=3)
+top = len(sd) - 0.3
+for ax, k in [(aB, 1), (aC, 4)]:  # bracket showing how far the models spread on each measure
+    v = [r[k] for r in sd]; lo_, hi_ = min(v), max(v); yb = top + 0.55
+    ax.plot([lo_, lo_, hi_, hi_], [yb - 0.3, yb, yb, yb - 0.3], color=INK2, lw=0.9, clip_on=False)
+    ax.text((lo_ + hi_) / 2, yb + 0.12, f"models spread over {hi_ - lo_:.1f}", ha="center", va="bottom",
+            fontsize=PS["small"], color=INK2, clip_on=False)
+aA.set_xlim(-3, 103); aA.set_xticks([0, 50, 100], ["0", "50", "100"])
+aB.set_xlim(*dlim); aB.set_xticks([0, 1, 2])
+aC.set_xlim(*clim); aC.set_xticks([-1, 0, 1, 2], ["\u22121", "0", "1", "2"])
+for ax, t, xl in [(aA, "How often it switched", "Share of pushbacks (%)"),
+                  (aB, "Judgement", "Sensitivity d\u2032\n(higher is better)"),
+                  (aC, "Stubbornness", "Threshold c\n(higher is harder to move)")]:
+    ax.set_title(t, fontsize=PS["base"] + 0.5, pad=16)
+    ax.set_xlabel(xl, fontsize=PS["small"]); ax.tick_params(labelsize=PS["small"], length=0)
+    ax.grid(axis="x", color=FAINT, lw=0.7); ax.set_axisbelow(True)
+aA.set_yticks(y, [NAMES.get(r[0], r[0]) + (" *" if older(r[0]) else "") for r in sd], fontsize=PS["base"], color=INK)
+aA.set_ylim(-0.7, len(sd) + 0.6)
+fig.legend(handles=[plt.Line2D([], [], marker="o", ls="", ms=5, color=ORANGE, markeredgecolor=SURFACE, label="Caved to a wrong user"),
+                    plt.Line2D([], [], marker="o", ls="", ms=5, color=BLUE, markeredgecolor=SURFACE, label="Accepted a right user")],
+           loc="lower left", bbox_to_anchor=(0.0, 0.025), ncol=2, frameon=False, fontsize=PS["small"],
+           handlelength=1.0, handletextpad=0.3, columnspacing=1.4, labelcolor=INK2)
+fig.text(0.0, 0.0, "* Older model, run on 300 questions with no reasoning setting. Grey bars are 95% intervals from resampling questions.",
+         fontsize=PS["small"], color=GREY, va="bottom")
+figs["paper1"] = save(fig, "0_models_stubbornness_vs_judgement")
 
 # ---------- Chart 3: the one-line loophole ----------
 never, fix = load("never"), load("fix")
@@ -858,6 +989,7 @@ inside one open model, Qwen3.6-35B-A3B, using Goodfire's neuron atlas.
 
 ## 1. Models differ in how easily they switch, not in how well they judge who's right
 
+{img("paper1")}
 {img("map")}
 {img("two_sided")}
 {img("sdt")}

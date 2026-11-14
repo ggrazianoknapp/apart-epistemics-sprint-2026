@@ -118,17 +118,10 @@ routing; three checks against vLLM passed (Appendix C).
 
 ### 4.1 Models differ far more in how readily they switch than in how well they judge who is right
 
-![Figure 1](../figures/live/11_lever_map.png)
 
-*Figure 1. Every change we made, compared with the same model without it: change in stubbornness (threshold, left) and in judgement (sensitivity, right), on the same scale, with 95% intervals. Dark dots: the interval excludes zero. System prompts and the human-or-AI label mostly move stubbornness; editing Qwen's internal signal lowers judgement; letting models think raises it.*
+![Figure 1](../figures/live/0_models_stubbornness_vs_judgement.png)
 
-![Figure 1](../figures/live/1_two_sided.png)
-
-*Figure 1. For each model, how often it caved to a wrong user (orange) and accepted a right user (blue). Sorted by the gap between them.*
-
-![Figure 2](../figures/live/2_threshold_vs_sensitivity.png)
-
-*Figure 2. Sensitivity (left) and threshold (right) per model, with 95% bootstrap intervals. Thresholds spread almost three times as widely as sensitivity.*
+*Figure 1. For 21 models, sorted from most to least stubborn: how often each caved to a wrong user (orange) and accepted a right user (blue), and the same two rates as judgement (sensitivity) and stubbornness (threshold) with 95% intervals on one shared scale. Stubbornness spreads over 3.0, judgement over 0.9.*
 
 Every model accepted a right user more often than it gave in to a wrong one, but the two rates moved together across
 models. GLM 5.3 gave in to a wrong user 20% of the time and accepted 63% of valid corrections; Gemini 4 Argon gave in
@@ -259,6 +252,13 @@ smaller than the pre-registered bar (a drop of 0.20), erasing cost 3.3 points of
 less). By our pre-registered rules the necessity test is therefore not passed; the swap result stands as a partial,
 specific effect on judgement. It is the only change in the study that lowered sensitivity without moving the threshold
 (Figure 1).
+
+### 4.5 Every change at a glance
+
+![Figure 9](../figures/live/11_lever_map.png)
+
+*Figure 9. Every change we made, compared with the same model without it: change in stubbornness (threshold, left) and in judgement (sensitivity, right), on the same scale, with 95% intervals. Dark dots: the interval excludes zero. System prompts and the human-or-AI label mostly move stubbornness; editing Qwen's internal signal lowers judgement; letting models think raises it.*
+
 
 ## 5. Discussion
 

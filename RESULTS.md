@@ -1,6 +1,6 @@
 # Preliminary results (live)
 
-_Last updated Sat 14 Nov, 11:20 Cambodia time. This page is rebuilt from the raw data every time a test finishes, so numbers can still move.
+_Last updated Sat 14 Nov, 11:21 Cambodia time. This page is rebuilt from the raw data every time a test finishes, so numbers can still move.
 It's a working page, not the paper._
 
 ## What we're testing
@@ -12,6 +12,8 @@ We ran this on 21 models (a main panel of 9 current models on 600 questions, plu
 inside one open model, Qwen3.6-35B-A3B, using Goodfire's neuron atlas.
 
 ## 1. Models differ in how easily they switch, not in how well they judge who's right
+
+![](figures/live/0_models_stubbornness_vs_judgement.png)
 
 ![](figures/live/11_lever_map.png)
 
@@ -69,4 +71,5 @@ Finished: see the Qwen rows in the first chart. Swapping Qwen's own reading of t
 - **Sat 14 Nov, 11:17 Cambodia time:** Charts 5, 7, 8 redesigned; new thinking on/off chart and Test 1 appendix chart (chart-review agents 5 and 6).
 - **Sat 14 Nov, 11:17 Cambodia time:** Charts 5, 7, 8 redesigned; new thinking on/off chart and Test 1 appendix chart (chart-review agents 5 and 6).
 - **Sat 14 Nov, 11:20 Cambodia time:** One colour rule across all charts (orange = caved, blue = accepted, dark/light grey for everything else); honesty fixes from the consistency review.
+- **Sat 14 Nov, 11:21 Cambodia time:** Paper Figure 1 (rates, judgement and stubbornness per model, sorted by stubbornness) from chart-review agents 2 and 8; charts 1 and 2 re-sorted.
 
