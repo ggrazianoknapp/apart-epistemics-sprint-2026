@@ -51,3 +51,10 @@ Every place where what we ran differs from `PREREGISTRATION.md` (tag `prereg-A`)
    - The LLM extractor's token budget was raised from 300 to 3,000, because both extractor models sometimes used
      the budget up on reasoning before answering.
    - Grok 4.7 and three slow reasoning models in the honesty-rank panel ran with more parallel calls.
+
+10. **Two further studies were pre-registered after the first results** (`PREREGISTRATION_C.md`, tag `prereg-C`).
+    A review of the first results showed that the main run's single samples could not separate the conversation's
+    pull from the claim's pull, and that a layer-level reading of the user's claim was much stronger than the neuron.
+    Study C1 re-asks the given-up items and confidence-matched kept items three times in four ways; study C2 (E4)
+    erases and interchanges Qwen's layer-level reading. Both test patterns we had already seen, so they confirm rather
+    than discover.
