@@ -11,7 +11,8 @@ finish. All citations were opened and checked on 14 November._
 
 When a user tells a language model it is wrong, a good model should hold its answer if the user is wrong and switch
 if the user is right. Most sycophancy evaluations only measure the first half, so they reward models that rarely
-switch at all. We pushed back on 21 models across 600 hard multiple-choice questions (300 for 12 of them), with
+switch at all. We pushed back on 21 models across 600 multiple-choice questions, half of them hard (300 for 12
+of the models), with
 identical wording whether the user was right or wrong, and scored each model with signal detection: how well it tells
 a right user from a wrong one (sensitivity) and how readily it switches (threshold). Thresholds varied almost three
 times as much as sensitivity across models. A one-line system prompt ("never change your answer") made two models look
@@ -132,7 +133,11 @@ they are about equally sensitive (d′ 1.25 and 1.17) and differ in threshold (c
 Across all 21 models, sensitivity ranged from 0.45 to 1.31 (standard deviation 0.26) and the threshold from −1.42 to
 +1.58 (standard deviation 0.73), almost three times as much. In the main panel of nine current models the ratio was
 the same (0.14 against 0.42). So most of what separates models under pushback is how readily they switch, not how
-well they discriminate, and a score that counts only caving to a wrong user mostly ranks thresholds.
+well they discriminate, and a score that counts only caving to a wrong user mostly ranks thresholds. Within the nine
+current models the spread of sensitivity is about as small as sampling noise, while the older models judge worse on
+average (0.78 against 1.09). The two most stubborn current models also grow more confident when challenged: when they
+keep a right answer against a wrong user, Grok 4.7's stated confidence rises by 3.6 points [2.6, 4.6] and Gemini 4
+Argon's by 1.6 beyond their drift under a neutral follow-up, while most models' confidence falls (exploratory).
 
 ### 4.2 Levers that move the threshold
 
@@ -168,11 +173,16 @@ thinking switched off and once on (GPT-6 Luna, Claude Haiku 5.5 and DeepSeek V4.
 template). All five models passed the pre-registered check
 that the setting really changed how much it thought. Thinking made four of the five better judges: sensitivity rose by 0.41
 [0.10, 0.72] for Haiku, 0.25 [0.01, 0.49] for Sonnet, 0.40 [0.08, 0.73] for DeepSeek and 0.54 [0.29, 0.81] for Luna.
-Qwen3.6 was the exception (1.00 to 1.02). On average sensitivity rose by 0.32 [0.19, 0.46], and the models also
+Qwen3.6 was the exception (1.00 to 1.02), but with its hidden thinking disabled it kept
+reasoning in its visible reply (median about 1,060 tokens), so for Qwen this compared visible with hidden reasoning
+rather than none with some; Study G1 tests no reasoning at all [G1]. On average sensitivity rose by 0.32 [0.19, 0.46], and the models also
 became a little more stubborn (threshold +0.11 [0.04, 0.18]). Our
 pre-registered prediction that sensitivity would not change (H-E1) failed, in the more useful direction: of everything
-we tried, letting the model think first is the only change that made models clearly better at telling a right user
-from a wrong one.
+we tried, letting the model think first is the only change that made models better at telling a right user from a
+wrong one across models (the milder system prompt raised DeepSeek's judgement alone, marginally). Most of the gain is
+already there at the default effort: using the main run's "medium" setting as a middle point, judgement rises at each
+step for all four API models (GPT-6 Luna 0.65, 1.01 and 1.19 for off, medium and high), so it is just as accurate to
+say that switching thinking off makes models worse judges [G4 tests the full ladder].
 
 ![Figure 4](../figures/live/12_thinking_on_off.png)
 
@@ -195,7 +205,7 @@ the other way never made it meaningfully more discerning.
 *Figure 6. Study C1 (pre-registered): how much more (orange) or less (blue) each model caved inside the chat than to the same first-person claim in a new chat, each case asked three times, with 95% intervals; grey means no clear difference.*
 
 Does a model cave because of the person in the conversation, or because of the claim? In the main run, the same
-claim given as a hint in a new chat swayed models about as often as pushback in the chat (10.1% against 9.4% of
+claim given as a hint in a new chat swayed models about as often as pushback in the chat (10.1% against 9.4%, on the 3,047 cases with both measures, of
 correct answers, pooled), but models split in opposite directions. Study C1 re-asked each case three times with the
 claim worded identically in the first person. As pre-registered, Claude Sonnet 5.5 caved more inside the chat
 (+8.7 points [3.4, 14.1]), while Qwen3.6 (−21.7 [−31.7, −12.3]) and DeepSeek V4.1 Flash (−9.1 [−14.0, −4.3]) caved
@@ -214,11 +224,17 @@ chat (H1), which failed, and that fewer would in the same chat (H2), which held.
 
 Whether a model thinks before replying lines up with this split. Of the 8 models that did not think at the pushback
 turn, 7 caved more inside the chat; the exception was Gemini 4 Argon, which thought on its first answer but almost never
-at the pushback (−0.3 points). Claude Sonnet 5.5 is in this group: at our setting it thought on only about 5% of calls.
+at the pushback (−0.3 points). Claude Sonnet 5.5 is in this group: at our setting it thought on only about 7% of its replies to the
+pushback.
 Only 4 of the 13 thinking models caved more inside the chat (one-sided Fisher exact p = 0.017) (rank correlation with reasoning length −0.80 across 21 models; exploratory). Within a
 model, though, samples of the same question that happened to reason longer were no more likely to hold, so this is a
-difference between models. But switching thinking off and on within the same models (Study E, §4.2) did not change this pull (−1.0 points
-[−3.2, 1.3]; H−E2 not supported), so it is a difference between models, not an effect of thinking.
+difference between models. Switching thinking off and on within the same models (Study E, §4.2) did not change the
+pooled pull (−1.0 points [−3.2, 1.3]; H-E2 not supported), but it pulled each model's gap towards zero from both
+sides: Claude Sonnet 5.5's extra caving inside the chat fell from +7.3 to +1.9 points (a drop of 5.4 [2.2, 8.7]),
+while Haiku's extra caving in a new chat fell from 10.8 to 3.4 points and Qwen's from 16.9 to 11.3. The average size of
+the gap fell from 7.6 to 4.0 points (drop [1.9, 6.0]; exploratory). A model that thinks treats the same claim more
+alike wherever it meets it. Separately, a model is far more likely to cave when its own new-chat answer, with no hint,
+would have picked the user's option (67% against 14%; exploratory).
 
 ![Figure 7](../figures/live/6_return_after_caving.png)
 
@@ -355,7 +371,7 @@ will be removed in the last pass.
   less natural than open advice. Pushback is a single message with one main wording (Study C1 adds a first-person and a
   hearsay variant; Study D adds a reviewer label).
 - **Models and settings.** The 12 older models ran with no reasoning setting on 300 questions; the 9 current models ran
-  at medium effort, which meant different things per provider: Claude Sonnet 5.5 thought on only about 5% of calls and
+  at medium effort, which meant different things per provider: Claude Sonnet 5.5 thought on only about 7% of its replies to the pushback and
   Gemini 4 Argon on about 1% of follow-up turns (Appendix C). Comparisons of reasoning across models are therefore
   correlational, and Study E is the only within-model test.
 - **Sensitivity and threshold** are summaries of a two-alternative choice under an equal-variance signal-detection model
