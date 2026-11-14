@@ -196,27 +196,69 @@ for m in order_all:
     fresh = pct(sum(L(r, "fresh_hint") == r["pushed"] for r in both), len(both))
     rt = [(r["t2"].get("reasoning_tokens") or 0) for r in both]
     cp.append((m, chat, fresh, len(both), median(rt)))
-cp.sort(key=lambda r: r[1] - r[2])
-fig, ax = plt.subplots(figsize=(8.2, 7.4))
-header(fig, "Does the same claim sway a model more inside the chat or in a new chat?",
-       "Orange: the user pushed back in the chat. Blue: the same claim given as a hint (\"someone told me it's C\") in a brand-new\n"
-       "chat. Models at the top are swayed more by the conversation; models at the bottom more by the claim itself.", 0.86)
-y = np.arange(len(cp))
-for i, (m, chat, fresh, n, _) in enumerate(cp):
-    ax.plot([chat, fresh], [i, i], color=LIGHT, lw=2, zorder=1, solid_capstyle="round")
-    ax.scatter([fresh], [i], s=50, color=BLUE, edgecolor=SURFACE, linewidth=1.2, zorder=3)
-    ax.scatter([chat], [i], s=50, color=ORANGE, edgecolor=SURFACE, linewidth=1.2, zorder=3)
-    lo_, hi_ = (chat, fresh) if chat < fresh else (fresh, chat)
-    dd = round(chat - fresh)
-    ax.text(hi_ + 1.2, i, f"{dd:+d} pts" if dd else "0 pts", va="center", fontsize=8, color=INK2)
-ax.set_yticks(y, [name(r[0]) for r in cp], color=INK)
-ax.set_xlim(0, max(max(r[1], r[2]) for r in cp) + 10)
-ax.xaxis.set_major_formatter(matplotlib.ticker.PercentFormatter(decimals=0))
-ax.grid(axis="x", color=FAINT, lw=0.8); ax.set_axisbelow(True); ax.tick_params(axis="y", length=0)
-ax.set_xlabel("Share of correct first answers abandoned for the user's option")
-legend_below(ax, [dot(ORANGE, "Pushback inside the chat"), dot(BLUE, "Same claim as a hint in a new chat")], y=-0.075)
-fig.text(0.012, 0.005, "One sample per question and setting; Test 2 (re-asking three times) will firm these up. "
-         "· = honesty-panel model.", fontsize=8, color=GREY)
+cp.sort(key=lambda r: r[1] - r[2])  # chart 5 reuses cp
+# Two blocks (main panel, older models), each with the biggest pull of the chat on top; one row per model.
+blocks4 = [(f"Main panel: {sum(r[0] in main for r in cp)} current models, reasoning on, 600 questions",
+           [r for r in cp if r[0] in main][::-1]),
+          (f"Second panel: {sum(r[0] not in main for r in cp)} older models, no reasoning setting, 300 questions",
+           [r for r in cp if r[0] not in main][::-1])]
+rows4, y_, heads4 = [], 0.0, []
+for title_, rs in blocks4:
+    if not rs:
+        continue
+    heads4.append((y_, title_)); y_ += 1
+    for r in rs:
+        rows4.append((y_, r)); y_ += 1
+    y_ += 0.5
+W, row, top_in, bot_in = 7.4, 0.27, 1.12, 1.62
+H = top_in + row * (y_ - 0.5 + 0.9) + bot_in
+fig = plt.figure(figsize=(W, H))
+ax = fig.add_axes([1.85 / W, bot_in / H, 3.3 / W, row * (y_ - 0.5 + 0.9) / H])
+fig.text(0.12 / W, 1 - 0.08 / H, "Asked once per question, some models gave in more inside the chat and some less",
+         fontsize=12.5, fontweight="bold", color=INK, va="top")
+fig.text(0.12 / W, 1 - 0.42 / H,
+         "Inside the chat, the user pushed back on the model's correct answer. In a new chat, the model saw the same claim\n"
+         "as a hint before answering: \"Someone told me they are fairly sure the answer is (C)\". Each dot is the difference in\n"
+         "how often it gave in.",
+         fontsize=10, color=INK2, va="top", linespacing=1.4)
+for y, (m, chat, fresh, n, _) in rows4:
+    d = chat - fresh
+    c = ORANGE if round(d) > 0 else BLUE if round(d) < 0 else GREY
+    ax.plot([0, d], [y, y], color=c, lw=1.6, solid_capstyle="butt", zorder=2)
+    ax.scatter([d], [y], s=50, color=c, edgecolor=SURFACE, linewidth=1.2, zorder=3)
+ax.axvline(0, color=GREY, lw=0.9, zorder=1)
+lo4 = min(r[1] - r[2] for r in cp)
+ax.set_xlim(min(-19, lo4 - 4), max(r[1] - r[2] for r in cp) + 4)
+ax.set_ylim(y_ - 0.5, -1.4)
+tk = range(int(np.ceil(ax.get_xlim()[0] / 10)) * 10, int(ax.get_xlim()[1] // 10) * 10 + 1, 10)
+ax.set_xticks(tk, [f"{v:+d}".replace("-", "−") if v else "0" for v in tk])
+ax.set_yticks([y for y, _ in rows4], [NAMES.get(r[0], r[0]) for _, r in rows4], color=INK)
+ax.tick_params(axis="y", length=0, labelsize=10); ax.tick_params(axis="x", labelsize=9.5)
+ax.spines["left"].set_visible(False)
+ax.grid(axis="x", color=FAINT, lw=0.8); ax.set_axisbelow(True)
+ax.set_xlabel("Giving in inside the chat minus giving in to the hint in a new chat (points)", fontsize=9.5, labelpad=6)
+tr = matplotlib.transforms.blended_transform_factory(fig.transFigure, ax.transData)
+for y, t in heads4:
+    ax.text(0.12 / W, y, t, transform=tr, ha="left", va="center", fontsize=9.5, fontweight="bold", color=INK)
+    ax.axhspan(y - 0.5, y + 0.5, color=SURFACE, zorder=1.5)  # keep gridlines out of the block-title row
+yh = -1.0
+ax.axhspan(-1.4, -0.5, color=SURFACE, zorder=1.5)
+ax.text(-1.2, yh, "Less in the chat", ha="right", va="center", fontsize=9, fontweight="bold", color=INK2)
+ax.text(1.2, yh, "More in the chat", ha="left", va="center", fontsize=9, fontweight="bold", color=INK2)
+xa, xb = 6.05 / W, 6.95 / W
+ax.text(xa, yh, "In the chat", transform=tr, ha="right", va="center", fontsize=9, fontweight="bold", color=INK2)
+ax.text(xb, yh, "New chat", transform=tr, ha="right", va="center", fontsize=9, fontweight="bold", color=INK2)
+for y, (m, chat, fresh, n, _) in rows4:
+    ax.text(xa, y, f"{chat:.0f}%", transform=tr, ha="right", va="center", fontsize=9.5, color=INK)
+    ax.text(xb, y, f"{fresh:.0f}%", transform=tr, ha="right", va="center", fontsize=9.5, color=INK)
+ax.legend(handles=[dot(ORANGE, "Gave in more inside the chat"), dot(BLUE, "Gave in less inside the chat"),
+                   dot(GREY, "Same to the nearest point")], loc="upper left",
+          bbox_to_anchor=(-1.73 / 3.3, -0.70 / (row * (y_ - 0.5 + 0.9))), ncol=3, frameon=False, fontsize=9.5,
+          handlelength=1.0, columnspacing=1.6, labelcolor=INK2, borderaxespad=0, handletextpad=0.4)
+fig.text(0.12 / W, 0.08 / H,
+         "One sample per question in each setting and no intervals, so treat differences of a few points with care. For the\n"
+         "main panel, the re-asking test gives firmer numbers, with the claim worded the same way in both settings.",
+         fontsize=9, color=INK2, va="bottom", linespacing=1.4)
 figs["chat_vs_fresh"] = save(fig, "4_chat_vs_fresh")
 
 # ---------- Chart 5: reasoning length vs conversation pull ----------
@@ -228,24 +270,44 @@ def rk(a):  # ranks with ties averaged (several models tie at zero reasoning)
         r[a == v] = r[a == v].mean()
     return r
 rho = float(np.corrcoef(rk(xs), rk(ys))[0, 1])
-fig, ax = plt.subplots(figsize=(8.2, 5.6))
-header(fig, "Do models that reason longer resist the conversation more?",
-       f"Each dot is a model. Up means it caves more in the chat than to the same claim in a new chat. Across {len(cp)} models the\n"
-       f"two line up closely (rank correlation {rho:+.2f}). This is a pattern across models, not yet a test of cause.", 0.83)
-ax.axhline(0, color=GREY, lw=0.8)
-ax.scatter(xs, ys, s=46, color=BLUE, edgecolor=SURFACE, linewidth=1.1, zorder=3)
-placed = []  # greedy: push a label down until it clears labels already placed nearby
-for i in sorted(range(len(cp)), key=lambda i: -ys[i]):
-    ly = ys[i]
-    while any(abs(np.log10(xs[i]) - px) < 0.55 and abs(ly - py) < 2.6 for px, py in placed):
-        ly -= 0.6
-    placed.append((np.log10(xs[i]), ly))
-    ax.annotate(NAMES.get(cp[i][0], cp[i][0]), (xs[i], ys[i]), xytext=(xs[i] * 1.12, ly + 0.4), fontsize=7.5,
-                color=INK2, va="center", arrowprops=dict(arrowstyle="-", color=GREY, lw=0.7, shrinkA=0, shrinkB=3))
-ax.set_xscale("log"); ax.set_xticks([1, 10, 100, 1000], ["none", "10", "100", "1,000"])
-ax.set_xlabel("Median reasoning tokens before the turn-2 answer (log scale)")
-ax.set_ylabel("Caving in the chat minus caving to the hint (points)")
-ax.grid(color=FAINT, lw=0.8); ax.set_axisbelow(True)
+# Same numbers as before, drawn as two ranked groups: models that did not think (median 0 reasoning tokens) sorted by the
+# gap, then models that thought, sorted from shortest to longest thinking. Names stay readable; no label collisions.
+gap = lambda r: r[1] - r[2]
+groups5 = [(t, rs) for t, rs in [("Did not think before answering", sorted([r for r in cp if r[4] == 0], key=lambda r: -gap(r))),
+                                 ("Thought before answering, from shortest to longest", sorted([r for r in cp if r[4] > 0], key=lambda r: r[4]))] if rs]
+H5 = 0.2 * len(cp) + 3.45
+fig, axes5 = plt.subplots(len(groups5), 1, figsize=(7.4, H5), sharex=True, squeeze=False,
+                          gridspec_kw={"height_ratios": [len(rs) for _, rs in groups5], "hspace": 0.22})
+header(fig, "Across models, those that think before answering are swayed less by the conversation itself",
+       "Each row is a model. Right of zero means it caved more when the user pushed back inside the chat than when the\n"
+       f"same claim came as a hint in a new chat. Across {len(cp)} models, longer thinking goes with a smaller gap (rank\n"
+       f"correlation {rho:+.2f}). It is a difference between models: switching thinking on and off within the same models did not change it.".replace("-", "\u2212"),
+       1 - 1.35 / H5)
+fig.subplots_adjust(left=0.29, right=0.84, bottom=1.35 / H5)
+lo5, hi5 = min(0, ys.min()) - 3, ys.max() + 3
+for ax, (title, rs) in zip(axes5[:, 0], groups5):
+    for i, r in enumerate(rs):
+        ax.plot([0, gap(r)], [i, i], color=LIGHT, lw=2, solid_capstyle="butt", zorder=1)
+        ax.scatter([gap(r)], [i], s=46, color=BLUE, edgecolor=SURFACE, linewidth=1.1, zorder=3)
+    ax.set_yticks(range(len(rs)), [name(r[0]) for r in rs], color=INK); ax.set_ylim(len(rs) - 0.5, -0.6)
+    ax.axvline(0, color=GREY, lw=0.9, zorder=2); ax.set_title(title, pad=6, fontsize=9.5)
+    ax.grid(axis="x", color=FAINT, lw=0.8); ax.set_axisbelow(True); ax.tick_params(axis="y", length=0)
+    if rs[0][4] > 0:  # thinking length as a right-aligned column, header on the same edge
+        tr = matplotlib.transforms.blended_transform_factory(ax.transAxes, ax.transData)
+        for i, r in enumerate(rs):
+            ax.text(1.16, i, f"{r[4]:,.0f}", transform=tr, ha="right", va="center", fontsize=9, color=INK2)
+        ax.text(1.16, -0.75, "Thinking\n(median tokens)", transform=tr, ha="right", va="bottom", fontsize=9,
+                color=INK2, linespacing=1.15)
+ax = axes5[-1, 0]
+ax.set_xlim(lo5, hi5)
+ax.xaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(lambda v, _: f"{v:+.0f}".replace("-", "\u2212") if v else "0"))
+ax.set_xlabel("Difference, in percentage points", labelpad=32)
+tr = matplotlib.transforms.blended_transform_factory(ax.transData, ax.transAxes)
+for x_, ha_, txt in [(-1, "right", "caves more\nin a new chat"), (1, "left", "caves more\ninside the chat")]:
+    ax.annotate(txt, (x_, 0), xycoords=tr, xytext=(0, -19), textcoords="offset points", ha=ha_, va="top", fontsize=9,
+                color=INK2, fontweight="bold", linespacing=1.1)
+fig.text(0.012, 0.005, "Thinking = median reasoning tokens before the reply to the pushback.\n"
+         "· = honesty-panel model (300 questions, no reasoning setting).", fontsize=9, color=GREY, linespacing=1.3)
 figs["reasoning"] = save(fig, "5_reasoning_vs_pull")
 
 # ---------- Chart 6: after caving, which answer does it bet on? ----------
@@ -260,23 +322,68 @@ for m in order_all:
 gave_all = [r for m in order_all for r in arms(everyone[m])[0] if L(r, "t2") == r["pushed"]]
 s1 = pct(sum(L(r, "t3") == r["answer"] for r in gave_all), len(gave_all))
 p1 = pct(sum(L(r, "fresh_hint") == r["answer"] for r in gave_all), len(gave_all))
-rb.sort(key=lambda r: r[2])
-fig, ax = plt.subplots(figsize=(8.2, 7.0))
-header(fig, "After giving in, does a model go back to its right answer when asked to bet?",
-       f"Across all {len(gave_all)} cave-ins: in the same chat {s1:.0f}% went back to the original answer; in a new chat with the same\n"
-       f"hint {p1:.0f}% did. Models tend to stick with whatever they last said in the conversation.", 0.86)
-y = np.arange(len(rb))
-for i, (m, s, p, n) in enumerate(rb):
-    ax.plot([s, p], [i, i], color=LIGHT, lw=2, zorder=1, solid_capstyle="round")
-    ax.scatter([s], [i], s=50, color=ORANGE, edgecolor=SURFACE, linewidth=1.2, zorder=3)
-    ax.scatter([p], [i], s=50, color=BLUE, edgecolor=SURFACE, linewidth=1.2, zorder=3)
-    ax.text(102, i, f"n = {n}", va="center", fontsize=7.5, color=GREY)
-ax.set_yticks(y, [name(r[0]) for r in rb], color=INK)
-ax.set_xlim(-3, 110); ax.set_xticks(range(0, 101, 20), [f"{v}%" for v in range(0, 101, 20)])
-ax.grid(axis="x", color=FAINT, lw=0.8); ax.set_axisbelow(True); ax.tick_params(axis="y", length=0)
-ax.set_xlabel("Share of cave-ins where the model bet on its original, correct answer")
-legend_below(ax, [dot(ORANGE, "Bet in the same chat"), dot(BLUE, "Bet in a new chat with the same hint")], y=-0.075)
-fig.text(0.012, 0.005, "n = number of cave-ins (small for some models). · = honesty-panel model.", fontsize=8, color=GREY)
+left_out = [NAMES.get(m, m) for m in order_all if m not in {r[0] for r in rb}]
+n_lower = sum(s < p for _, s, p, _ in rb)
+# Two blocks (main panel, older models), each sorted with the biggest same-chat shortfall on top.
+gap6 = lambda r: r[2] - r[1]
+blocks6 = [(f"Main panel: {sum(r[0] in main for r in rb)} current models", sorted([r for r in rb if r[0] in main], key=gap6, reverse=True)),
+           (f"Second panel: {sum(r[0] not in main for r in rb)} older models",
+            sorted([r for r in rb if r[0] not in main], key=gap6, reverse=True))]
+rows6, y_, heads6 = [(0.0, ("all", s1, p1, len(gave_all)))], 1.5, []  # first row: every cave-in pooled
+for title_, rs in blocks6:
+    if not rs:
+        continue
+    heads6.append((y_, title_)); y_ += 1
+    for r in rs:
+        rows6.append((y_, r)); y_ += 1
+    y_ += 0.5
+W, row, top_in, bot_in = 7.4, 0.27, 1.12, 1.62
+span = row * (y_ - 0.5 + 0.9)
+H = top_in + span + bot_in
+fig = plt.figure(figsize=(W, H))
+ax = fig.add_axes([1.85 / W, bot_in / H, 4.25 / W, span / H])
+most = "most models" if n_lower > len(rb) / 2 else f"{n_lower} of {len(rb)} models"
+fig.text(0.12 / W, 1 - 0.08 / H, f"After caving, {most} went back to the right answer less often in the same chat",
+         fontsize=12.5, fontweight="bold", color=INK, va="top")
+fig.text(0.12 / W, 1 - 0.42 / H,
+         "After each cave-in we asked the model to bet $100 on an answer, once in the same chat and once in a new chat\n"
+         "with the user's claim as a hint. Each dot is the share of those bets that went back to the model's original,\n"
+         "right answer.",
+         fontsize=10, color=INK2, va="top", linespacing=1.4)
+for y, (m, s, p, n) in rows6:
+    dy = 0.14 if abs(s - p) < 2 else 0  # equal values: nudge the two dots apart so both show
+    ax.plot([s, p], [y, y], color=LIGHT, lw=2, solid_capstyle="round", zorder=2)
+    ax.scatter([s], [y - dy], s=50, color=ORANGE, edgecolor=SURFACE, linewidth=1.2, zorder=3)
+    ax.scatter([p], [y + dy], s=50, color=BLUE, edgecolor=SURFACE, linewidth=1.2, zorder=3)
+ax.set_xlim(-3, 103); ax.set_ylim(y_ - 0.5, -1.4)
+ax.set_xticks(range(0, 101, 20), [f"{v}%" for v in range(0, 101, 20)])
+ax.set_yticks([y for y, _ in rows6], ["All models together" if r[0] == "all" else NAMES.get(r[0], r[0])
+                                      for _, r in rows6], color=INK)
+ax.get_yticklabels()[0].set_fontweight("bold")
+ax.text(s1 - 2.2, 0, f"{s1:.0f}%", ha="right", va="center", fontsize=9.5, color=INK)
+ax.text(p1 + 2.2, 0, f"{p1:.0f}%", ha="left", va="center", fontsize=9.5, color=INK)
+ax.tick_params(axis="y", length=0, labelsize=10); ax.tick_params(axis="x", labelsize=9.5)
+ax.spines["left"].set_visible(False)
+ax.grid(axis="x", color=FAINT, lw=0.8); ax.set_axisbelow(True)
+ax.set_xlabel("Share of cave-ins where the model bet on its original, right answer", fontsize=9.5, labelpad=6)
+tr = matplotlib.transforms.blended_transform_factory(fig.transFigure, ax.transData)
+ax.axhspan(-1.4, -0.5, color=SURFACE, zorder=1.5)
+for y, t in heads6:
+    ax.text(0.12 / W, y, t, transform=tr, ha="left", va="center", fontsize=9.5, fontweight="bold", color=INK)
+    ax.axhspan(y - 0.5, y + 0.5, color=SURFACE, zorder=1.5)
+xn = 6.95 / W
+ax.text(xn, -1.0, "Cave-ins", transform=tr, ha="right", va="center", fontsize=9, fontweight="bold", color=INK2)
+for y, (m, s, p, n) in rows6:
+    ax.text(xn, y, f"{n}", transform=tr, ha="right", va="center", fontsize=9.5, color=INK)
+ax.legend(handles=[dot(ORANGE, "Bet in the same chat"), dot(BLUE, "Bet in a new chat, with the claim as a hint")],
+          loc="upper left", bbox_to_anchor=(-1.73 / 4.25, -0.70 / span), ncol=2, frameon=False, fontsize=9.5,
+          handlelength=1.0, columnspacing=1.6, labelcolor=INK2, borderaxespad=0, handletextpad=0.4)
+foot = "Some models caved only a few times (see the right column), so their rows rest on few bets."
+if left_out:
+    one = len(left_out) == 1
+    foot += (f"\n{' and '.join(left_out)} caved fewer than 5 times, so {'it has' if one else 'they have'} no row of "
+             f"{'its' if one else 'their'} own; the top row still counts {'its' if one else 'their'} cave-ins.")
+fig.text(0.12 / W, 0.08 / H, foot, fontsize=9, color=INK2, va="bottom", linespacing=1.4)
 figs["return"] = save(fig, "6_return_after_caving")
 
 # ---------- Chart 7: reading the user's mistake inside Qwen ----------
@@ -300,23 +407,31 @@ if npz.exists():
     for k, mk in [("Questions Qwen knows", known), ("Questions Qwen doesn't know", ~known)]:
         h = ~isel & mk
         res[k] = (auroc(neur[h & uwm], neur[h & ~uwm]), auroc(proj[h & uwm], proj[h & ~uwm]))
-    fig, ax = plt.subplots(figsize=(7.6, 4.6))
-    header(fig, "Inside Qwen: can we read that the user is wrong?",
-           "How well each reading separates a false user claim from a true one (0.5 = coin flip, 1 = perfect), on held-out\n"
-           "conversations. It only works where Qwen knows the answer, and the whole layer reads it far better than one neuron.", 0.78)
-    x = np.arange(2)
-    for j, (lab, col) in enumerate([("Goodfire's \"false claims\" neuron", ORANGE), ("Whole layer 24 (one direction)", BLUE)]):
-        vals = [res[k][j] for k in res]
-        ax.bar(x + (j - 0.5) * 0.36, vals, width=0.34, color=col, edgecolor=SURFACE, linewidth=1.5, label=lab)
-        for xi, v in zip(x, vals):
-            ax.text(xi + (j - 0.5) * 0.36, v + 0.012, f"{v:.2f}", ha="center", fontsize=9, color=INK, zorder=4,
-                    bbox=dict(facecolor=SURFACE, edgecolor="none", pad=1.2))
-    ax.axhline(0.5, color=GREY, lw=0.9, ls=(0, (3, 3)))
-    ax.text(1.62, 0.505, "coin flip", fontsize=8, color=GREY, va="bottom", ha="right")
-    ax.set_xticks(x, list(res), color=INK); ax.set_ylim(0.3, 1.0); ax.set_ylabel("Separation (AUROC)")
-    ax.grid(axis="y", color=FAINT, lw=0.8); ax.set_axisbelow(True); ax.tick_params(axis="x", length=0)
-    legend_below(ax, [matplotlib.patches.Patch(color=ORANGE, label="Goodfire's \"false claims\" neuron"),
-                      matplotlib.patches.Patch(color=BLUE, label="Whole layer 24 (one direction)")], y=-0.12)
+    # Horizontal bars that start at the coin-flip line (0.5), so a bar's length is how far the reading beats chance.
+    fig, ax = plt.subplots(figsize=(7.0, 4.3))
+    header(fig, "A whole layer of Qwen tells a wrong user from a right one far better than one neuron",
+           "Each bar shows how often a conversation where the user is wrong scores higher than one where the user is right,\n"
+           "on held-out conversations. Both readings work only on questions Qwen knows the answer to.", 0.79)
+    fig.texts[-1].set_y(0.925)  # a little more room under the title at this figure height
+    fig.subplots_adjust(left=0.40, right=0.97, bottom=0.15)
+    lab_x = matplotlib.transforms.blended_transform_factory(fig.transFigure, ax.transData)
+    rows7 = [("Goodfire's \"false claims\" neuron", 0, ORANGE), ("Whole layer 24 (one direction)", 1, BLUE)]
+    y0 = {"Questions Qwen knows": 0.0, "Questions Qwen doesn't know": 2.75}
+    head7 = {"Questions Qwen knows": "Questions Qwen knows the answer to", "Questions Qwen doesn't know": "Questions Qwen doesn't know"}
+    for k, base_y in y0.items():
+        ax.text(0.012, base_y, head7[k], transform=lab_x, fontsize=10, fontweight="bold", color=INK, va="center")
+        for lab, j, col in rows7:
+            yy, v = base_y + 0.85 + 0.8 * j, res[k][j]
+            ax.barh(yy, v - 0.5, left=0.5, height=0.52, color=col, edgecolor="none")
+            ax.text(0.035, yy, lab, transform=lab_x, fontsize=9.5, color=INK2, va="center")
+            ax.text(v + (0.008 if v >= 0.5 else -0.008), yy, f"{v:.2f}", fontsize=9.5, color=INK, va="center",
+                    ha="left" if v >= 0.5 else "right")
+    ax.axvline(0.5, color=GREY, lw=0.9)
+    ax.set_xlim(0.40, 1.0); ax.set_ylim(5.05, -0.45); ax.set_yticks([])
+    ax.set_xticks(np.arange(0.4, 1.01, 0.1), ["0.4", "0.5\ncoin flip", "0.6", "0.7", "0.8", "0.9", "1.0\nperfect"])
+    ax.set_xlabel("How well it separates a wrong user from a right one (AUROC)", labelpad=6)
+    ax.spines["left"].set_visible(False)
+    ax.grid(axis="x", color=FAINT, lw=0.8); ax.set_axisbelow(True)
     figs["reading"] = save(fig, "7_reading_inside_qwen")
 
 # ---------- Chart 8: editing Qwen ----------
@@ -324,34 +439,59 @@ e2p, pcp, pcp2 = [ROOT / "runs" / "neuro" / f for f in ["e2_results.json", "e2_p
                                                          "e2_positive_control_grid2.json"]]
 if e2p.exists() and pcp.exists():
     e2 = json.loads(e2p.read_text()); pc = {**json.loads(pcp.read_text()), **(json.loads(pcp2.read_text()) if pcp2.exists() else {})}
-    base = e2["baseline"]["gave_in_user_wrong"] * 100
-    fig, (a1, a2) = plt.subplots(1, 2, figsize=(9.0, 4.8), gridspec_kw={"wspace": 0.32, "width_ratios": [1, 1.15]})
-    header(fig, "Editing Qwen: one neuron does nothing, a whole-layer push moves both answers together",
-           "Left: switching Goodfire's neuron off (×0) or up (×4) moves caving by under a point, inside the random-neuron range.\n"
-           "Right: pushing a whole-layer direction makes Qwen cave more to a wrong user and also accept a right user more.", 0.77)
-    rows8 = [("Falsehood neuron ×0", "falsehood_x0"), ("Falsehood neuron ×4", "falsehood_x4"),
-             ("7 labelled neurons ×0", "labelled_set_x0"), ("7 labelled neurons ×4", "labelled_set_x4")]
-    for i, (lab, k) in enumerate(rows8):
-        mult = k.split("_")[-1]
-        rnd = [100 * e2[f"random{j}_{mult}"]["gave_in_user_wrong"] - base for j in range(20) if f"random{j}_{mult}" in e2]
-        a1.scatter(rnd, [i] * len(rnd), s=16, color=LIGHT, zorder=2)
-        a1.scatter([100 * e2[k]["gave_in_user_wrong"] - base], [i], s=58, color=ORANGE, edgecolor=SURFACE, zorder=3)
-    a1.axvline(0, color=GREY, lw=0.8)
-    a1.set_yticks(range(len(rows8)), [r[0] for r in rows8], color=INK); a1.invert_yaxis(); a1.tick_params(axis="y", length=0)
-    a1.set_xlabel("Change in caving to a wrong user (points)"); a1.set_title("Single neurons vs 20 random neurons", pad=8)
-    a1.grid(axis="x", color=FAINT, lw=0.8); a1.set_axisbelow(True)
-    legend_below(a1, [dot(ORANGE, "Labelled neuron(s)"), plt.Line2D([], [], marker="o", ls="", ms=5, color=LIGHT,
-                                                                    label="Random neurons")], y=-0.2)
-    al = sorted(float(k.split("_")[1]) for k in pc if k.startswith("alpha_"))
+    # Both panels share one scale (share of conversations where Qwen switched to the user's answer), so the tiny
+    # neuron effects and the large whole-layer effect can be compared by eye. Orange = caved to a wrong user,
+    # blue = accepted a right user; the grey band between them is the gap, i.e. how well Qwen tells them apart.
+    GAP = LIGHT
+    fig, (a1, a2) = plt.subplots(1, 2, figsize=(7.4, 5.0), sharey=True,
+                                 gridspec_kw={"wspace": 0.07, "width_ratios": [1.1, 1]})
+    header(fig, "Editing labelled neurons barely changes Qwen; a whole-layer push moves both answers",
+           "Left: turning Goodfire's labelled neurons off or up four-fold moves each answer by under two points, much like\n"
+           "random neurons. Right: pushing towards giving in raises both answers together, and the grey gap narrows.", 0.775)
+    pos8 = [(0.0, "baseline", None), (1.25, "falsehood_x0", "Off"), (2.05, "falsehood_x4", "×4"),
+            (3.3, "labelled_set_x0", "Off"), (4.1, "labelled_set_x4", "×4")]
+    for xx, k, _ in pos8:
+        g_, a_ = 100 * e2[k]["gave_in_user_wrong"], 100 * e2[k]["accepted_user_right"]
+        a1.bar(xx, a_ - g_, bottom=g_, width=0.32, color=GAP, edgecolor="none", zorder=1)
+        a1.scatter([xx], [g_], s=46, color=ORANGE, edgecolor=SURFACE, zorder=3)
+        a1.scatter([xx], [a_], s=46, color=BLUE, edgecolor=SURFACE, zorder=3)
+    for xx, mult in [(5.35, "x0"), (6.15, "x4")]:  # every random neuron drawn, faint; they overlap almost exactly
+        rk = [f"random{j}_{mult}" for j in range(20) if f"random{j}_{mult}" in e2]
+        g_ = [100 * e2[k]["gave_in_user_wrong"] for k in rk]; a_ = [100 * e2[k]["accepted_user_right"] for k in rk]
+        a1.bar(xx, np.mean(a_) - np.mean(g_), bottom=np.mean(g_), width=0.32, color=GAP, edgecolor="none", zorder=1)
+        a1.scatter([xx] * len(g_), g_, s=22, color=ORANGE, alpha=0.45, edgecolor="none", zorder=3)
+        a1.scatter([xx] * len(a_), a_, s=22, color=BLUE, alpha=0.45, edgecolor="none", zorder=3)
+    a1.set_xticks([p_[0] for p_ in pos8] + [5.35, 6.15], ["Unedited"] + [p_[2] for p_ in pos8[1:]] + ["Off", "×4"])
+    a1.tick_params(axis="x", length=0)
+    grp = matplotlib.transforms.blended_transform_factory(a1.transData, a1.transAxes)
+    for xx, lab in [(1.65, "Falsehood\nneuron"), (3.7, "All 7 labelled\nneurons"), (5.75, "20 random\nneurons")]:
+        a1.text(xx, -0.085, lab, transform=grp, ha="center", va="top", fontsize=9.5, color=INK, linespacing=1.2)
+    a1.set_xlim(-0.55, 6.6)
+    a1.set_title("Editing labelled neurons", pad=8)
+    a1.set_ylabel("Switched to the user's answer")
+    # stored strengths are negative towards giving in; plotted mirrored so a harder push to give in runs rightwards
+    al = sorted((float(k.split("_")[1]) for k in pc if k.startswith("alpha_")), reverse=True)
     gw = [100 * pc[f"alpha_{a:+.2f}"]["gave_in_user_wrong"] for a in al]
     ar = [100 * pc[f"alpha_{a:+.2f}"]["accepted_user_right"] for a in al]
-    a2.plot(al, gw, color=ORANGE, lw=2, marker="o", ms=5, markeredgecolor=SURFACE)
-    a2.plot(al, ar, color=BLUE, lw=2, marker="o", ms=5, markeredgecolor=SURFACE)
-    a2.text(al[-1], ar[-1] + 5, "accepted a right user", color=INK2, fontsize=8.5, va="bottom", ha="right")
-    a2.text(al[-1], gw[-1] - 5, "caved to a wrong user", color=INK2, fontsize=8.5, va="top", ha="right")
-    a2.set_xlabel("Strength of the push (negative = towards giving in)")
-    a2.yaxis.set_major_formatter(matplotlib.ticker.PercentFormatter(decimals=0)); a2.set_ylim(0, 105)
-    a2.set_title("Whole-layer direction at layer 24", pad=8); a2.grid(color=FAINT, lw=0.8); a2.set_axisbelow(True)
+    xs = [-a for a in al]
+    a2.fill_between(xs, gw, ar, color=GAP, lw=0, zorder=1)
+    a2.plot(xs, gw, color=ORANGE, lw=1.8, marker="o", ms=5, markeredgecolor=SURFACE, zorder=3)
+    a2.plot(xs, ar, color=BLUE, lw=1.8, marker="o", ms=5, markeredgecolor=SURFACE, zorder=3)
+    corner8 = dict(fontsize=9.5, color=INK2, fontweight="bold", transform=a2.transAxes, va="bottom")
+    a2.text(0.02, 0.03, "push towards\nholding firm", ha="left", **corner8)
+    a2.text(0.98, 0.03, "push towards\ngiving in", ha="right", **corner8)
+    a2.set_xticks([-0.5, -0.25, 0, 0.25, 0.5], ["0.5", "0.25", "0", "0.25", "0.5"])
+    a2.set_xlabel("Strength of the push (0 = unedited)")
+    a2.set_title("Pushing a whole-layer direction at layer 24", pad=8)
+    for a in (a1, a2):
+        a.yaxis.set_major_formatter(matplotlib.ticker.PercentFormatter(decimals=0)); a.set_ylim(0, 100)
+        a.grid(axis="y", color=FAINT, lw=0.8); a.set_axisbelow(True)
+    a2.grid(axis="x", color=FAINT, lw=0.8); a2.tick_params(axis="y", length=0)
+    fig.legend(handles=[dot(ORANGE, "Caved to a wrong user"), dot(BLUE, "Accepted a right user"),
+                        matplotlib.patches.Patch(color=GAP, label="Gap between them: how well Qwen tells right from wrong")],
+               loc="upper left", bbox_to_anchor=(0.012, 0.035), ncol=3, frameon=False, fontsize=9.5,
+               handlelength=1.2, columnspacing=1.4, labelcolor=INK2)
+    fig.subplots_adjust(bottom=0.2)
     figs["editing"] = save(fig, "8_editing_qwen")
 
 # ---------- Test 2 (study C1): from the pre-registered analysis (harness/analyze_c1.py -> results/c1.json) ----------
@@ -365,27 +505,70 @@ if c1f.exists():
             c1.append((m, a["est"], a["lo"], a["hi"], b["est"], r.get("H_C1_prediction"), r.get("H_C1_confirmed")))
 if c1:
     c1.sort(key=lambda r: r[1])
-    H = 0.55 * len(c1) + 2.6
-    fig, ax = plt.subplots(figsize=(8.4, H))
-    header(fig, "Test 2: re-asked three times, does the chat pull harder than the same claim in a new chat?",
-           "Each case re-asked 3× in the chat and 3× in a new chat with the same first-person claim (\"I'm fairly sure it's C\").\n"
-           "Right of zero: the conversation pulls harder. Left: the same claim pulls harder in a new chat.", 1 - 1.05 / H)
-    xr = max(max(r[3], r[4]) for r in c1) + 2.5  # one aligned column for the value labels
+    n_cases = sum(c1j[r[0]]["n_given_up"] + c1j[r[0]]["n_kept"] for r in c1)
+    clear = [r for r in c1 if r[2] > 0 or r[3] < 0]          # 95% interval stays on one side of zero
+    agree = sum((r[4] > 0) == (r[1] > 0) for r in clear)      # confidence-reweighted check points the same way
+    missing = [NAMES[m] for m in MAIN if m not in c1j]
+    words = "no one two three four five six seven eight nine ten eleven twelve".split()
+    w = lambda k: words[k] if k < len(words) else str(k)
+    n_less, more_ = sum(r[3] < 0 for r in c1), [NAMES[r[0]] for r in c1 if r[2] > 0]
+    t_more = (f"only {more_[0]} gives in more" if len(more_) == 1 else
+              "none gives in more" if not more_ else f"{w(len(more_))} give in more")
+    # layout in inches, so the text stays the same size whatever the number of models
+    W, row, top_in, bot_in = 7.4, 0.38, 1.28, 1.62
+    H = top_in + row * len(c1) + bot_in
+    fig = plt.figure(figsize=(W, H))
+    ax = fig.add_axes([1.75 / W, bot_in / H, 3.2 / W, row * len(c1) / H])
+    fig.text(0.12 / W, 1 - 0.08 / H, f"{w(n_less).capitalize()} of {w(len(c1))} models give in less inside the chat; {t_more}",
+             fontsize=12.5, fontweight="bold", color=INK, va="top")
+    fig.text(0.12 / W, 1 - 0.42 / H,
+             "Each model got the same wrong claim, \"I'm fairly sure the answer is (C)\", in two ways: as pushback after it had\n"
+             "answered, and in a new chat before it had answered, three times each. Each dot is the difference in how often it\n"
+             "gave in; the grey bar is its 95% interval.",
+             fontsize=10, color=INK2, va="top", linespacing=1.4)
+    colour = lambda lo, hi: ORANGE if lo > 0 else BLUE if hi < 0 else GREY
+    xlo, xhi = min(r[2] for r in c1) - 2, max(21, max(r[3] for r in c1) + 2)
     for i, (m, e, lo, hi, eb, pred, ok) in enumerate(c1):
-        ax.plot([lo, hi], [i, i], color=LIGHT, lw=2.4, solid_capstyle="round", zorder=1)
-        ax.scatter([e], [i], s=56, color=BLUE, edgecolor=SURFACE, zorder=3)
-        ax.scatter([eb], [i], s=56, facecolor="none", edgecolor=INK2, linewidth=1.1, zorder=4)
-        tag = "" if pred is None else ("   as predicted" if ok else "   not as predicted")
-        ax.text(xr, i, f"{e:+.1f} pts{tag}", va="center", fontsize=8, color=INK2)
-    ax.axvline(0, color=GREY, lw=0.9)
-    ax.set_yticks(range(len(c1)), [NAMES[r[0]] for r in c1], color=INK); ax.tick_params(axis="y", length=0)
-    ax.set_xlabel("Caving in the chat minus caving to the same claim in a new chat (points)")
-    ax.set_xlim(min(r[2] for r in c1) - 3, xr + 15)
+        ax.plot([lo, hi], [i, i], color=LIGHT, lw=3, solid_capstyle="round", zorder=1)
+        ax.scatter([e], [i], s=64, color=colour(lo, hi), edgecolor=SURFACE, linewidth=1.4, zorder=3)
+    ax.axvline(0, color=GREY, lw=0.9, zorder=2)
+    ax.set_xlim(xlo, xhi); ax.set_ylim(-0.6, len(c1) - 0.1)
+    tk = range(int(np.ceil(xlo / 10)) * 10, int(xhi // 10) * 10 + 1, 10)
+    ax.set_xticks(tk, [f"{v:+d}".replace("-", "−") if v else "0" for v in tk])
+    ax.set_yticks(range(len(c1)), [NAMES[r[0]] for r in c1], color=INK)
+    ax.tick_params(axis="y", length=0, labelsize=10); ax.tick_params(axis="x", labelsize=9.5)
+    ax.spines["left"].set_visible(False)
     ax.grid(axis="x", color=FAINT, lw=0.8); ax.set_axisbelow(True)
-    legend_below(ax, [dot(BLUE, "Pre-registered estimate (grey bar: 95% interval)"),
-                      plt.Line2D([], [], marker="o", ls="", ms=7, markerfacecolor="none", markeredgecolor=INK2,
-                                 label="Re-weighted by confidence (check)")], y=-0.6 / H)
+    ax.set_xlabel("Giving in inside the chat minus giving in to the same claim in a new chat (points)", fontsize=9.5,
+                  labelpad=6)
+    # plain direction words above the plot, and two aligned columns on the right
+    yh = len(c1) - 0.15
+    ax.text(-1.2, yh, "Less in the chat", ha="right", va="bottom", fontsize=9, fontweight="bold", color=INK2)
+    ax.text(1.2, yh, "More in the chat", ha="left", va="bottom", fontsize=9, fontweight="bold", color=INK2)
+    tr = matplotlib.transforms.blended_transform_factory(fig.transFigure, ax.transData)
+    xv, xp = 5.62 / W, 5.82 / W
+    ax.text(xv, yh, "Difference", transform=tr, ha="right", va="bottom", fontsize=9, fontweight="bold", color=INK2)
+    ax.text(xp, yh, "Predicted in advance", transform=tr, ha="left", va="bottom", fontsize=9, fontweight="bold",
+            color=INK2)
+    for i, (m, e, lo, hi, eb, pred, ok) in enumerate(c1):
+        ax.text(xv, i, f"{e:+.1f}".replace("-", "−"), transform=tr, ha="right", va="center", fontsize=9.5, color=INK)
+        if pred:
+            said = "more in the chat" if ">" in pred else "less in the chat"
+            ax.text(xp, i, f"{said}, {'held' if ok else 'failed'}", transform=tr, ha="left", va="center", fontsize=9,
+                    color=INK2)
+    ax.legend(handles=[dot(ORANGE, "Gave in more inside the chat"), dot(BLUE, "Gave in less inside the chat"),
+                       dot(GREY, "No clear difference (bar crosses zero)")], loc="upper left",
+              bbox_to_anchor=(-1.63 / 3.2, -0.70 / (row * len(c1))),
+              ncol=3, frameon=False, fontsize=9.5, handlelength=1.0, columnspacing=1.6, labelcolor=INK2,
+              borderaxespad=0, handletextpad=0.4)
+    share = f"all {w(len(clear))}" if agree == len(clear) else f"{agree} of the {len(clear)}"
+    foot = (f"Pre-registered analysis of {n_cases} cases where the model first answered correctly. A check that re-weights "
+            f"cases by the\nmodel's stated confidence points the same way for {share} models with a clear difference.")
+    if missing:
+        foot += f" Still running: {', '.join(missing)}."
+    fig.text(0.12 / W, 0.08 / H, foot, fontsize=9, color=INK2, va="bottom", linespacing=1.4)
     figs["c1"] = save(fig, "9_test2_chat_vs_claim")
+
 # ---------- Study D: human vs AI reviewer label (harness/analyze_d.py -> results/d.json) ----------
 df = ROOT / "results" / "d.json"
 if df.exists():
@@ -532,6 +715,126 @@ if lever_groups:
 
 e4 = ROOT / "runs" / "neuro" / "e4_results.json"
 
+# ---------- Study E: thinking off vs on, same models and questions (harness/analyze_e.py -> results/e.json) ----------
+# Same encoding as the lever map: stubbornness left, judgement right, one shared scale; blue when the 95% interval
+# excludes zero, grey when it could be no change; diamond = average over the models that passed the thinking check.
+ef = ROOT / "results" / "e.json"
+if ef.exists():
+    ejs = json.loads(ef.read_text()); pe = ejs.get("_pooled", {})
+    em = [m for m in ejs if not m.startswith("_")]
+    ok_ = lambda m: ejs[m]["manipulation_check"]["passed"]
+    # (label, (c, lo, hi), (d', lo, hi), passed the thinking on/off check, is the average row)
+    rows_e = [(NAMES.get(m, m) + ("" if ok_(m) else "\n(thinking check failed, not averaged)"),
+               ejs[m]["chat_change_c"], ejs[m]["chat_change_d"], ok_(m), False) for m in em]
+    if pe.get("chat_change_d"):
+        rows_e.append((f"Average of the {len(pe['models'])} models", pe["chat_change_c"], pe["chat_change_d"], True, True))
+    if rows_e:
+        ye = [i + 0.4 * r[4] for i, r in enumerate(rows_e)]  # a little air above the average row
+        allv = [v for r in rows_e for v in list(r[1]) + list(r[2])] + [0.0]
+        padx = 0.16 * (max(allv) - min(allv))
+        HE = 0.42 * len(rows_e) + 3.2
+        fig, (ac, ad) = plt.subplots(1, 2, figsize=(7.4, HE), sharey=True, gridspec_kw={"wspace": 0.12})
+        c_, d_ = pe.get("chat_change_c"), pe.get("chat_change_d")
+        if d_ and d_[1] > 0:  # the title states only what the pooled intervals support
+            if c_[1] > 0 or c_[2] < 0:
+                title = ("On average, thinking first made models better judges, and "
+                         + ("a little " if abs(c_[0]) < d_[0] / 2 else "") + ("more" if c_[0] > 0 else "less") + " stubborn")
+            else:
+                title = "Thinking first made models better judges without clearly changing their stubbornness"
+        else:
+            title = "Does letting a model think first make it a better judge, or more stubborn?"
+        header(fig, title,
+               f"The same {len(em)} models answered the same questions with thinking switched off and then on. Each row is\n"
+               "the change from off to on; lines show 95% intervals. Both panels use the same scale, so a dot further\n"
+               "from zero means a bigger change.", 1 - 1.45 / HE)
+        fig.subplots_adjust(left=0.25 if all(r[3] for r in rows_e) else 0.32, right=0.97, bottom=1.45 / HE)
+        for ax, k, ttl, left_w, right_w, xl in [(ac, 1, "Change in stubbornness", "less stubborn", "more stubborn", "threshold c"),
+                                                (ad, 2, "Change in judgement", "worse judge", "better judge", "sensitivity d′")]:
+            for y_, r in zip(ye, rows_e):
+                est, lo, hi = r[k]
+                col = BLUE if (lo > 0 or hi < 0) else GREY
+                ax.plot([lo, hi], [y_, y_], color=col, alpha=0.35, lw=2.2, solid_capstyle="round", zorder=2)
+                ax.scatter([est], [y_], s=70 if r[4] else 46, marker="D" if r[4] else "o", zorder=3, linewidth=1.2,
+                           color=col if r[3] else SURFACE, edgecolor=SURFACE if r[3] else col)
+                if r[4]:  # label the average only, on the side away from zero
+                    ax.annotate(f"{est:+.2f}".replace("-", "−"), (hi if est >= 0 else lo, y_), va="center",
+                                xytext=(5 if est >= 0 else -5, 0), textcoords="offset points", fontsize=9.5, color=INK2,
+                                ha="left" if est >= 0 else "right")
+            ax.axvline(0, color=GREY, lw=0.9, zorder=1)
+            ax.set_xlim(min(allv) - padx, max(allv) + padx)
+            ax.xaxis.set_major_locator(matplotlib.ticker.MultipleLocator(0.25 if max(allv) - min(allv) < 1.2 else 0.5))
+            ax.xaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(
+                lambda v, _: "0" if abs(v) < 1e-9 else f"{v:+.2f}".rstrip("0").rstrip(".").replace("-", "−")))
+            ax.set_title(ttl, loc="left", pad=19); ax.set_xlabel(xl, fontsize=9.5)
+            ax.text(0, 1.0, left_w, transform=ax.transAxes, fontsize=9.5, color=INK2, ha="left", va="bottom")
+            ax.text(1, 1.0, right_w, transform=ax.transAxes, fontsize=9.5, color=INK2, ha="right", va="bottom")
+            ax.grid(axis="x", color=FAINT, lw=0.8); ax.set_axisbelow(True); ax.tick_params(axis="y", length=0)
+        ac.set_yticks(ye, [r[0] for r in rows_e], color=INK); ac.set_ylim(ye[-1] + 0.6, -0.6)
+        handles = [dot(BLUE, "Clear change (the interval excludes zero)"), dot(GREY, "Could be no change")]
+        if rows_e[-1][4]:
+            ac.get_yticklabels()[-1].set_fontweight("bold")
+            handles.append(plt.Line2D([], [], marker="D", ls="", ms=7, color=INK2, markeredgecolor=SURFACE,
+                                      label="Average over models"))
+        fig.legend(handles=handles, loc="upper left", bbox_to_anchor=(0.006, 0.9 / HE), ncol=3, frameon=False,
+                   fontsize=9.5, handlelength=1.2, columnspacing=1.6, labelcolor=INK2)
+        note = "Measured on the pushback inside the chat. The average weights models equally; intervals come from resampling questions."
+        if pe.get("pull_off_minus_on"):  # H-E2, the within-model test of Chart 5, shown as on minus off in points
+            fm = lambda v: f"{v:+.1f}".replace("-", "−")
+            p0, p1, p2 = (-100 * v for v in pe["pull_off_minus_on"])
+            note += (f"\nThinking changed the extra caving inside the chat, against the same claim in a new chat, by "
+                     f"{fm(p0)} points [{fm(p2)}, {fm(p1)}].")
+        fig.text(0.012, 0.005, note, fontsize=9, color=GREY, linespacing=1.35)
+        figs["think"] = save(fig, "12_thinking_on_off")
+
+# ---------- Study C2 (Test 1), appendix: each edit of Qwen's layer reading against the same edit on random directions ----------
+if e4j.exists():
+    ejall = json.loads(e4j.read_text()); ec = ejall["conditions"]
+    rowsC2 = [("Swap its reading for the opposite one", "interchange"),
+              ("Same swap, random direction", "rand_interchange"),
+              ("Erase its reading", "erase"),
+              ("Same erase, random direction", "rand_erase"),
+              ("Erase it only on the first answer and claim", "erase_reading_only"),
+              ("Erase it, sparing the give-in direction", "erase_defer_removed"),
+              ("Amplify it four-fold", "amplify_x4")]
+    panelsC2 = [("change_discernment", "Gap: accepted\nminus caved", ("worse", "better")),
+                ("change_d", "Judgement\n(sensitivity d′)", ("worse", "better")),
+                ("change_c", "Stubbornness\n(threshold c)", ("pushover", "stubborn"))]
+    fig, axs = plt.subplots(1, 3, figsize=(7.4, 4.6), sharey=True, gridspec_kw={"wspace": 0.16})
+    header(fig, "Erasing or swapping Qwen's own reading lowers its judgement; random edits do not",
+           "Change from unedited Qwen on the 170 held-out questions it knows, with 95% intervals. Erasing narrows the gap\n"
+           "by 0.12, short of the pre-registered 0.20, which is one reason the pre-registered test is not passed.", 0.77)
+    fig.subplots_adjust(left=0.335, right=0.985, bottom=0.19, top=0.73)
+    for ax, (key, ttl, (lo_w, hi_w)) in zip(axs, panelsC2):
+        for i, (lab, k) in enumerate(rowsC2):
+            if k.startswith("rand_"):
+                op = k.split("_", 1)[1]
+                vals = [ec[f"rand{j}_{op}"][key][0] for j in range(10) if f"rand{j}_{op}" in ec]
+                ax.scatter(vals, [i] * len(vals), s=20, color=GREY, alpha=0.55, edgecolor="none", zorder=3)
+            else:
+                v, lo, hi = ec[k][key]
+                ax.plot([lo, hi], [i, i], color=ORANGE, alpha=0.4, lw=2.2, solid_capstyle="round", zorder=2)
+                ax.scatter([v], [i], s=46, color=ORANGE, edgecolor=SURFACE, zorder=4)
+        ax.axvline(0, color=GREY, lw=0.9, zorder=1)
+        ax.set_title(ttl, pad=8, fontsize=10, linespacing=1.15)
+        ax.grid(axis="x", color=FAINT, lw=0.8); ax.set_axisbelow(True); ax.tick_params(axis="y", length=0)
+        ax.text(0.0, -0.11, lo_w, transform=ax.transAxes, ha="left", va="top", fontsize=9.5, color=INK2, fontweight="bold")
+        ax.text(1.0, -0.11, hi_w, transform=ax.transAxes, ha="right", va="top", fontsize=9.5, color=INK2, fontweight="bold")
+    axs[0].axvline(-0.20, color=INK2, lw=0.9, ls=(0, (3, 2)), zorder=1)
+    axs[0].text(-0.192, -0.95, "pre-registered\nbar for erasing", ha="left", va="center", fontsize=9.5, linespacing=1.1, color=INK2, zorder=5,
+                bbox=dict(facecolor=SURFACE, edgecolor="none", pad=1.0))
+    axs[0].set_yticks(range(len(rowsC2)), [r[0] for r in rowsC2], color=INK)
+    for t, (_, k) in zip(axs[0].get_yticklabels(), rowsC2):
+        t.set_color(INK2 if k.startswith("rand_") else INK)
+    axs[0].set_ylim(len(rowsC2) - 0.5, -1.6)
+    axs[0].set_xlim(-0.27, 0.08); axs[0].set_xticks([-0.2, -0.1, 0], ["−0.2", "−0.1", "0"])
+    axs[1].set_xlim(-1.15, 0.45); axs[1].set_xticks([-1, -0.5, 0], ["−1", "−0.5", "0"])
+    axs[2].set_xlim(-0.3, 0.9); axs[2].set_xticks([0, 0.4, 0.8], ["0", "+0.4", "+0.8"])
+    fig.legend(handles=[dot(ORANGE, "Edit along Qwen's reading, with 95% interval"),
+                        plt.Line2D([], [], marker="o", ls="", ms=5, color=GREY, alpha=0.7, label="Same edit along one of 10 random directions")],
+               loc="upper left", bbox_to_anchor=(0.012, 0.045), ncol=2, frameon=False, fontsize=9.5,
+               handlelength=1.2, columnspacing=1.6, labelcolor=INK2)
+    figs["c2"] = save(fig, "12_c2_layer_edits")
+
 # ---------- the page ----------
 log_path = ROOT / "results" / "iterations.md"
 stamp = time.strftime("%a %d %b, %H:%M") + " Cambodia time"
@@ -571,11 +874,13 @@ they switch at all. That means a score that only counts caving to a wrong user e
 
 {img("chat_vs_fresh")}
 {img("reasoning")}
+{img("think")}
 {img("return")}
 ## 5. Inside Qwen
 
 {img("reading")}
 {img("editing")}
+{img("c2")}
 ## 6. Running now
 
 **Test 2: re-asking each case three times** (pre-registered, tag `prereg-C`). {c1_status}

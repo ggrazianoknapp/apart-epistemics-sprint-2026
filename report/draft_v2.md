@@ -18,8 +18,8 @@ times as much as sensitivity across models. A one-line system prompt ("never cha
 nearly perfect on a one-sided score by raising their threshold, without changing their sensitivity, and labelling the
 same pushback as coming from a human rather than an AI lowered every model's threshold, again without changing
 sensitivity. In pre-registered
-re-asking, the same claim swayed most models more in a fresh chat than as pushback against their own answer; Claude
-Sonnet 5.5 was the exception, giving in more to the conversation itself. Inside Qwen3.6-35B-A3B, Goodfire's
+re-asking, the same claim swayed four of eight models clearly more in a fresh chat than as pushback against their own
+answer, and only Claude Sonnet 5.5 gave in more to the conversation itself. Inside Qwen3.6-35B-A3B, Goodfire's
 "false claims" neuron weakly registers that the user is wrong, and editing it changes nothing; a whole-layer reading of
 the same signal is far stronger, and swapping it lowered Qwen's
 judgement without changing its willingness. Pushback evaluations should report both arms, and separate how easily a
@@ -180,7 +180,7 @@ the other way never made it more discerning.
 
 ![Figure 6](../figures/live/9_test2_chat_vs_claim.png)
 
-*Figure 6. Study C1 (pre-registered): caving in the chat minus caving to the same first-person claim in a fresh chat, each case re-asked three times. Filled dots: pre-registered estimate with 95% interval; rings: confidence-reweighted check.*
+*Figure 6. Study C1 (pre-registered): how much more (orange) or less (blue) each model gave in inside the chat than to the same first-person claim in a new chat, each case asked three times, with 95% intervals; grey means no clear difference.*
 
 Does a model give in because of the person in the conversation, or because of the claim? In the main run, the same
 claim given as a hint in a fresh chat swayed models about as often as pushback in the chat (10.1% against 9.4% of
@@ -192,7 +192,7 @@ apparent extra in-chat caving in the main run came from the hearsay wording of t
 conversation. Of the four models without a prediction, Claude Haiku 5.5 and GLM 5.3 also gave in more to the fresh
 claim. A first-person claim swayed models slightly more than hearsay (+1.7 points [0.0, 3.3], pooled; H-C2 confirmed).
 
-So for most models, having committed to an answer protects it, a choice-supportive pattern also seen by Kumaran et
+So for half the models (four of eight, with two more leaning the same way), having committed to an answer protects it, a choice-supportive pattern also seen by Kumaran et
 al. (2025) [verify]. The protection is itself a threshold shift: thinking models also accept a right user less often
 in the chat than in a fresh chat (Qwen3.6: 48% against 65%), and Qwen's thinking cites its own earlier answer in 62%
 of chat traces against 1% in fresh chats. After a model gives in, the same stickiness works against it: asked to bet in the same chat, only 22% of given-up answers (720 cases, 21 models) went back to the

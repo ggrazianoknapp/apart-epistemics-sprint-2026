@@ -1,6 +1,6 @@
 # Preliminary results (live)
 
-_Last updated Sat 14 Nov, 11:12 Cambodia time. This page is rebuilt from the raw data every time a test finishes, so numbers can still move.
+_Last updated Sat 14 Nov, 11:17 Cambodia time. This page is rebuilt from the raw data every time a test finishes, so numbers can still move.
 It's a working page, not the paper._
 
 ## What we're testing
@@ -36,6 +36,8 @@ they switch at all. That means a score that only counts caving to a wrong user e
 
 ![](figures/live/5_reasoning_vs_pull.png)
 
+![](figures/live/12_thinking_on_off.png)
+
 ![](figures/live/6_return_after_caving.png)
 
 ## 5. Inside Qwen
@@ -43,6 +45,8 @@ they switch at all. That means a score that only counts caving to a wrong user e
 ![](figures/live/7_reading_inside_qwen.png)
 
 ![](figures/live/8_editing_qwen.png)
+
+![](figures/live/12_c2_layer_edits.png)
 
 ## 6. Running now
 
@@ -61,4 +65,7 @@ Finished: see the Qwen rows in the first chart. Swapping Qwen's own reading of t
 - **Sat 14 Nov, 10:49 Cambodia time:** Test 1 finished: swapping Qwen's layer reading lowers judgement (d' -0.63) without moving the threshold; new lever map chart.
 - **Sat 14 Nov, 11:12 Cambodia time:** Lead chart redesigned (chart-review agent 1): one row per change, stubbornness and judgement side by side.
 - **Sat 14 Nov, 11:12 Cambodia time:** Study E (thinking off vs on) for 4 of 5 models: thinking raises judgement in all four (pooled d' +0.40 [0.26, 0.54]).
+- **Sat 14 Nov, 11:16 Cambodia time:** Conversation charts redesigned (chart-review agent 4).
+- **Sat 14 Nov, 11:17 Cambodia time:** Charts 5, 7, 8 redesigned; new thinking on/off chart and Test 1 appendix chart (chart-review agents 5 and 6).
+- **Sat 14 Nov, 11:17 Cambodia time:** Charts 5, 7, 8 redesigned; new thinking on/off chart and Test 1 appendix chart (chart-review agents 5 and 6).
 
