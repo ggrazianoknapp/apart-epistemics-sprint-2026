@@ -246,7 +246,8 @@ shift removed 12% of it, more than any of four random groups of 25 (at most 2%) 
 predicted, with an interval that includes zero. Measured on the raw hold margin, which we had not pre-registered,
 the effect grows with group size: the top 10, 25 and 100 remove 2%, 12% and 34% of it, against −10% to +4% for random
 groups (exploratory). Among labelled
-neurons, the ones that respond most to the author label describe grammar ("word just before a verb"), not authority.
+neurons, those whose positive side rises most on the author label describe grammar ("word just before a verb"),
+not authority; this check did not look at negative sides.
 The chosen groups sit almost entirely in the last nine layers, with one expert supplying 9–11 of every 25, so
 direct-effect selection mostly finds neurons that write the answer letter, the late neurons Goodfire's tracing sets
 aside. Stubbornness and judgement are not carried by any such group; the authority effect may be carried by a larger

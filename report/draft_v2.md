@@ -317,7 +317,8 @@ removing the 25 that push towards the correct answer left pair order unchanged i
 Qwen's threshold against the AI label (−0.21 [−0.30, −0.13]). The 25 neurons across the whole model most tied to that
 shift removed 12% of it, more than any of four random groups of 25 (at most 2%) but far short of the half we
 predicted, with an interval that includes zero, and removing the top 100 removed no more (11%). Among labelled
-neurons, the ones that respond most to the author label describe grammar ("word just before a verb"), not authority.
+neurons, those whose positive side rises most on the author label describe grammar ("word just before a verb"),
+not authority; this check did not look at negative sides.
 In this model, stubbornness, judgement and the authority effect are spread over many neurons.
 
 ### 4.5 Every change at a glance
