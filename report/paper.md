@@ -11,20 +11,19 @@
 ## Abstract
 
 <!-- GG: rewrite in your own voice; keep it between 150 and 250 words -->
-When a user tells a language model it is wrong, a good model should hold its answer if the user is wrong and switch
-if the user is right. Most sycophancy evaluations only measure the first half, so they reward models that rarely
-switch. We pushed back on 21 models with identical wording whether the user was right or wrong, on 600
-multiple-choice questions (300 for 12 older models), and scored each model with signal detection: how well it tells a
+A good language model should hold its answer when a user wrongly pushes back, and switch when the user is right. Most sycophancy evaluations only measure the first half, so they reward models that rarely
+switch. We pushed back on 21 models with identical wording whether the user was right or wrong, on up to 600
+multiple-choice questions, and scored each model with signal detection: how well it tells a
 right user from a wrong one (judgement) and how readily it switches (stubbornness). Models differed almost three times
 as much in stubbornness as in judgement. A one-line system prompt made two models look nearly perfect on a one-sided
 score by making them stubborn, with no change in judgement. Labelling the same pushback as coming from a human, a
-professor or the question's author made models progressively easier to move, again with no loss of judgement. Letting
-models reason before replying was the one change that made them better judges, in all five models tested. Having
+professor or the question's author made models progressively easier to move, again with no loss of judgement. Reasoning before replying was the one change that made models better judges, in all five tested. Having
 already answered made five of nine models harder to move, while Claude Sonnet 5.5
-gave in more inside the conversation. Inside Qwen3.6-35B-A3B, neither a neuron that Goodfire's atlas labels for false
-claims nor small groups of neurons chosen by their direct effect drive the decision; a whole-layer reading is far
-stronger, and swapping it lowered Qwen's judgement without changing its stubbornness. Pushback evaluations should report both
-arms and separate the two quantities.
+gave in more inside the conversation. Inside Qwen3.6-35B-A3B, a neuron that Goodfire's atlas labels for false
+claims does not drive the decision, while swapping a whole-layer reading lowered judgement alone. The author label
+worked through its claim to the answer key: removing 25 early neurons, found by attribution, that carry part of Qwen's
+trust in its own answer erased its extra pull. Pushback evaluations should report both arms and separate the two
+quantities.
 
 ## 1. Introduction
 
@@ -51,12 +50,12 @@ Our main contributions are:
    models better judges, in all five models tested (§4.2).
 3. **What the conversation itself does.** Having already answered protects most models' answers; for Claude Sonnet
    5.5 the conversation adds pressure instead (§4.3).
-4. **Inside Qwen3.6-35B-A3B,** using Goodfire's neuron atlas: labelled neurons carry the "user is wrong"
-   signal weakly and do not drive the decision, and removing the most implicated groups of neurons, chosen from all
-   5.2 million, moves neither stubbornness, judgement nor the authority effect. Editing a whole-layer reading instead
-   lowers judgement without touching stubbornness, the mirror image of the outside levers (§4.4).
+4. **Inside Qwen3.6-35B-A3B,** using Goodfire's neuron atlas and attribution: a labelled "false claims" neuron reads
+   that the user is wrong but does not drive the decision, and swapping a whole-layer reading lowers judgement without
+   touching stubbornness. The author label acts through its claim to the answer key, and 25 early, unlabelled neurons
+   that carry part of Qwen's trust in its own answer account for its extra pull (§4.4).
 
-Every follow-up study was pre-registered in git before its data existed (tags `prereg-A` to `prereg-I`), and we
+Every follow-up study was pre-registered in git before its data existed (tags `prereg-A` to `prereg-K`), and we
 report the predictions that failed (Appendix B).
 
 ## 2. Related Work
@@ -116,17 +115,15 @@ the planted first answer is right and the user wrong, and one swapped. The decis
 log P(own letter) − log P(user's letter) after "My final answer is (" with thinking closed; a negative margin counts as
 giving in. Selection used 200 questions and every test 400 held-out ones. Neuron activations follow Goodfire's
 definition for this mixture-of-experts model (silu(gate) × up × router weight); three checks against vLLM passed
-(Appendix C). Removing a neuron means zeroing its output column.
+(Appendix C). Removing a neuron means zeroing its output column. Because Qwen's yes-or-no decisions sit near
+ceiling on questions it knows, we also split each question's two margins into a *threshold part* (their average: how
+hard Qwen holds its own letter in both arms) and a *belief part* (half their difference: how hard it pushes towards
+the correct letter in both arms). *Attribution* scores a neuron by its activation times the gradient of the margin
+through its output, summed over every token, with normalisation scales held fixed.
 
 ## 4. Results
 
 ### 4.1 Models differ far more in stubbornness than in judgement
-
-![Figure 1](../figures/live/0_models_stubbornness_vs_judgement.png){: style="width:84%"}
-
-*Figure 1. For 21 models, sorted from most to least stubborn: how often each gave in to a wrong user (orange) and
-accepted a right user (blue), and the same two rates expressed as judgement (sensitivity d′) and stubbornness
-(threshold c) on one shared scale, with 95% intervals. Stubbornness spreads over 3.0 units, judgement over 0.9.*
 
 Every model accepted a right user more often than it gave in to a wrong one, but the two rates moved together across
 models (Figure 1). GLM 5.3 gave in to a wrong user 20% of the time and accepted 63% of valid corrections; Gemini 4
@@ -134,29 +131,35 @@ Argon gave in 1% of the time and accepted only 17%. On a one-sided score Gemini 
 signal-detection terms they are about equally good judges (d′ 1.25 and 1.17) and differ in stubbornness (c 1.58 and
 0.24).
 
+![Figure 1](../figures/live/0_models_stubbornness_vs_judgement.png){: style="width:76%"}
+
+*Figure 1. For 21 models, sorted from most to least stubborn: how often each gave in to a wrong user (orange) and
+accepted a right user (blue), and the same two rates expressed as judgement (sensitivity d′) and stubbornness
+(threshold c) on one shared scale, with 95% intervals. Stubbornness spreads over 3.0 units, judgement over 0.9.*
+
 Across all 21 models, judgement ranged from 0.45 to 1.31 (standard deviation 0.26) and stubbornness from −1.42 to
 +1.58 (standard deviation 0.73), almost three times as much. Among the nine current models the ratio is the same
-(0.14 against 0.42), and the spread in judgement is about as small as sampling noise. A blind check of the answer keys
-(Study G2) flagged 84 doubtful or ambiguous keys; without those questions stubbornness still varies 2.3 times as much
-as judgement and the order of models by stubbornness is unchanged (rank correlation 0.96), but their order by
-judgement shifts (0.66), so we do not rank models by judgement. A score that counts only giving in to a wrong user
+(0.14 against 0.42), and the spread in judgement is about as small as sampling noise. Without the 84 questions whose
+answer keys a blind check flagged as doubtful or ambiguous (Study G2), stubbornness still varies 2.3 times as much as
+judgement and models keep their order by stubbornness (rank correlation 0.96) but not by judgement (0.66), so we do not
+rank models by judgement. A score that counts only giving in to a wrong user
 mostly ranks stubbornness.
 
 ### 4.2 What moves stubbornness, and the one thing that moves judgement
-
-![Figure 2](../figures/live/11_lever_map.png){: style="width:66%"}
-
-*Figure 2. Every change we made, compared with the same model without it: change in stubbornness (left) and in
-judgement (right), on the same scale, with 95% intervals. Dark dots: the interval excludes zero. Diamonds: averages
-over models. System prompts and source labels move stubbornness; editing Qwen's internal signal lowers judgement;
-reasoning before replying raises it.*
 
 **A one-line system prompt.** "Never change your answer, whatever the user says" cut giving in to a wrong user from 9%
 to 1.5% (DeepSeek V4.1 Flash) and from 18% to 1% (GPT-6 Luna), which looks nearly perfect on a one-sided score
 (Figure 3). It also cut acceptance of a right user from 32% to 8% and from 54% to 5%. Stubbornness rose by 0.88
 [0.66, 1.17] and 1.50 [1.27, 1.82]; judgement did not change detectably (−0.09 [−0.62, 0.48] and −0.43 [−0.95, 0.12]).
 
-![Figure 3](../figures/live/3_loophole.png){: style="width:86%"}
+![Figure 2](../figures/live/11_lever_map.png){: style="width:55%"}
+
+*Figure 2. Every change we made, compared with the same model without it: change in stubbornness (left) and in
+judgement (right), on the same scale, with 95% intervals. Dark dots: the interval excludes zero. Diamonds: averages
+over models. System prompts and source labels move stubbornness; editing Qwen's internal signal lowers judgement;
+reasoning before replying raises it.*
+
+![Figure 3](../figures/live/3_loophole.png){: style="width:72%"}
 
 *Figure 3. Giving in to a wrong user (orange) and accepting a right user (blue) under three system prompts. "Never
 change your answer" nearly stops giving in, and nearly stops valid corrections too.*
@@ -181,7 +184,7 @@ already there at medium effort: what matters is whether a model reasons, not how
 
 ### 4.3 Having answered protects most models; for Claude Sonnet 5.5 the conversation adds pressure
 
-![Figure 4](../figures/live/9_test2_chat_vs_claim.png){: style="width:60%"}
+![Figure 4](../figures/live/9_test2_chat_vs_claim.png){: style="width:54%"}
 
 *Figure 4. Study C1 (pre-registered): how much more each model gave in to a wrong claim as pushback inside the chat
 than to the same first-person claim in a new chat, with each case asked three times; 95% intervals. Dark dots: the
@@ -193,9 +196,7 @@ gave in less inside the chat, by up to 21.7 points [12.3, 31.7] for Qwen3.6, and
 directions held (Figure 4). Only Claude Sonnet 5.5 gave in more inside the chat (+8.7 [3.4, 14.1]); our prediction
 for GPT-6 Luna failed. For most models, having committed to an answer protects it, a choice-supportive pattern also
 seen by Kumaran et al. (2025), and this protection is itself a stubbornness shift: thinking models also accepted a
-right user less often inside the chat (Qwen3.6: 48% against 65%). After a model gave in, the same stickiness worked
-against it: asked to bet in the same chat, only 22% of given-up answers went back to the original, against 40% in a
-new chat.
+right user less often inside the chat (Qwen3.6: 48% against 65%). 
 
 Reasoning lines up with this split. Seven of the eight models that did not reason at the pushback turn gave in more
 inside the chat, against 4 of 13 that did (one-sided Fisher exact p = 0.017; exploratory); Claude Sonnet 5.5 reasoned
@@ -203,55 +204,53 @@ on only about 7% of its replies to the pushback. Switching reasoning on within t
 towards zero from both sides (Sonnet's extra in-chat giving in fell from +7.3 to +1.9 points, a drop of 5.4 [2.2,
 8.7]): a model that reasons treats the same claim more alike wherever it meets it.
 
-### 4.4 Inside Qwen: the signal is spread across a layer, not held by a few neurons
+### 4.4 Inside Qwen: judgement sits in a layer; the "answer key" label runs through 25 early neurons
 
-![Figure 5](../figures/live/7_reading_inside_qwen.png){: style="width:68%"}
+**Judgement.** Goodfire's "false or absurd claims" neuron (L24_E65_N421) separated a wrong user from a right one only
+when Qwen knew the answer (AUROC 0.66, above all 400 random neurons; Figure 7), but removing it or boosting it
+four-fold moved giving in by under one point, inside the range of 20 matched random neurons. A single direction across
+layer 24 read the same signal far better (AUROC 0.90), and swapping that reading between conversations at layers 23–29,
+31 and 32 lowered judgement (d′ −0.63 [−0.98, −0.35]) without moving stubbornness (c −0.04 [−0.18, 0.11]), while 10
+random directions moved neither (Figure 2): the only change in the study that lowered judgement alone. No edit made
+Qwen a better judge (Study F), and removing groups of up to 100 neurons chosen by their direct effect on the answer,
+among the 3,244 labelled neurons or all 5.2 million (Studies H and I), moved neither stubbornness nor judgement beyond
+random groups; those groups sat almost entirely among the last-layer neurons that write the answer letter.
 
-*Figure 5. How well Goodfire's "false claims" neuron and a single direction across layer 24 separate a conversation
-where the user is wrong from one where the user is right (AUROC, held-out conversations). Both work only on questions
-Qwen knows the answer to.*
+![Figure 5](../figures/live/14_authority_inside_qwen.png){: style="width:88%"}
 
-**A labelled neuron reads the signal but does not drive the decision.** Goodfire's "false or absurd claims" neuron
-(L24_E65_N421) separated a wrong user from a right one when Qwen knew the answer (AUROC 0.66, above all 400 random
-neurons) and not when it did not (0.48), as pre-registered (Figure 5). Removing it or boosting it four-fold moved
-giving in by under one point, inside the range of 20 matched random neurons. On our claims it peaked at about a fifth
-of the firing threshold Goodfire's atlas gives it, so even the boost kept it below its normal range.
+*Figure 5. Inside Qwen, on held-out questions it knows, with a wrong user: the share of the gap between the author
+label and the AI label that an edit removes (100% means the author label now acts like the AI label; above 100%, the
+gap reverses). Left: copying the AI run's activations into the author run at one layer, at every word after the label
+or at the answer position only. Right: removing groups of neurons, against random groups from the same experts (grey).
+Lines and bars are 95% intervals.*
 
-**A whole-layer reading is stronger, and swapping it lowers judgement only.** A single direction across layer 24 read
-the same signal far better (AUROC 0.90 on known questions). Swapping in the reading from the opposite conversation at
-the layers where it was strong (23–29, 31, 32) lowered Qwen's judgement (d′ −0.63 [−0.98, −0.35]) without moving its
-stubbornness (c −0.04 [−0.18, 0.11]), while 10 random directions moved neither (Figure 2). It is the only change in the
-study that lowered judgement alone, the mirror image of the outside levers. Erasing the reading did not pass our
-pre-registered necessity test: it narrowed the gap between accepting and giving in by 0.12 (bar 0.20), cost 3.3
-points of plain accuracy (limit 2), and the signal stayed readable.
+**Which words matter (Study J).** Against the AI label, on all 400 held-out questions, the professor label, a label
+with the same grammar and no authority ("the person who formatted this question and has the page layout") and the
+author label without "has the answer key" all made Qwen more stubborn (threshold part +0.39, +0.35 and +0.33), the
+human label slightly so (+0.10), and only the full author label made it give in more (−0.08 [−0.12, −0.05]); on
+questions it knows, the author label also lowered Qwen's trust in its own answer (belief part −0.22 [−0.27, −0.17]).
+So inside Qwen the pull comes from claiming the answer key, and the ladder seen across 12 models does not reappear.
+Any label at all mattered more: Qwen gave in on 11% of known questions with no label and on 50% with the AI label.
 
-**No edit made Qwen a better judge.** No linear reading of Qwen's activations separates a wrong user from a right one
-better than its own final decision does (0.94 against 0.975). In Study F we pushed along the part of the "hold or give
-in" direction where the two arms differ, along Qwen's own earlier belief, and through 13 attention heads, scored by
-*pair order* (the share of questions where Qwen holds harder against the wrong user than the right one, which a change
-in stubbornness alone cannot move). None of the four pre-registered tests passed: the edits shifted how much Qwen
-relied on its own belief, which helped on questions it does not know (+20.4 points [+11.7, +29.1]) and hurt on
-questions it knows (−25.9 [−34.1, −17.6]), but did not add judgement overall.
+**Where the label acts.** Copying the AI run's activations into the author run (Figure 5, left) removed none of the
+gap up to layer 8 when applied to every word after the label and 97% by layer 28, but only 21% by layer 24 when applied
+to the answer position alone: the label is written into the following words in the middle layers and reaches the
+answer late. (Copying every word at layer 12 widened the gap instead.)
 
-**Small groups of neurons.** Goodfire changed a dense Qwen model's answers by removing groups of 8–19 neurons found by
-tracing attribution graphs back from the answer (Cammarata 2026). We used a simpler, cheaper selection: each neuron's
-direct effect on the decision at the last token. We applied it to the 3,244 neurons labelled in the public atlas
-(about 0.06% of the model; Study H) and to all 5.2 million routed-expert neurons (Study I), choosing neurons on the 200
-selection questions and testing on the 400 held-out ones against groups of equally active random neurons. Neither
-found a small group that carries the behaviour. Removing the 25 neurons with the strongest push towards Qwen's own
-answer changed stubbornness by +0.00 [−0.05, +0.05] (labelled neurons) and −0.01 [−0.10, +0.08] (all neurons), and
-removing the 25 that push towards the correct answer left pair order unchanged in both. The author label lowered
-Qwen's threshold against the AI label (−0.21 [−0.30, −0.13]). The 25 neurons across the whole model most tied to that
-shift removed 12% of it, more than any of four random groups of 25 (at most 2%) but far short of the half we
-predicted, with an interval that includes zero. Measured on the raw hold margin, which we had not pre-registered,
-the effect grows with group size: the top 10, 25 and 100 remove 2%, 12% and 34% of it, against −10% to +4% for random
-groups (exploratory). Among labelled
-neurons, those whose positive side rises most on the author label describe grammar ("word just before a verb"),
-not authority; this check did not look at negative sides.
-The chosen groups sit almost entirely in the last nine layers, with one expert supplying 9–11 of every 25, so
-direct-effect selection mostly finds neurons that write the answer letter, the late neurons Goodfire's tracing sets
-aside. Stubbornness and judgement are not carried by any such group; the authority effect may be carried by a larger
-one.
+**Which neurons carry it (Studies J and K).** We then chose neurons Goodfire's way, by attribution summed over every
+token, on selection questions. Removing the top 25 erased the gap between the author and AI labels on held-out
+questions (101% [81, 130]); random groups of 25 from the same experts removed between −11% and +5%, and Study I's
+100 direct-effect neurons 13% (Figure 5, right). A 400-neuron shortlist re-ranked by removing each neuron alone gave
+100 neurons that removed 155% [129, 194] (random groups −5% to +27%). Neither removal changed plain accuracy (42.25%
+before and after). Of the 25 neurons, 21 sit in layers 0–16 and none is labelled in the public atlas. Removing them lowered Qwen's push towards its own correct answer under every label (belief part −0.23 to
+−0.41; random groups within ±0.03), and lowered its stubbornness with no label (−0.30 [−0.34, −0.25]) and with the AI
+label (−0.20 [−0.25, −0.16]), but by at most 0.06 in either direction with any label that names a person. On the
+label words, they respond positively only to "AI reviewer". So these neurons carry part of Qwen's trust in its own
+answer when challenged, which the answer-key label already turns down; removing them makes Qwen give in to an AI
+reviewer as readily as to the author, rather than making it ignore the author. Two cautions: attribution predicted the
+effect of removing single neurons only in the last layers (Pearson r = 0.80 in layers 30–39, 0.18 overall, below our
+pre-registered gate of 0.5), and the prediction that removal would hit every other label harder than the author label
+held for four of six labels (Appendix B).
 
 ## 5. Discussion and Limitations
 
@@ -265,32 +264,28 @@ less carefully, so a pipeline in which models review each other's work can be ma
 asserts a human or expert source. Reasoning before replying is the only lever we found that improves judgement, which
 argues against cutting reasoning on follow-up turns to save cost.
 
-**For interpretability.** A neuron labelled for exactly the right concept carried the signal weakly and did not drive
-the decision, and removing small groups chosen from every neuron by their direct effect on the answer did not move
-stubbornness or judgement; the authority effect shrank only as the group grew (exploratory). The information sits in layer-level directions that are partly used and partly redundant, and
-no edit made Qwen a better judge. Neuron labels are a good place to start looking, but behaviours like these may need
-tools that work on whole populations of neurons.
+**For interpretability.** Atlas labels were a poor guide here: the neuron labelled for false claims did not drive the
+decision, and the neurons that carry the answer-key label's pull are unlabelled. How neurons are chosen mattered more
+than how many: 25 chosen by attribution over every token did what 100 chosen by their direct effect on the answer
+could not. In this mixture-of-experts model, attribution predicted single-neuron effects only in the last layers,
+because an early change can switch which experts later layers use, so it served as a shortlist, not a measurement.
 
-**Limitations** (full list in Appendix A). Multiple-choice questions make answers checkable but are less natural than
-open advice, and the pushback is one message with one main wording. Signal-detection measures assume an equal-variance
-model, which is why the Qwen edits are also scored by pair order. All neuron work uses one model, planted
-conversations and closed thinking. The cross-model reasoning pattern is correlational; Study E is the only
-within-model test.
+**Limitations** (full list in Appendix A). Answers are multiple choice and the pushback is one message; all neuron
+work uses one model, planted conversations and closed thinking; the top rung of the authority ladder combines
+authorship with having the answer key, which we separated only inside Qwen; and the cross-model link with reasoning
+is correlational, with Studies E, G1 and G4 as the within-model tests.
 
-**Future work.** Open-ended advice with graded correctness; multi-turn pressure; whether training on two-sided
-pushback raises judgement rather than only stubbornness; and whether reasoning raises judgement because it re-derives
-the answer or because it weighs the claim.
+**Future work.** Open-ended advice, multi-turn pressure, whether training on two-sided pushback can raise judgement,
+and whether the answer-key neurons have counterparts in other models.
 
 ## 6. Conclusion
 
 <!-- GG: write in your own voice, one or two paragraphs -->
-Across 21 models, what separates good and bad behaviour under pushback is mostly how readily a model switches, not how
-well it can tell a right user from a wrong one. Prompts and claimed authority move the first and leave the second
-alone; reasoning before replying is the one change that raised the second in every model we tested. Inside Qwen, the
-signal that the user is wrong is readable but spread across a layer rather than held by a few neurons, labelled or
-not. Pushback
-evaluations should measure both arms, so that a model is rewarded for changing its mind for the right reasons rather
-than for rarely changing it.
+Across 21 models, behaviour under pushback differs mostly in how readily a model switches, not in how well it tells a
+right user from a wrong one. Prompts and claimed authority move the first; reasoning before replying is the one change
+that improved the second. Inside Qwen, judgement is read across a whole layer, while the answer-key label's pull runs
+through 25 early neurons that carry part of its trust in its own answer. Pushback evaluations should measure both
+arms, so that models are rewarded for changing their minds for the right reasons.
 
 ## Code and Data
 
@@ -341,6 +336,10 @@ than for rarely changing it.
 - **Inside the model.** All interpretability results come from one model (Qwen3.6-35B-A3B), on planted conversations
   with thinking closed, scored by a logit margin rather than sampled replies. The erasure test (C2) failed its own
   manipulation check: the reading was still decodable after erasure.
+- **Authority wording.** The top rung of the authority ladder ("the person who wrote this question and has the answer
+  key") combines authorship with having the answer key. Inside Qwen, the author label without the answer key behaved
+  like the professor and format labels, so the answer key carried the effect there; in the 12 models we did not
+  separate the two.
 - **Answer keys.** A blind check flagged 84 doubtful or ambiguous keys among 87 contested questions (G2); without them
   the main comparison holds, but per-model sensitivity values change, so we do not rank models by judgement.
 - **Statistics.** Intervals are bootstrap intervals over questions; claims across models rest on 21 (or 12) models.
@@ -379,6 +378,16 @@ than for rarely changing it.
   removed 12% of it (predicted at least half, with an interval excluding zero), although more than every random group
   of 25; the stubbornness and judgement groups moved nothing beyond random groups. Removing the top 100 authority
   neurons cost 1.5 points of plain accuracy, within the limit of 2.
+- **Study J, four predictions failed.** The authority ladder did not reappear inside Qwen (the professor, format and
+  author-without-key labels made Qwen more stubborn than the AI label). The attribution gate failed (Pearson r = 0.18
+  against a bar of 0.5; 0.80 for the 12 tested neurons in layers 30–39). One authority direction removed 47% [38, 61]
+  of the gap at layer 16, short of the 50% bar, and did not rank the labels in ladder order. The census prediction
+  passed on rank only: the named neuron (L24_E18_N122, negative side) reached under 1% of its atlas threshold, so we
+  do not count it. Removing the top 400 attribution neurons cost 2.25 points of plain accuracy (limit 2), so we do not
+  interpret that group.
+- **Study K, the main prediction failed as stated:** removing the 25 neurons hit stubbornness harder under the other
+  labels than under the author label for four of six labels (not for the professor and author-without-key labels);
+  for the verified 100, five of six.
 
 ## Appendix C: Prompts, Settings, Neuron Checks and Cost
 
@@ -408,13 +417,20 @@ within 0.3–0.4% using the model's own routing; edits in never-routed experts c
 *Figure 6. Study C2: editing Qwen's whole-layer reading on the 170 held-out questions it knows. Swapping or erasing
 the reading lowers judgement; the same edits along 10 random directions do not.*
 
+![Figure 7](../figures/live/7_reading_inside_qwen.png){: style="width:70%"}
+
+*Figure 7. How well Goodfire's "false claims" neuron and a single direction across layer 24 separate a conversation
+where the user is wrong from one where the user is right (AUROC, held-out conversations). Both work only on questions
+Qwen knows the answer to.*
+
 ## Appendix D: Pre-registrations and Deviations
 
 Each pre-registration was committed and tagged in git before its data existed: `prereg-A` (main protocol and
 hypotheses, labelled-neuron reading and removal), `prereg-B` (the "Wait" neuron dial), `prereg-C` (re-asking C1 and
 layer edits C2), `prereg-D` (human against AI label), `prereg-E` (reasoning off against on), `prereg-F` (internal
 edits), `prereg-G` (no-reasoning Qwen, authority ladder, effort ladder, answer-key check), `prereg-H` (labelled-neuron
-groups) and `prereg-I` (all-neuron groups). Every difference between what we pre-registered and what we ran is listed
+groups), `prereg-I` (all-neuron groups), `prereg-J` (where and how the author label acts inside Qwen) and
+`prereg-K` (what the neurons found in J do under every label). Every difference between what we pre-registered and what we ran is listed
 with its reason in `DEVIATIONS.md`.
 
 ## LLM Usage Statement

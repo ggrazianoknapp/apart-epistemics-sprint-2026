@@ -1012,6 +1012,51 @@ if ffj.exists():
                       matplotlib.patches.Patch(color=FAINT, label="Range of control edits")], ncol=3, y=-0.55 / H * 2)
     figs["f"] = save(fig, "13_internal_edits_pair_order")
 
+# ---------- Study J: where the author label acts inside Qwen, and the neurons that carry it (results/j.json) ----------
+jjf = ROOT / "results" / "j.json"
+if jjf.exists():
+    jj = json.loads(jjf.read_text()); sw = jj["J2"]["user_wrong"]["share_removed"]
+    PLs = [0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 39]
+    fig, (axA, axB) = plt.subplots(1, 2, figsize=(7.6, 3.9), gridspec_kw={"wspace": 0.85, "width_ratios": [1, 1.15]})
+    header(fig, "Inside Qwen, removing 25 neurons erases the gap between the author and AI labels",
+           "Held-out questions Qwen knows, user wrong. Each panel shows how much of the gap between the author label and the AI label\n"
+           "an edit removes (100% = the author label now acts like the AI label). Lines and bars are 95% intervals.", 0.74)
+    for mode, col, lab in [("post", INK2, "Copy every word after the label"), ("last", GREY, "Copy the answer position only")]:
+        v = [100 * sw[f"{mode}{l}"][0] for l in PLs]; lo = [100 * sw[f"{mode}{l}"][1] for l in PLs]; hi = [100 * sw[f"{mode}{l}"][2] for l in PLs]
+        axA.fill_between(PLs, lo, hi, color=col, alpha=0.13, lw=0)
+        axA.plot(PLs, v, color=col, lw=2, marker="o", ms=4.5, markeredgecolor=SURFACE, label=lab)
+    axA.axhline(0, color=GREY, lw=0.9); axA.axhline(100, color=INK2, lw=0.9, ls=(0, (3, 2)))
+    axA.set_xticks([0, 8, 16, 24, 32, 39]); axA.set_xlabel("Layer where the AI run is copied in")
+    axA.set_ylabel("Share of the gap removed (%)"); axA.set_ylim(-110, 125)
+    axA.set_title("Where the label acts", pad=8)
+    axA.grid(axis="y", color=FAINT, lw=0.8); axA.set_axisbelow(True)
+    axA.legend(loc="upper left", bbox_to_anchor=(-0.02, -0.2), frameon=False, fontsize=9, labelcolor=INK2, handlelength=2.6)
+    axA.text(0, 106, "gap fully removed", ha="left", va="bottom", fontsize=8.5, color=INK2)
+    J3c = jj["J3"]["conditions"]["user_wrong"]
+    rowsJ = [("attr25", "25 chosen by attribution", "rand25_"), ("attr100", "100 chosen by attribution", "rand100_"),
+             ("verified100", "100 verified by removal", "rand_v100_"), ("studyI_authority100", "100 chosen by direct\neffect (Study I)", None)]
+    for i, (k, lab, rp) in enumerate(rowsJ):
+        y = len(rowsJ) - 1 - i
+        if rp:
+            rv = [100 * J3c[c]["share_removed"] for c in J3c if c.startswith(rp)]
+            axB.scatter(rv, [y] * len(rv), s=22, color=GREY, alpha=0.6, edgecolor="none", zorder=3)
+        v = 100 * J3c[k]["share_removed"]; lo, hi = [100 * x for x in J3c[k]["share_ci"]]
+        axB.plot([lo, hi], [y, y], color=LIGHT, lw=2.4, solid_capstyle="round", zorder=2)
+        axB.scatter([v], [y], s=50, color=INK2, edgecolor=SURFACE, zorder=4)
+        axB.text(hi + 8, y, f"{v:.0f}%", va="center", fontsize=9, color=INK)
+    axB.axvline(0, color=GREY, lw=0.9); axB.axvline(100, color=INK2, lw=0.9, ls=(0, (3, 2)))
+    axB.set_ylim(-0.85, len(rowsJ) - 0.6)
+    axB.text(106, -0.62, "gap fully removed", ha="left", va="center", fontsize=8.5, color=INK2)
+    axB.set_yticks(range(len(rowsJ)), [r[1] for r in rowsJ][::-1], color=INK); axB.tick_params(axis="y", length=0)
+    axB.set_xlim(-45, 300); axB.set_xticks([0, 100, 200, 300], ["0%", "100%", "200%", "300%"])
+    axB.set_xlabel("Share of the gap removed")
+    axB.set_title("Removing groups of neurons", pad=8)
+    axB.grid(axis="x", color=FAINT, lw=0.8); axB.set_axisbelow(True)
+    axB.legend(handles=[dot(INK2, "Chosen group"), plt.Line2D([], [], marker="o", ls="", ms=5, color=GREY, alpha=0.7,
+                        label="Random group from the same experts")], loc="upper left", bbox_to_anchor=(-0.02, -0.2),
+               frameon=False, fontsize=9, labelcolor=INK2, handlelength=1.2)
+    figs["j"] = save(fig, "14_authority_inside_qwen")
+
 # ---------- the page ----------
 log_path = ROOT / "results" / "iterations.md"
 stamp = time.strftime("%a %d %b, %H:%M") + " Cambodia time"

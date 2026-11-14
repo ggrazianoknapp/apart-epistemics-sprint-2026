@@ -1,6 +1,6 @@
 # Preliminary results (live)
 
-_Last updated Sat 14 Nov, 18:58 Cambodia time. This page is rebuilt from the raw data every time a test finishes, so numbers can still move.
+_Last updated Sat 14 Nov, 22:02 Cambodia time. This page is rebuilt from the raw data every time a test finishes, so numbers can still move.
 It's a working page, not the paper._
 
 ## What we're testing
@@ -85,4 +85,5 @@ Finished: see the Qwen rows in the first chart. Swapping Qwen's own reading of t
 - **Sat 14 Nov, 14:53 Cambodia time:** Pre-registered internal edits (F): none made Qwen a better judge; GG's 'judgement' push hurt known questions and helped unknown ones.
 - **Sat 14 Nov, 16:25 Cambodia time:** Pre-registration G: all predictions held. Qwen with no reasoning judges far worse (d' 0.26 vs 1.16 with thinking); authority ladder lowers stubbornness step by step without hurting judgement; 84 of 87 contested keys doubtful or ambiguous, main claim unchanged without them.
 - **Sat 14 Nov, 18:58 Cambodia time:** Pre-registration I (Goodfire's recipe over all 5.2 million neurons): no small group carries stubbornness, judgement or the authority effect; the best 25 authority neurons remove 12% of it (random at most 2%, predicted half). Final paper in the Apart template: report/paper.pdf.
+- **Sat 14 Nov, 22:02 Cambodia time:** Pre-registrations J and K: inside Qwen the author label's pull comes from claiming the answer key; it reaches the answer late; 25 early neurons chosen by attribution erase the author-vs-AI gap (101%), random groups at most 5%; they carry part of Qwen's trust in its own answer.
 
