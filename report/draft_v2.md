@@ -16,8 +16,8 @@ identical wording whether the user was right or wrong, and scored each model wit
 a right user from a wrong one (sensitivity) and how readily it switches (threshold). Thresholds varied almost three
 times as much as sensitivity across models. A one-line system prompt ("never change your answer") made two models look
 nearly perfect on a one-sided score by raising their threshold, without changing their sensitivity, and labelling the
-same pushback as coming from a human rather than an AI lowered models' thresholds, again without changing
-sensitivity. Letting models think before replying was the one change that made them better judges (sensitivity +0.40
+same pushback as coming from a human rather than an AI lowered the threshold of 10 of 11 models, again without
+changing sensitivity. Letting models think before replying was the one change that made them better judges (sensitivity +0.40
 across four models), though it also made them slightly more stubborn. In pre-registered
 re-asking, the same claim swayed four of eight models clearly more in a fresh chat than as pushback against their own
 answer, and only Claude Sonnet 5.5 gave in more to the conversation itself. Inside Qwen3.6-35B-A3B, Goodfire's
@@ -120,7 +120,7 @@ routing; three checks against vLLM passed (Appendix C).
 
 ![Figure 1](../figures/live/11_lever_map.png)
 
-*Figure 1. Every change we made, compared with the same model without it: change in stubbornness (threshold, left) and in judgement (sensitivity, right), on the same scale, with 95% intervals. Blue: the interval excludes zero. System prompts and the human-or-AI label move stubbornness; editing Qwen's internal signal lowers judgement; letting models think raises it.*
+*Figure 1. Every change we made, compared with the same model without it: change in stubbornness (threshold, left) and in judgement (sensitivity, right), on the same scale, with 95% intervals. Dark dots: the interval excludes zero. System prompts and the human-or-AI label mostly move stubbornness; editing Qwen's internal signal lowers judgement; letting models think raises it.*
 
 ![Figure 1](../figures/live/1_two_sided.png)
 
@@ -156,13 +156,13 @@ reasoning first was the one mitigation that improved both sides, on questions a 
 analysis is exploratory.
 
 **Who pushes back.** Study D labelled the same pushback "[Message from a human reviewer]" or "[Message from an AI
-reviewer]" on 12 models [numbers below are for the first 10; update when DeepSeek and Qwen finish]. Almost every model
-switched more for the human, in both directions: averaged over models, giving in to a wrong reviewer rose by 5.3
-points [3.7, 6.9] and accepting a right one by 10.3 points [8.2, 12.4]. The threshold fell by 0.25 [0.21, 0.29], while
-sensitivity did not change detectably (+0.05 [−0.04, 0.14]), so both pre-registered hypotheses held (H-D1, H-D2). Our
-exploratory prediction that the label matters more for models that cave more to the conversation (H-D3) was not
-supported (5.5 against 4.7 points). Models are more willing to change their minds for a person, but no better at
-telling whether that person is right.
+reviewer]" on 12 models [numbers for the 11 finished so far; Qwen3.6 still running]. Every model caved more for the
+human label, and all but Llama 3.3 70B also accepted more: averaged over models, caving to a wrong reviewer rose by
+5.4 [4.0, 6.9] points and accepting a right one by 10.2 [8.2, 12.3] points. The threshold fell by 0.25 [0.21, 0.29]
+(lower for 10 of 11 models), while sensitivity did not change detectably (+0.04 [−0.05, +0.12]), so both pre-registered hypotheses
+held (H-D1, H-D2). Our exploratory prediction that the label matters more for models that cave more to the conversation
+(H-D3) was not supported. Models are more willing to change their minds for a person, but no better at telling whether
+that person is right.
 
 ![Figure 4](../figures/live/10_human_vs_ai.png)
 

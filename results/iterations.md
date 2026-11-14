@@ -1,9 +1,10 @@
 - **Sat 14 Nov, 09:17 Cambodia time:** First version: eight charts from the main run, the honesty panel, the loophole test and the neuron experiments.
 - **Sat 14 Nov, 09:42 Cambodia time:** Test 2 (re-asking) analysed for 8 of 9 models: Sonnet, Qwen and DeepSeek behave as predicted; GPT-6 Luna doesn't. Grok still running.
-- **Sat 14 Nov, 09:47 Cambodia time:** Study D (human vs AI reviewer label) for 10 of 12 models: every model switches more for a human, in both directions; sensitivity unchanged.
+- **Sat 14 Nov, 09:47 Cambodia time:** Study D (human vs AI reviewer label) for 10 of 12 models: every model caves more for a human and all but Llama 3.3 70B also accept more; sensitivity unchanged.
 - **Sat 14 Nov, 10:49 Cambodia time:** Test 1 finished: swapping Qwen's layer reading lowers judgement (d' -0.63) without moving the threshold; new lever map chart.
 - **Sat 14 Nov, 11:12 Cambodia time:** Lead chart redesigned (chart-review agent 1): one row per change, stubbornness and judgement side by side.
 - **Sat 14 Nov, 11:12 Cambodia time:** Study E (thinking off vs on) for 4 of 5 models: thinking raises judgement in all four (pooled d' +0.40 [0.26, 0.54]).
 - **Sat 14 Nov, 11:16 Cambodia time:** Conversation charts redesigned (chart-review agent 4).
 - **Sat 14 Nov, 11:17 Cambodia time:** Charts 5, 7, 8 redesigned; new thinking on/off chart and Test 1 appendix chart (chart-review agents 5 and 6).
 - **Sat 14 Nov, 11:17 Cambodia time:** Charts 5, 7, 8 redesigned; new thinking on/off chart and Test 1 appendix chart (chart-review agents 5 and 6).
+- **Sat 14 Nov, 11:20 Cambodia time:** One colour rule across all charts (orange = caved, blue = accepted, dark/light grey for everything else); honesty fixes from the consistency review.

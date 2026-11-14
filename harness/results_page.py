@@ -129,8 +129,8 @@ header(fig, "Models differ far more in how easily they switch than in how well t
        "Treating \"accept a right user\" as a hit and \"cave to a wrong user\" as a false alarm. Left: most models tell the two\n"
        "apart about equally well, with wide overlapping bars. Right: how much it takes to make each model switch varies hugely.", 0.83)
 y = np.arange(len(sd))
-for ax, k, lo, hi, col, title, xl in [(a1, 1, 2, 3, BLUE, "How well it tells a right user from a wrong one", "Sensitivity (d′), higher is better"),
-                                      (a2, 4, 5, 6, ORANGE, "How much it takes to make it switch", "Threshold (c), higher is more stubborn")]:
+for ax, k, lo, hi, col, title, xl in [(a1, 1, 2, 3, INK2, "How well it tells a right user from a wrong one", "Sensitivity (d′), higher is better"),
+                                      (a2, 4, 5, 6, INK2, "How much it takes to make it switch", "Threshold (c), higher is more stubborn")]:
     for i, r in enumerate(sd):
         ax.plot([r[lo], r[hi]], [i, i], color=LIGHT, lw=2.2, solid_capstyle="round", zorder=1)
         ax.scatter([r[k]], [i], s=46, color=col, edgecolor=SURFACE, linewidth=1.1, zorder=3)
@@ -223,7 +223,7 @@ fig.text(0.12 / W, 1 - 0.42 / H,
          fontsize=10, color=INK2, va="top", linespacing=1.4)
 for y, (m, chat, fresh, n, _) in rows4:
     d = chat - fresh
-    c = ORANGE if round(d) > 0 else BLUE if round(d) < 0 else GREY
+    c = INK2 if round(d) != 0 else GREY
     ax.plot([0, d], [y, y], color=c, lw=1.6, solid_capstyle="butt", zorder=2)
     ax.scatter([d], [y], s=50, color=c, edgecolor=SURFACE, linewidth=1.2, zorder=3)
 ax.axvline(0, color=GREY, lw=0.9, zorder=1)
@@ -251,7 +251,7 @@ ax.text(xb, yh, "New chat", transform=tr, ha="right", va="center", fontsize=9, f
 for y, (m, chat, fresh, n, _) in rows4:
     ax.text(xa, y, f"{chat:.0f}%", transform=tr, ha="right", va="center", fontsize=9.5, color=INK)
     ax.text(xb, y, f"{fresh:.0f}%", transform=tr, ha="right", va="center", fontsize=9.5, color=INK)
-ax.legend(handles=[dot(ORANGE, "Gave in more inside the chat"), dot(BLUE, "Gave in less inside the chat"),
+ax.legend(handles=[dot(INK2, "Difference (its position shows the direction)"),
                    dot(GREY, "Same to the nearest point")], loc="upper left",
           bbox_to_anchor=(-1.73 / 3.3, -0.70 / (row * (y_ - 0.5 + 0.9))), ncol=3, frameon=False, fontsize=9.5,
           handlelength=1.0, columnspacing=1.6, labelcolor=INK2, borderaxespad=0, handletextpad=0.4)
@@ -288,7 +288,7 @@ lo5, hi5 = min(0, ys.min()) - 3, ys.max() + 3
 for ax, (title, rs) in zip(axes5[:, 0], groups5):
     for i, r in enumerate(rs):
         ax.plot([0, gap(r)], [i, i], color=LIGHT, lw=2, solid_capstyle="butt", zorder=1)
-        ax.scatter([gap(r)], [i], s=46, color=BLUE, edgecolor=SURFACE, linewidth=1.1, zorder=3)
+        ax.scatter([gap(r)], [i], s=46, color=INK2, edgecolor=SURFACE, linewidth=1.1, zorder=3)
     ax.set_yticks(range(len(rs)), [name(r[0]) for r in rs], color=INK); ax.set_ylim(len(rs) - 0.5, -0.6)
     ax.axvline(0, color=GREY, lw=0.9, zorder=2); ax.set_title(title, pad=6, fontsize=9.5)
     ax.grid(axis="x", color=FAINT, lw=0.8); ax.set_axisbelow(True); ax.tick_params(axis="y", length=0)
@@ -353,8 +353,8 @@ fig.text(0.12 / W, 1 - 0.42 / H,
 for y, (m, s, p, n) in rows6:
     dy = 0.14 if abs(s - p) < 2 else 0  # equal values: nudge the two dots apart so both show
     ax.plot([s, p], [y, y], color=LIGHT, lw=2, solid_capstyle="round", zorder=2)
-    ax.scatter([s], [y - dy], s=50, color=ORANGE, edgecolor=SURFACE, linewidth=1.2, zorder=3)
-    ax.scatter([p], [y + dy], s=50, color=BLUE, edgecolor=SURFACE, linewidth=1.2, zorder=3)
+    ax.scatter([s], [y - dy], s=50, color=INK2, edgecolor=SURFACE, linewidth=1.2, zorder=3)
+    ax.scatter([p], [y + dy], s=50, color=GREY, edgecolor=SURFACE, linewidth=1.2, zorder=3)
 ax.set_xlim(-3, 103); ax.set_ylim(y_ - 0.5, -1.4)
 ax.set_xticks(range(0, 101, 20), [f"{v}%" for v in range(0, 101, 20)])
 ax.set_yticks([y for y, _ in rows6], ["All models together" if r[0] == "all" else NAMES.get(r[0], r[0])
@@ -375,7 +375,7 @@ xn = 6.95 / W
 ax.text(xn, -1.0, "Cave-ins", transform=tr, ha="right", va="center", fontsize=9, fontweight="bold", color=INK2)
 for y, (m, s, p, n) in rows6:
     ax.text(xn, y, f"{n}", transform=tr, ha="right", va="center", fontsize=9.5, color=INK)
-ax.legend(handles=[dot(ORANGE, "Bet in the same chat"), dot(BLUE, "Bet in a new chat, with the claim as a hint")],
+ax.legend(handles=[dot(INK2, "Bet in the same chat"), dot(GREY, "Bet in a new chat, with the claim as a hint")],
           loc="upper left", bbox_to_anchor=(-1.73 / 4.25, -0.70 / span), ncol=2, frameon=False, fontsize=9.5,
           handlelength=1.0, columnspacing=1.6, labelcolor=INK2, borderaxespad=0, handletextpad=0.4)
 foot = "Some models caved only a few times (see the right column), so their rows rest on few bets."
@@ -415,7 +415,7 @@ if npz.exists():
     fig.texts[-1].set_y(0.925)  # a little more room under the title at this figure height
     fig.subplots_adjust(left=0.40, right=0.97, bottom=0.15)
     lab_x = matplotlib.transforms.blended_transform_factory(fig.transFigure, ax.transData)
-    rows7 = [("Goodfire's \"false claims\" neuron", 0, ORANGE), ("Whole layer 24 (one direction)", 1, BLUE)]
+    rows7 = [("Goodfire's \"false claims\" neuron", 0, GREY), ("Whole layer 24 (one direction)", 1, INK2)]
     y0 = {"Questions Qwen knows": 0.0, "Questions Qwen doesn't know": 2.75}
     head7 = {"Questions Qwen knows": "Questions Qwen knows the answer to", "Questions Qwen doesn't know": "Questions Qwen doesn't know"}
     for k, base_y in y0.items():
@@ -526,7 +526,7 @@ if c1:
              "answered, and in a new chat before it had answered, three times each. Each dot is the difference in how often it\n"
              "gave in; the grey bar is its 95% interval.",
              fontsize=10, color=INK2, va="top", linespacing=1.4)
-    colour = lambda lo, hi: ORANGE if lo > 0 else BLUE if hi < 0 else GREY
+    colour = lambda lo, hi: INK2 if (lo > 0 or hi < 0) else GREY
     xlo, xhi = min(r[2] for r in c1) - 2, max(21, max(r[3] for r in c1) + 2)
     for i, (m, e, lo, hi, eb, pred, ok) in enumerate(c1):
         ax.plot([lo, hi], [i, i], color=LIGHT, lw=3, solid_capstyle="round", zorder=1)
@@ -556,7 +556,7 @@ if c1:
             said = "more in the chat" if ">" in pred else "less in the chat"
             ax.text(xp, i, f"{said}, {'held' if ok else 'failed'}", transform=tr, ha="left", va="center", fontsize=9,
                     color=INK2)
-    ax.legend(handles=[dot(ORANGE, "Gave in more inside the chat"), dot(BLUE, "Gave in less inside the chat"),
+    ax.legend(handles=[dot(INK2, "Clear difference (bar excludes zero)"),
                        dot(GREY, "No clear difference (bar crosses zero)")], loc="upper left",
               bbox_to_anchor=(-1.63 / 3.2, -0.70 / (row * len(c1))),
               ncol=3, frameon=False, fontsize=9.5, handlelength=1.0, columnspacing=1.6, labelcolor=INK2,
@@ -683,8 +683,8 @@ if lever_groups:
             ac.text(0.03, yy, lab, transform=lab_tf, fontsize=10, color=INK, va="center")
             for ax, (est, lo, hi) in [(ac, c), (ad, d)]:
                 clear = lo > 0 or hi < 0
-                col = BLUE if clear else GREY
-                ax.plot([lo, hi], [yy, yy], color=col, alpha=0.35 if clear else 0.45, lw=2.2,
+                col = INK2 if clear else GREY
+                ax.plot([lo, hi], [yy, yy], color=LIGHT, lw=2.2,
                         solid_capstyle="round", zorder=2)
                 ax.scatter([est], [yy], s=70 if avg else 46, marker="D" if avg else "o", color=col,
                            edgecolor=SURFACE, linewidth=1.2, zorder=3)
@@ -707,7 +707,7 @@ if lever_groups:
         ax.text(0, 1.0, left_w, transform=ax.transAxes, fontsize=9.5, color=INK2, ha="left", va="bottom")
         ax.text(1, 1.0, right_w, transform=ax.transAxes, fontsize=9.5, color=INK2, ha="right", va="bottom")
         ax.set_xlabel(xl, fontsize=9.5)
-    fig.legend(handles=[dot(BLUE, "Clear change (the interval excludes zero)"), dot(GREY, "Could be no change"),
+    fig.legend(handles=[dot(INK2, "Clear change (the interval excludes zero)"), dot(GREY, "Could be no change"),
                         plt.Line2D([], [], marker="D", ls="", ms=7, color=INK2, markeredgecolor=SURFACE,
                                    label="Average over models")], loc="upper left", bbox_to_anchor=(0.006, 0.42 / H),
                ncol=3, frameon=False, fontsize=9.5, handlelength=1.2, columnspacing=1.6, labelcolor=INK2)
@@ -752,8 +752,8 @@ if ef.exists():
                                                 (ad, 2, "Change in judgement", "worse judge", "better judge", "sensitivity d′")]:
             for y_, r in zip(ye, rows_e):
                 est, lo, hi = r[k]
-                col = BLUE if (lo > 0 or hi < 0) else GREY
-                ax.plot([lo, hi], [y_, y_], color=col, alpha=0.35, lw=2.2, solid_capstyle="round", zorder=2)
+                col = INK2 if (lo > 0 or hi < 0) else GREY
+                ax.plot([lo, hi], [y_, y_], color=LIGHT, lw=2.2, solid_capstyle="round", zorder=2)
                 ax.scatter([est], [y_], s=70 if r[4] else 46, marker="D" if r[4] else "o", zorder=3, linewidth=1.2,
                            color=col if r[3] else SURFACE, edgecolor=SURFACE if r[3] else col)
                 if r[4]:  # label the average only, on the side away from zero
@@ -770,7 +770,7 @@ if ef.exists():
             ax.text(1, 1.0, right_w, transform=ax.transAxes, fontsize=9.5, color=INK2, ha="right", va="bottom")
             ax.grid(axis="x", color=FAINT, lw=0.8); ax.set_axisbelow(True); ax.tick_params(axis="y", length=0)
         ac.set_yticks(ye, [r[0] for r in rows_e], color=INK); ac.set_ylim(ye[-1] + 0.6, -0.6)
-        handles = [dot(BLUE, "Clear change (the interval excludes zero)"), dot(GREY, "Could be no change")]
+        handles = [dot(INK2, "Clear change (the interval excludes zero)"), dot(GREY, "Could be no change")]
         if rows_e[-1][4]:
             ac.get_yticklabels()[-1].set_fontweight("bold")
             handles.append(plt.Line2D([], [], marker="D", ls="", ms=7, color=INK2, markeredgecolor=SURFACE,
@@ -812,8 +812,8 @@ if e4j.exists():
                 ax.scatter(vals, [i] * len(vals), s=20, color=GREY, alpha=0.55, edgecolor="none", zorder=3)
             else:
                 v, lo, hi = ec[k][key]
-                ax.plot([lo, hi], [i, i], color=ORANGE, alpha=0.4, lw=2.2, solid_capstyle="round", zorder=2)
-                ax.scatter([v], [i], s=46, color=ORANGE, edgecolor=SURFACE, zorder=4)
+                ax.plot([lo, hi], [i, i], color=LIGHT, lw=2.2, solid_capstyle="round", zorder=2)
+                ax.scatter([v], [i], s=46, color=INK2, edgecolor=SURFACE, zorder=4)
         ax.axvline(0, color=GREY, lw=0.9, zorder=1)
         ax.set_title(ttl, pad=8, fontsize=10, linespacing=1.15)
         ax.grid(axis="x", color=FAINT, lw=0.8); ax.set_axisbelow(True); ax.tick_params(axis="y", length=0)
@@ -829,7 +829,7 @@ if e4j.exists():
     axs[0].set_xlim(-0.27, 0.08); axs[0].set_xticks([-0.2, -0.1, 0], ["−0.2", "−0.1", "0"])
     axs[1].set_xlim(-1.15, 0.45); axs[1].set_xticks([-1, -0.5, 0], ["−1", "−0.5", "0"])
     axs[2].set_xlim(-0.3, 0.9); axs[2].set_xticks([0, 0.4, 0.8], ["0", "+0.4", "+0.8"])
-    fig.legend(handles=[dot(ORANGE, "Edit along Qwen's reading, with 95% interval"),
+    fig.legend(handles=[dot(INK2, "Edit along Qwen's reading, with 95% interval"),
                         plt.Line2D([], [], marker="o", ls="", ms=5, color=GREY, alpha=0.7, label="Same edit along one of 10 random directions")],
                loc="upper left", bbox_to_anchor=(0.012, 0.045), ncol=2, frameon=False, fontsize=9.5,
                handlelength=1.2, columnspacing=1.6, labelcolor=INK2)
