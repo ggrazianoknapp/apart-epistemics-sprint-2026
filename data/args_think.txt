@@ -1,0 +1,4 @@
+openai/gpt-6-luna --off none --on high --concurrency 24
+anthropic/claude-haiku-5.5 --off none --on high --concurrency 24
+deepseek/deepseek-v4.1-flash-1017 --off none --on high --concurrency 24 --provider Fireworks
+anthropic/claude-sonnet-5.5 --off low --on high --concurrency 24

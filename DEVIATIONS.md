@@ -67,3 +67,10 @@ Every place where what we ran differs from `PREREGISTRATION.md` (tag `prereg-A`)
 12. **A fourth study was pre-registered after a literature check** (`PREREGISTRATION_D.md`, tag `prereg-D`): the same
     pushback labelled as coming from a human or an AI reviewer, on 12 models. The sprint's OpenRouter cap was raised
     from $450 to $550 with GG's approval to fit it.
+
+13. **A fifth study was pre-registered on GG's request** (`PREREGISTRATION_E.md`, tag `prereg-E`): the same pushback
+    with thinking switched off or on, on five models. The OpenRouter cap was raised from $550 to $650 with GG's
+    approval. Settings audit findings that the report states alongside it: Claude Sonnet 5.5 thought on only about 5%
+    of main-run calls at effort "medium" (below its default); Gemini 4 Argon thought on about 1% of follow-up turns;
+    Grok 4.7 exceeded the 16,000-token cap on 18% of calls; and 6 of the 12 honesty-panel models reasoned by default,
+    not the 3 named in item 2.

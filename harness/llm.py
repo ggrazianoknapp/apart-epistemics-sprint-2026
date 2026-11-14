@@ -10,7 +10,7 @@ QWEN_LOCAL = "qwen-local"  # model name we use for our own vLLM server
 
 # Sprint spend is measured against the key's usage when the sprint started (13 Nov 2026).
 BASELINE_USAGE = 5327.12
-SPEND_CAP = float(os.environ.get("SPRINT_SPEND_CAP", "550"))
+SPEND_CAP = float(os.environ.get("SPRINT_SPEND_CAP", "650"))
 
 
 def load_key():
@@ -71,6 +71,8 @@ class Client:
             body["temperature"] = temperature
         if local:
             body.update({"temperature": 0.6, "top_p": 0.95, "top_k": 20})
+            if reasoning == "none":  # study E: Qwen with thinking switched off, same sampling settings
+                body["chat_template_kwargs"] = {"enable_thinking": False}
         else:
             body["usage"] = {"include": True}
             if reasoning:

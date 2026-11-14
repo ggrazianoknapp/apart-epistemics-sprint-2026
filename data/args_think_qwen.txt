@@ -1,0 +1,1 @@
+qwen-local --off none --on medium --concurrency 48
