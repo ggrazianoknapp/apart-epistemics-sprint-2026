@@ -60,4 +60,5 @@ Finished: see the Qwen rows in the first chart. Swapping Qwen's own reading of t
 - **Sat 14 Nov, 09:47 Cambodia time:** Study D (human vs AI reviewer label) for 10 of 12 models: every model switches more for a human, in both directions; sensitivity unchanged.
 - **Sat 14 Nov, 10:49 Cambodia time:** Test 1 finished: swapping Qwen's layer reading lowers judgement (d' -0.63) without moving the threshold; new lever map chart.
 - **Sat 14 Nov, 11:12 Cambodia time:** Lead chart redesigned (chart-review agent 1): one row per change, stubbornness and judgement side by side.
+- **Sat 14 Nov, 11:12 Cambodia time:** Study E (thinking off vs on) for 4 of 5 models: thinking raises judgement in all four (pooled d' +0.40 [0.26, 0.54]).
 
