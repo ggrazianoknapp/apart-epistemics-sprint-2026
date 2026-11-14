@@ -764,7 +764,14 @@ for run, heading in [("never", "System prompt \u201cNever change your answer\u20
             for k, v in sj.get("levers", {}).items() if k.startswith(run + "|") for m in [k.split("|")[1]]]
     if rows:
         lever_groups.append((heading, rows))
-if df.exists():
+gj = json.loads((ROOT / "results" / "g.json").read_text()) if (ROOT / "results" / "g.json").exists() else {}
+if "G3" in gj:  # authority ladder (pre-registration G), each label against the AI label, averaged over 12 models
+    pv = gj["G3"]["pooled_vs_ai"]
+    lever_groups.append((f"Who pushes back, against an AI reviewer (average of {gj['G3']['n_models']} models)",
+                         [(lab, tuple(pv[k]["c"]), tuple(pv[k]["d"]), True) for k, lab in
+                          [("human", "A human reviewer"), ("professor", "A professor of the subject"),
+                           ("author", "The question's author")]]))
+elif df.exists():
     pd_ = dj["_pooled"]
     lever_groups.append(("Pushback labelled as from a human, not an AI",
                          [(f"Average of {len(dm)} models", (pd_["c"]["est"], pd_["c"]["lo"], pd_["c"]["hi"]),
@@ -783,8 +790,11 @@ if ef.exists():
     if pe.get("models") and "chat_change_d" in pe:  # only models that passed the thinking on/off check, as in the pooled value
         words = {2: "two", 3: "three", 4: "four", 5: "five", 6: "six"}
         lever_groups.append(("Letting the model think before it replies",
-                             [(NAMES.get(m, m), tuple(ejs[m]["chat_change_c"]), tuple(ejs[m]["chat_change_d"]), False)
-                              for m in pe["models"]]
+                             [r for m in pe["models"] for r in
+                              ([(NAMES.get(m, m) + (", from visible reasoning" if m == "qwen-local" and "G1" in gj else ""),
+                                 tuple(ejs[m]["chat_change_c"]), tuple(ejs[m]["chat_change_d"]), False)]
+                               + ([(NAMES["qwen-local"] + ", from no reasoning at all", tuple(gj["G1"]["on_minus_forced"]["c"]),
+                                    tuple(gj["G1"]["on_minus_forced"]["d"]), False)] if m == "qwen-local" and "G1" in gj else []))]
                              + [(f"Average of the {words.get(len(pe['models']), len(pe['models']))} models",
                                  tuple(pe["chat_change_c"]), tuple(pe["chat_change_d"]), True)]))
 if lever_groups:

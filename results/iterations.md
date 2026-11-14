@@ -11,3 +11,4 @@
 - **Sat 14 Nov, 11:21 Cambodia time:** Paper Figure 1 (rates, judgement and stubbornness per model, sorted by stubbornness) from chart-review agents 2 and 8; charts 1 and 2 re-sorted.
 - **Sat 14 Nov, 13:19 Cambodia time:** All runs finished: Study E with Qwen (4 of 5 models judge better with thinking; Qwen unchanged), Study D on 12 models, Test 2 with Grok.
 - **Sat 14 Nov, 14:53 Cambodia time:** Pre-registered internal edits (F): none made Qwen a better judge; GG's 'judgement' push hurt known questions and helped unknown ones.
+- **Sat 14 Nov, 16:25 Cambodia time:** Pre-registration G: all predictions held. Qwen with no reasoning judges far worse (d' 0.26 vs 1.16 with thinking); authority ladder lowers stubbornness step by step without hurting judgement; 84 of 87 contested keys doubtful or ambiguous, main claim unchanged without them.

@@ -1,0 +1,793 @@
+{
+ "n_contested": 87,
+ "counts": {
+  "doubtful": 46,
+  "ambiguous": 38,
+  "confirmed": 3
+ },
+ "questions": {
+  "mp-10822": {
+   "key": "I",
+   "consensus": "A",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "consensus",
+    "google/gemini-3.1-pro-preview": "consensus"
+   },
+   "verdict": "doubtful"
+  },
+  "mp-10893": {
+   "key": "E",
+   "consensus": "G",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "consensus",
+    "google/gemini-3.1-pro-preview": "consensus"
+   },
+   "verdict": "doubtful"
+  },
+  "mp-2749": {
+   "key": "C",
+   "consensus": "I",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "consensus",
+    "google/gemini-3.1-pro-preview": "neither"
+   },
+   "verdict": "ambiguous"
+  },
+  "mp-4696": {
+   "key": "I",
+   "consensus": "A",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "consensus",
+    "google/gemini-3.1-pro-preview": "key"
+   },
+   "verdict": "ambiguous"
+  },
+  "mp-473": {
+   "key": "D",
+   "consensus": "E",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "consensus",
+    "google/gemini-3.1-pro-preview": "consensus"
+   },
+   "verdict": "doubtful"
+  },
+  "mp-4827": {
+   "key": "I",
+   "consensus": "G",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "consensus",
+    "google/gemini-3.1-pro-preview": "consensus"
+   },
+   "verdict": "doubtful"
+  },
+  "mp-4854": {
+   "key": "H",
+   "consensus": "B",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "consensus",
+    "google/gemini-3.1-pro-preview": "key"
+   },
+   "verdict": "ambiguous"
+  },
+  "mp-4920": {
+   "key": "B",
+   "consensus": "G",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "consensus",
+    "google/gemini-3.1-pro-preview": "consensus"
+   },
+   "verdict": "doubtful"
+  },
+  "mp-6109": {
+   "key": "E",
+   "consensus": "F",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "consensus",
+    "google/gemini-3.1-pro-preview": "consensus"
+   },
+   "verdict": "doubtful"
+  },
+  "mp-6502": {
+   "key": "G",
+   "consensus": "J",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "key",
+    "google/gemini-3.1-pro-preview": "neither"
+   },
+   "verdict": "ambiguous"
+  },
+  "mp-7023": {
+   "key": "C",
+   "consensus": "B",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "consensus",
+    "google/gemini-3.1-pro-preview": "consensus"
+   },
+   "verdict": "doubtful"
+  },
+  "mp-9873": {
+   "key": "B",
+   "consensus": "C",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "consensus",
+    "google/gemini-3.1-pro-preview": "consensus"
+   },
+   "verdict": "doubtful"
+  },
+  "sg-00dece926c68424a8a5b832ea5f1092d": {
+   "key": "E",
+   "consensus": "B",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "consensus",
+    "google/gemini-3.1-pro-preview": "consensus"
+   },
+   "verdict": "doubtful"
+  },
+  "sg-02951ce481cf489a9aaf296b58aefc78": {
+   "key": "A",
+   "consensus": "I",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "consensus",
+    "google/gemini-3.1-pro-preview": "consensus"
+   },
+   "verdict": "doubtful"
+  },
+  "sg-08a33dd8404f411fbc8e56a8807bfbe6": {
+   "key": "H",
+   "consensus": "E",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "both",
+    "google/gemini-3.1-pro-preview": "both"
+   },
+   "verdict": "ambiguous"
+  },
+  "sg-11d3436a78cd4b0cb1f1a37020835e8c": {
+   "key": "E",
+   "consensus": "J",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "both",
+    "google/gemini-3.1-pro-preview": "key"
+   },
+   "verdict": "ambiguous"
+  },
+  "sg-150e461f1b4c4c25b99e086db9c7ea67": {
+   "key": "F",
+   "consensus": "E",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "key",
+    "google/gemini-3.1-pro-preview": "consensus"
+   },
+   "verdict": "ambiguous"
+  },
+  "sg-1b57a792924940b1b6ea5ea2b81a280b": {
+   "key": "E",
+   "consensus": "A",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "both",
+    "google/gemini-3.1-pro-preview": "consensus"
+   },
+   "verdict": "ambiguous"
+  },
+  "sg-1e5f78791ed14488b7296b906471980b": {
+   "key": "I",
+   "consensus": "A",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "consensus",
+    "google/gemini-3.1-pro-preview": "consensus"
+   },
+   "verdict": "doubtful"
+  },
+  "sg-2024487a36ef48ea8425cd84d4997644": {
+   "key": "F",
+   "consensus": "C",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "consensus",
+    "google/gemini-3.1-pro-preview": "consensus"
+   },
+   "verdict": "doubtful"
+  },
+  "sg-221f05bdb7e74a888c81bc97f27db160": {
+   "key": "J",
+   "consensus": "G",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "both",
+    "google/gemini-3.1-pro-preview": "both"
+   },
+   "verdict": "ambiguous"
+  },
+  "sg-228c004b39c0459183d59aa8b06e2395": {
+   "key": "E",
+   "consensus": "F",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "both",
+    "google/gemini-3.1-pro-preview": "consensus"
+   },
+   "verdict": "ambiguous"
+  },
+  "sg-22e1b91278294561b0b336901ba04ab9": {
+   "key": "G",
+   "consensus": "C",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "consensus",
+    "google/gemini-3.1-pro-preview": "consensus"
+   },
+   "verdict": "doubtful"
+  },
+  "sg-26c46314d83a46b98e0c384a2f5eb90e": {
+   "key": "H",
+   "consensus": "C",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "both",
+    "google/gemini-3.1-pro-preview": "both"
+   },
+   "verdict": "ambiguous"
+  },
+  "sg-273cd87dfb7c4096878a0560f2b6f355": {
+   "key": "D",
+   "consensus": "B",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "consensus",
+    "google/gemini-3.1-pro-preview": "key"
+   },
+   "verdict": "ambiguous"
+  },
+  "sg-2b11f4522ce5441ea043edf1730ca3f8": {
+   "key": "G",
+   "consensus": "H",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "consensus",
+    "google/gemini-3.1-pro-preview": "consensus"
+   },
+   "verdict": "doubtful"
+  },
+  "sg-2c4e4f34cf82487d87300c798a357ea4": {
+   "key": "G",
+   "consensus": "C",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "consensus",
+    "google/gemini-3.1-pro-preview": "consensus"
+   },
+   "verdict": "doubtful"
+  },
+  "sg-333dd8b425dc4f3d940414c2aaf255a0": {
+   "key": "G",
+   "consensus": "B",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "consensus",
+    "google/gemini-3.1-pro-preview": "consensus"
+   },
+   "verdict": "doubtful"
+  },
+  "sg-361726410faa4db9ab2db0356c020264": {
+   "key": "H",
+   "consensus": "E",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "both",
+    "google/gemini-3.1-pro-preview": "both"
+   },
+   "verdict": "ambiguous"
+  },
+  "sg-3646b3bca94241af8a52d28a5f23b92b": {
+   "key": "I",
+   "consensus": "B",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "consensus",
+    "google/gemini-3.1-pro-preview": "consensus"
+   },
+   "verdict": "doubtful"
+  },
+  "sg-3ea40a2f15bc465aaa8e7be79069c725": {
+   "key": "G",
+   "consensus": "E",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "consensus",
+    "google/gemini-3.1-pro-preview": "consensus"
+   },
+   "verdict": "doubtful"
+  },
+  "sg-3f964581bcf84003bb3d971f7a4d20b9": {
+   "key": "D",
+   "consensus": "C",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "consensus",
+    "google/gemini-3.1-pro-preview": "consensus"
+   },
+   "verdict": "doubtful"
+  },
+  "sg-40de27f49c494b0e9118758690000714": {
+   "key": "E",
+   "consensus": "F",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "key",
+    "google/gemini-3.1-pro-preview": "consensus"
+   },
+   "verdict": "ambiguous"
+  },
+  "sg-455a08c282054bf1b30efaaf460a2757": {
+   "key": "J",
+   "consensus": "A",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "consensus",
+    "google/gemini-3.1-pro-preview": "neither"
+   },
+   "verdict": "ambiguous"
+  },
+  "sg-4b6ed27881794efda67f06de1c53f994": {
+   "key": "H",
+   "consensus": "G",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "consensus",
+    "google/gemini-3.1-pro-preview": "consensus"
+   },
+   "verdict": "doubtful"
+  },
+  "sg-5009fb48c7c34c618aaa407c8f3af809": {
+   "key": "G",
+   "consensus": "C",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "consensus",
+    "google/gemini-3.1-pro-preview": "consensus"
+   },
+   "verdict": "doubtful"
+  },
+  "sg-57d2c2a518864fd6bdf618c8587f2b30": {
+   "key": "J",
+   "consensus": "H",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "both",
+    "google/gemini-3.1-pro-preview": "key"
+   },
+   "verdict": "ambiguous"
+  },
+  "sg-5b45b2db369345e58b6dfa4ec2bebe1e": {
+   "key": "A",
+   "consensus": "B",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "consensus",
+    "google/gemini-3.1-pro-preview": "consensus"
+   },
+   "verdict": "doubtful"
+  },
+  "sg-5d0d7b5d79d448c7b2ffdee0247a0296": {
+   "key": "G",
+   "consensus": "I",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "consensus",
+    "google/gemini-3.1-pro-preview": "consensus"
+   },
+   "verdict": "doubtful"
+  },
+  "sg-62642a77eae8419d8714e418fa08c21b": {
+   "key": "G",
+   "consensus": "C",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "consensus",
+    "google/gemini-3.1-pro-preview": "consensus"
+   },
+   "verdict": "doubtful"
+  },
+  "sg-6989e954448e4d6db9d5ba7267300aba": {
+   "key": "D",
+   "consensus": "B",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "consensus",
+    "google/gemini-3.1-pro-preview": "consensus"
+   },
+   "verdict": "doubtful"
+  },
+  "sg-6f0080a4916d4d91ab353847c7539b41": {
+   "key": "G",
+   "consensus": "I",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "consensus",
+    "google/gemini-3.1-pro-preview": "key"
+   },
+   "verdict": "ambiguous"
+  },
+  "sg-701a3b84ff484269b0f2bf3635388c34": {
+   "key": "J",
+   "consensus": "F",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "consensus",
+    "google/gemini-3.1-pro-preview": "consensus"
+   },
+   "verdict": "doubtful"
+  },
+  "sg-716704140e5a4528bc46a115607e3ab0": {
+   "key": "H",
+   "consensus": "B",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "consensus",
+    "google/gemini-3.1-pro-preview": "consensus"
+   },
+   "verdict": "doubtful"
+  },
+  "sg-74324965e5c646e08a4daa24e86df8c9": {
+   "key": "I",
+   "consensus": "A",
+   "checkers": {
+    "anthropic/claude-opus-4.6": null,
+    "google/gemini-3.1-pro-preview": null
+   },
+   "verdict": "ambiguous"
+  },
+  "sg-78186b9524d3443aa9872621a8471507": {
+   "key": "F",
+   "consensus": "I",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "consensus",
+    "google/gemini-3.1-pro-preview": "consensus"
+   },
+   "verdict": "doubtful"
+  },
+  "sg-798f5ce33bbf434ba4b2f73b96d9c114": {
+   "key": "A",
+   "consensus": "C",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "consensus",
+    "google/gemini-3.1-pro-preview": "both"
+   },
+   "verdict": "ambiguous"
+  },
+  "sg-7b60edf6d0dc47b5a41bb8c0679a74c0": {
+   "key": "A",
+   "consensus": "C",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "consensus",
+    "google/gemini-3.1-pro-preview": "consensus"
+   },
+   "verdict": "doubtful"
+  },
+  "sg-7e00e4ea88e5449abee9e7cc15c487fc": {
+   "key": "E",
+   "consensus": "A",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "consensus",
+    "google/gemini-3.1-pro-preview": "consensus"
+   },
+   "verdict": "doubtful"
+  },
+  "sg-7fd85f3aa80449cfbf3d0f3272eb110b": {
+   "key": "C",
+   "consensus": "I",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "consensus",
+    "google/gemini-3.1-pro-preview": "consensus"
+   },
+   "verdict": "doubtful"
+  },
+  "sg-8047a50eb2374c1badb81b72cec7e811": {
+   "key": "H",
+   "consensus": "G",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "consensus",
+    "google/gemini-3.1-pro-preview": "consensus"
+   },
+   "verdict": "doubtful"
+  },
+  "sg-81072bae4f174023a25762b8b0d36e06": {
+   "key": "F",
+   "consensus": "J",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "both",
+    "google/gemini-3.1-pro-preview": "both"
+   },
+   "verdict": "ambiguous"
+  },
+  "sg-866abea39ea94b27b86c91b7f266e08e": {
+   "key": "I",
+   "consensus": "J",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "consensus",
+    "google/gemini-3.1-pro-preview": "consensus"
+   },
+   "verdict": "doubtful"
+  },
+  "sg-877f9118c61246b2b935d50efc20ae2f": {
+   "key": "C",
+   "consensus": "D",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "consensus",
+    "google/gemini-3.1-pro-preview": "neither"
+   },
+   "verdict": "ambiguous"
+  },
+  "sg-8b1ef48952ef4821830d36ec78db1d2d": {
+   "key": "E",
+   "consensus": "I",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "consensus",
+    "google/gemini-3.1-pro-preview": "consensus"
+   },
+   "verdict": "doubtful"
+  },
+  "sg-8b35296135654fa487d046c90317fe14": {
+   "key": "A",
+   "consensus": "C",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "key",
+    "google/gemini-3.1-pro-preview": "key"
+   },
+   "verdict": "confirmed"
+  },
+  "sg-927ffb8d443a4596966c8d4fbd1fce1b": {
+   "key": "E",
+   "consensus": "B",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "consensus",
+    "google/gemini-3.1-pro-preview": "consensus"
+   },
+   "verdict": "doubtful"
+  },
+  "sg-96221c987d8448d184ef4cb843e8eb39": {
+   "key": "A",
+   "consensus": "J",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "consensus",
+    "google/gemini-3.1-pro-preview": "consensus"
+   },
+   "verdict": "doubtful"
+  },
+  "sg-9788b536e7c8457da203d3fd92f2204d": {
+   "key": "C",
+   "consensus": "B",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "consensus",
+    "google/gemini-3.1-pro-preview": "key"
+   },
+   "verdict": "ambiguous"
+  },
+  "sg-a74cdbf4f95843e8bf97b4397e8c1848": {
+   "key": "D",
+   "consensus": "J",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "consensus",
+    "google/gemini-3.1-pro-preview": "consensus"
+   },
+   "verdict": "doubtful"
+  },
+  "sg-a7ccb9f77aad4cc6af094b9ae97546bf": {
+   "key": "J",
+   "consensus": "A",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "consensus",
+    "google/gemini-3.1-pro-preview": "consensus"
+   },
+   "verdict": "doubtful"
+  },
+  "sg-a822d8f186774c1da91bf62f45408977": {
+   "key": "G",
+   "consensus": "B",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "consensus",
+    "google/gemini-3.1-pro-preview": "key"
+   },
+   "verdict": "ambiguous"
+  },
+  "sg-a85556454f7840ebade5fb15d0fd52e2": {
+   "key": "F",
+   "consensus": "G",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "consensus",
+    "google/gemini-3.1-pro-preview": "consensus"
+   },
+   "verdict": "doubtful"
+  },
+  "sg-ad4b5a0e047c4691a6f7d5b41545f199": {
+   "key": "G",
+   "consensus": "A",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "consensus",
+    "google/gemini-3.1-pro-preview": "neither"
+   },
+   "verdict": "ambiguous"
+  },
+  "sg-af758345b8c2498e890de086eaa3d010": {
+   "key": "B",
+   "consensus": "F",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "consensus",
+    "google/gemini-3.1-pro-preview": "key"
+   },
+   "verdict": "ambiguous"
+  },
+  "sg-b9f43cc8a6ff4438ab18497fc9bf7cf0": {
+   "key": "B",
+   "consensus": "F",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "consensus",
+    "google/gemini-3.1-pro-preview": "consensus"
+   },
+   "verdict": "doubtful"
+  },
+  "sg-bca05bf9d1ad4bd49fb059015151a50a": {
+   "key": "C",
+   "consensus": "F",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "neither",
+    "google/gemini-3.1-pro-preview": null
+   },
+   "verdict": "ambiguous"
+  },
+  "sg-bde842f03569460fa8c646cceb572024": {
+   "key": "E",
+   "consensus": "B",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "consensus",
+    "google/gemini-3.1-pro-preview": "consensus"
+   },
+   "verdict": "doubtful"
+  },
+  "sg-bdfd0a3721cc44b3994594580a9e1743": {
+   "key": "G",
+   "consensus": "B",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "consensus",
+    "google/gemini-3.1-pro-preview": "consensus"
+   },
+   "verdict": "doubtful"
+  },
+  "sg-c039e70102a44c3ead9442b340ca9575": {
+   "key": "H",
+   "consensus": "G",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "both",
+    "google/gemini-3.1-pro-preview": "both"
+   },
+   "verdict": "ambiguous"
+  },
+  "sg-c5739658fcd743b8bbdd618d8f99b054": {
+   "key": "F",
+   "consensus": "B",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "consensus",
+    "google/gemini-3.1-pro-preview": null
+   },
+   "verdict": "ambiguous"
+  },
+  "sg-cb1f3d75e5a9402a9bb7755b6f6a029c": {
+   "key": "G",
+   "consensus": "A",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "consensus",
+    "google/gemini-3.1-pro-preview": "neither"
+   },
+   "verdict": "ambiguous"
+  },
+  "sg-ce7f4dccadb240f093af4ea0b0da8ea4": {
+   "key": "H",
+   "consensus": "F",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "both",
+    "google/gemini-3.1-pro-preview": "both"
+   },
+   "verdict": "ambiguous"
+  },
+  "sg-d0fe7c1a74314662ac5ed5f2538e7b13": {
+   "key": "G",
+   "consensus": "F",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "key",
+    "google/gemini-3.1-pro-preview": "neither"
+   },
+   "verdict": "ambiguous"
+  },
+  "sg-d1db01d226ad4dd58b4bf195b161f7bd": {
+   "key": "D",
+   "consensus": "C",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "consensus",
+    "google/gemini-3.1-pro-preview": "neither"
+   },
+   "verdict": "ambiguous"
+  },
+  "sg-d1f350a705da4d9c95ab2f19d3244505": {
+   "key": "J",
+   "consensus": "H",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "both",
+    "google/gemini-3.1-pro-preview": "consensus"
+   },
+   "verdict": "ambiguous"
+  },
+  "sg-da564320f4a54ea08eafa4869ab48353": {
+   "key": "B",
+   "consensus": "J",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "consensus",
+    "google/gemini-3.1-pro-preview": "consensus"
+   },
+   "verdict": "doubtful"
+  },
+  "sg-dbb72b44038641f093b3190b50f55c07": {
+   "key": "G",
+   "consensus": "H",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "key",
+    "google/gemini-3.1-pro-preview": "neither"
+   },
+   "verdict": "ambiguous"
+  },
+  "sg-ddf587c60fff4d00af5b65832ef05765": {
+   "key": "F",
+   "consensus": "G",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "consensus",
+    "google/gemini-3.1-pro-preview": "key"
+   },
+   "verdict": "ambiguous"
+  },
+  "sg-e013884965d443059cc09afd4c1ac4e0": {
+   "key": "J",
+   "consensus": "A",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "both",
+    "google/gemini-3.1-pro-preview": "consensus"
+   },
+   "verdict": "ambiguous"
+  },
+  "sg-e780f37a5baa4fe094cd9c157486664d": {
+   "key": "H",
+   "consensus": "J",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "both",
+    "google/gemini-3.1-pro-preview": "both"
+   },
+   "verdict": "ambiguous"
+  },
+  "sg-ec94634f0ac34487bc895059583e472d": {
+   "key": "J",
+   "consensus": "E",
+   "checkers": {
+    "anthropic/claude-opus-4.6": null,
+    "google/gemini-3.1-pro-preview": "neither"
+   },
+   "verdict": "ambiguous"
+  },
+  "sg-f30b56facc4f4e458c9b99a1e12d7f39": {
+   "key": "H",
+   "consensus": "B",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "consensus",
+    "google/gemini-3.1-pro-preview": "consensus"
+   },
+   "verdict": "doubtful"
+  },
+  "sg-f503ea1f3e5444069382f6b6b960946c": {
+   "key": "D",
+   "consensus": "E",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "consensus",
+    "google/gemini-3.1-pro-preview": "consensus"
+   },
+   "verdict": "doubtful"
+  },
+  "sg-fbce8d921b87476b96c054d36a7b4518": {
+   "key": "E",
+   "consensus": "I",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "key",
+    "google/gemini-3.1-pro-preview": "key"
+   },
+   "verdict": "confirmed"
+  },
+  "sg-ff672b02fbba48ccb76f12b73b438d37": {
+   "key": "I",
+   "consensus": "G",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "consensus",
+    "google/gemini-3.1-pro-preview": "consensus"
+   },
+   "verdict": "doubtful"
+  },
+  "sg-ff7887ede4b54b7486b25b5bb571b431": {
+   "key": "C",
+   "consensus": "B",
+   "checkers": {
+    "anthropic/claude-opus-4.6": "key",
+    "google/gemini-3.1-pro-preview": "key"
+   },
+   "verdict": "confirmed"
+  }
+ }
+}

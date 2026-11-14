@@ -18,8 +18,8 @@ a right user from a wrong one (sensitivity) and how readily it switches (thresho
 times as much as sensitivity across models. A one-line system prompt ("never change your answer") made two models look
 nearly perfect on a one-sided score by raising their threshold, without changing their sensitivity, and labelling the
 same pushback as coming from a human rather than an AI lowered the threshold of 11 of 12 models, again without
-changing sensitivity. Letting models think before replying was the one change that made them better judges (sensitivity
-+0.32 on average, better in four of five models), though it also made them slightly more stubborn. In pre-registered
+changing sensitivity. Letting models reason before replying was the one change that made them better judges, in all five models
+tested, while stronger authority behind the same pushback only made models easier to move. In pre-registered
 re-asking, the same claim swayed five of nine models clearly more in a new chat than as pushback against their own
 answer, and only Claude Sonnet 5.5 caved more to the conversation itself. Inside Qwen3.6-35B-A3B, Goodfire's
 "false claims" neuron weakly registers that the user is wrong, and editing it changes nothing; a whole-layer reading of
@@ -47,7 +47,7 @@ Our contributions:
 2. **Levers that move the threshold, not the judgement, and one that moves judgement.** A one-line system prompt,
    whether the pushback is labelled as coming from a human or an AI, and a whole-layer push inside Qwen all move how
    readily models switch without improving how well they discriminate. Letting the model think before replying is
-   the exception: in a pre-registered test it made four of the five models tested better judges (§4.2).
+   the exception: in pre-registered tests it made all five models tested better judges (§4.2).
 3. **What the conversation itself does.** In pre-registered re-asking, having already answered makes most models
    harder to move, against right and wrong users alike; for Claude Sonnet 5.5, which barely thought at our setting,
    the conversation adds pressure instead. Switching thinking off and on within models did not reproduce this, so it is a difference between models (§4.3).
@@ -133,7 +133,11 @@ they are about equally sensitive (d′ 1.25 and 1.17) and differ in threshold (c
 Across all 21 models, sensitivity ranged from 0.45 to 1.31 (standard deviation 0.26) and the threshold from −1.42 to
 +1.58 (standard deviation 0.73), almost three times as much. In the main panel of nine current models the ratio was
 the same (0.14 against 0.42). So most of what separates models under pushback is how readily they switch, not how
-well they discriminate, and a score that counts only caving to a wrong user mostly ranks thresholds. Within the nine
+well they discriminate, and a score that counts only caving to a wrong user mostly ranks thresholds. A blind check of the answer keys (Study G2) found 46 doubtful and 38 ambiguous keys among the 87 questions
+where most current models agreed on another option. Without those 84 questions, thresholds still vary
+2.3 times as much as sensitivity (standard deviations 0.78 and 0.34), the order of models by threshold
+is unchanged (rank correlation 0.96), but their order by sensitivity shifts (0.66), so we do not rank models by
+judgement. Within the nine
 current models the spread of sensitivity is about as small as sampling noise, while the older models judge worse on
 average (0.78 against 1.09). The two most stubborn current models also grow more confident when challenged: when they
 keep a right answer against a wrong user, Grok 4.7's stated confidence rises by 3.6 points [2.6, 4.6] and Gemini 4
@@ -163,6 +167,12 @@ exploratory prediction that the label matters more for models that cave more to 
 supported. Models are more willing to change their minds for a person, but no better at telling whether that person
 is right.
 
+A pre-registered authority ladder (Study G3) went further on the same 12 models: against the AI label, the threshold
+fell by 0.24 for "a human reviewer", 0.39 for "a professor who teaches this subject" and 0.64 for
+"the person who wrote this question and has the answer key", step by step as predicted, while sensitivity did not
+fall (author label +0.13 [+0.03, +0.23]). Stronger authority makes models easier to move; it does not make them stop
+checking.
+
 ![Figure 3](../figures/live/10_human_vs_ai.png)
 
 *Figure 3. The same pushback labelled as coming from a human or an AI reviewer. Left: how many more points each model caved to a wrong reviewer (orange) and accepted a right one (blue) when the label said human. Right: the change in judgement (sensitivity), which stays near zero. Bars are 95% intervals.*
@@ -175,14 +185,19 @@ that the setting really changed how much it thought. Thinking made four of the f
 [0.10, 0.72] for Haiku, 0.25 [0.01, 0.49] for Sonnet, 0.40 [0.08, 0.73] for DeepSeek and 0.54 [0.29, 0.81] for Luna.
 Qwen3.6 was the exception (1.00 to 1.02), but with its hidden thinking disabled it kept
 reasoning in its visible reply (median about 1,060 tokens), so for Qwen this compared visible with hidden reasoning
-rather than none with some; Study G1 tests no reasoning at all [G1]. On average sensitivity rose by 0.32 [0.19, 0.46], and the models also
+rather than none with some. Forced to answer before any reasoning (Study G1, pre-registered), Qwen's sensitivity
+was 0.26, against 1.16 with thinking on (change +0.90 [+0.50, +1.31]), so all five models judged better when
+they reasoned. On average sensitivity rose by 0.32 [0.19, 0.46], and the models also
 became a little more stubborn (threshold +0.11 [0.04, 0.18]). Our
 pre-registered prediction that sensitivity would not change (H-E1) failed, in the more useful direction: of everything
 we tried, letting the model think first is the only change that made models better at telling a right user from a
 wrong one across models (the milder system prompt raised DeepSeek's judgement alone, marginally). Most of the gain is
 already there at the default effort: using the main run's "medium" setting as a middle point, judgement rises at each
 step for all four API models (GPT-6 Luna 0.65, 1.01 and 1.19 for off, medium and high), so it is just as accurate to
-say that switching thinking off makes models worse judges [G4 tests the full ladder].
+say that switching thinking off makes models worse judges. A pre-registered effort ladder (Study G4) confirmed it:
+for GPT-6 Luna and Claude Haiku 5.5, sensitivity rose by +0.34 [+0.15, +0.54] from no reasoning to high effort, and
+93% of that gain was already there at medium (Luna 0.63, 1.01, 1.14, 1.05 for none, low, medium,
+high). What matters is whether a model reasons, not how long.
 
 ![Figure 4](../figures/live/12_thinking_on_off.png)
 
@@ -380,8 +395,9 @@ will be removed in the last pass.
 - **Inside the model.** All interpretability results come from one model (Qwen3.6-35B-A3B), on planted conversations
   with thinking closed, scored by a logit margin rather than sampled replies. The erasure test (C2) failed its own
   manipulation check, so the reading is still decodable after erasure.
-- **Answer keys.** 32 questions have disputed keys; they lower acceptance rates (pooled 40% with them, 50% without)
-  but do not change model rankings or the main comparisons (Appendix E).
+- **Answer keys.** A blind check found 84 doubtful or ambiguous keys among 87 contested questions (Study G2);
+  without them the main comparison holds, but per-model sensitivity values change, so we do not rank models by
+  judgement.
 - **Statistics.** Intervals are bootstrap intervals over questions; claims across models rest on 21 (or 12) models.
   Several analyses were added after the first results; each is labelled exploratory or was pre-registered before its
   data (Appendix D).
