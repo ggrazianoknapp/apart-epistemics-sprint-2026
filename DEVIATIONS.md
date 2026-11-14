@@ -58,3 +58,12 @@ Every place where what we ran differs from `PREREGISTRATION.md` (tag `prereg-A`)
     Study C1 re-asks the given-up items and confidence-matched kept items three times in four ways; study C2 (E4)
     erases and interchanges Qwen's layer-level reading. Both test patterns we had already seen, so they confirm rather
     than discover.
+
+11. **Study C1's pre-registered weighting over-represents low-confidence kept items.** Kept items were matched to the
+    given-up items on turn-1 confidence, so they lean towards less confident questions, and a single weight per model
+    does not undo that. We report the pre-registered estimate as written and, as a sensitivity check, an estimate that
+    weights kept items within turn-1 confidence bands (below 70, 70-89, 90 and above) by their share of all kept items.
+
+12. **A fourth study was pre-registered after a literature check** (`PREREGISTRATION_D.md`, tag `prereg-D`): the same
+    pushback labelled as coming from a human or an AI reviewer, on 12 models. The sprint's OpenRouter cap was raised
+    from $450 to $550 with GG's approval to fit it.

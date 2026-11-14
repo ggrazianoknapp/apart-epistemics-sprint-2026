@@ -10,7 +10,7 @@ QWEN_LOCAL = "qwen-local"  # model name we use for our own vLLM server
 
 # Sprint spend is measured against the key's usage when the sprint started (13 Nov 2026).
 BASELINE_USAGE = 5327.12
-SPEND_CAP = float(os.environ.get("SPRINT_SPEND_CAP", "450"))
+SPEND_CAP = float(os.environ.get("SPRINT_SPEND_CAP", "550"))
 
 
 def load_key():
