@@ -1,7 +1,7 @@
 # Models Differ in How Easily They Give In, Not in How Well They Judge Who Is Right
 
 _Draft v2, Saturday 14 November. Built around one claim. Charts are the live versions from figures/live; the PDF will use the same charts, trimmed to the best five or six. Placeholders [TEST 1] and [STUDY D] fill in when those runs
-finish. Citations marked [verify] still need a final check before submission._
+finish. All citations were opened and checked on 14 November._
 
 **Title options:** (1) Models Differ in How Easily They Give In, Not in How Well They Judge Who Is Right;
 (2) Willing, Not Wise: Pushback Evaluations Measure How Easily Models Switch, Not Whether They Can Tell Who Is Right;
