@@ -364,6 +364,30 @@ if c1:
                       plt.Line2D([], [], marker="o", ls="", ms=7, markerfacecolor="none", markeredgecolor=INK2,
                                  label="Re-weighted by confidence (check)")], y=-0.6 / H)
     figs["c1"] = save(fig, "9_test2_chat_vs_claim")
+# ---------- Study D: human vs AI reviewer label (harness/analyze_d.py -> results/d.json) ----------
+df = ROOT / "results" / "d.json"
+if df.exists():
+    dj = json.loads(df.read_text()); dm = [m for m in dj if not m.startswith("_")]
+    dm.sort(key=lambda m: dj[m]["human_minus_ai_gave_in"]["est"])
+    H = 0.5 * len(dm) + 2.9
+    fig, (a1, a2) = plt.subplots(1, 2, figsize=(9.0, H), sharey=True, gridspec_kw={"wspace": 0.1})
+    pg, pa = dj["_pooled"]["gave_in"], dj["_pooled"]["accepted"]
+    header(fig, "Does it matter whether a human or an AI pushes back?",
+           f"The same pushback, labelled \"[Message from a human reviewer]\" or \"[Message from an AI reviewer]\". Almost every model\n"
+           f"switched more for the human, in both directions: +{100*pg['est']:.1f} points when the reviewer was wrong, +{100*pa['est']:.1f} when right "
+           f"(averaged over models).", 1 - 1.4 / H)
+    for ax, key, title in [(a1, "gave_in", "Gave in to a wrong reviewer"), (a2, "accepted", "Accepted a right reviewer")]:
+        for i, m in enumerate(dm):
+            h_, a_ = 100 * dj[m]["human"][key], 100 * dj[m]["ai"][key]
+            ax.plot([a_, h_], [i, i], color=LIGHT, lw=2, zorder=1, solid_capstyle="round")
+            ax.scatter([a_], [i], s=48, color=BLUE, edgecolor=SURFACE, zorder=3)
+            ax.scatter([h_], [i], s=48, color=ORANGE, edgecolor=SURFACE, zorder=3)
+        ax.set_title(title, pad=8); ax.xaxis.set_major_formatter(matplotlib.ticker.PercentFormatter(decimals=0))
+        ax.set_xlim(-3, 103)
+        ax.grid(axis="x", color=FAINT, lw=0.8); ax.set_axisbelow(True); ax.tick_params(axis="y", length=0)
+    a1.set_yticks(range(len(dm)), [NAMES.get(m, m) for m in dm], color=INK)
+    legend_below(a1, [dot(ORANGE, "Labelled as a human reviewer"), dot(BLUE, "Labelled as an AI reviewer")], y=-0.7 / H)
+    figs["source"] = save(fig, "10_human_vs_ai")
 e4 = ROOT / "runs" / "neuro" / "e4_results.json"
 
 # ---------- the page ----------
@@ -397,16 +421,19 @@ they switch at all. That means a score that only counts caving to a wrong user e
 ## 2. A one-line prompt games the usual score
 
 {img("loophole")}
-## 3. What the conversation itself does
+## 3. Who pushes back: a human or an AI
+
+{img("source")}
+## 4. What the conversation itself does
 
 {img("chat_vs_fresh")}
 {img("reasoning")}
 {img("return")}
-## 4. Inside Qwen
+## 5. Inside Qwen
 
 {img("reading")}
 {img("editing")}
-## 5. Running now
+## 6. Running now
 
 **Test 2: re-asking each case three times** (pre-registered, tag `prereg-C`). {c1_status}
 

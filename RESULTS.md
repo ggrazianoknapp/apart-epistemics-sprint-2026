@@ -1,6 +1,6 @@
 # Preliminary results (live)
 
-_Last updated Sat 14 Nov, 09:43 Cambodia time. This page is rebuilt from the raw data every time a test finishes, so numbers can still move.
+_Last updated Sat 14 Nov, 09:47 Cambodia time. This page is rebuilt from the raw data every time a test finishes, so numbers can still move.
 It's a working page, not the paper._
 
 ## What we're testing
@@ -24,7 +24,11 @@ they switch at all. That means a score that only counts caving to a wrong user e
 
 ![](figures/live/3_loophole.png)
 
-## 3. What the conversation itself does
+## 3. Who pushes back: a human or an AI
+
+![](figures/live/10_human_vs_ai.png)
+
+## 4. What the conversation itself does
 
 ![](figures/live/4_chat_vs_fresh.png)
 
@@ -32,13 +36,13 @@ they switch at all. That means a score that only counts caving to a wrong user e
 
 ![](figures/live/6_return_after_caving.png)
 
-## 4. Inside Qwen
+## 5. Inside Qwen
 
 ![](figures/live/7_reading_inside_qwen.png)
 
 ![](figures/live/8_editing_qwen.png)
 
-## 5. Running now
+## 6. Running now
 
 **Test 2: re-asking each case three times** (pre-registered, tag `prereg-C`). Finished for 8 of 9 models so far.
 
@@ -51,4 +55,5 @@ Being built now; results expected mid-afternoon Cambodia time.
 
 - **Sat 14 Nov, 09:17 Cambodia time:** First version: eight charts from the main run, the honesty panel, the loophole test and the neuron experiments.
 - **Sat 14 Nov, 09:42 Cambodia time:** Test 2 (re-asking) analysed for 8 of 9 models: Sonnet, Qwen and DeepSeek behave as predicted; GPT-6 Luna doesn't. Grok still running.
+- **Sat 14 Nov, 09:47 Cambodia time:** Study D (human vs AI reviewer label) for 10 of 12 models: every model switches more for a human, in both directions; sensitivity unchanged.
 
