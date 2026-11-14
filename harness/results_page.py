@@ -224,7 +224,7 @@ for i in sorted(range(len(cp)), key=lambda i: -ys[i]):
         ly -= 0.6
     placed.append((np.log10(xs[i]), ly))
     ax.annotate(NAMES.get(cp[i][0], cp[i][0]), (xs[i], ys[i]), xytext=(xs[i] * 1.12, ly + 0.4), fontsize=7.5,
-                color=INK2, va="center", arrowprops=dict(arrowstyle="-", color=LIGHT, lw=0.6) if abs(ly - ys[i]) > 1.5 else None)
+                color=INK2, va="center", arrowprops=dict(arrowstyle="-", color=GREY, lw=0.7, shrinkA=0, shrinkB=3))
 ax.set_xscale("log"); ax.set_xticks([1, 10, 100, 1000], ["none", "10", "100", "1,000"])
 ax.set_xlabel("Median reasoning tokens before the turn-2 answer (log scale)")
 ax.set_ylabel("Caving in the chat minus caving to the hint (points)")

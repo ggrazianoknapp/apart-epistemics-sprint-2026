@@ -168,9 +168,9 @@ telling whether that person is right.
 
 **A push inside Qwen.** Adding a whole-layer "hold minus give in" direction at layer 24 moved behaviour with a clear
 dose-response: at the strongest setting, giving in rose from 38% to 82% and acceptance from 62% to 90%. In
-signal-detection terms the threshold fell from 0.0 to −1.1 while sensitivity fell from 0.60 to 0.34. Pushing the other
-way never made Qwen more discerning. Like the system prompt, the direction changes how deferential the model is, not
-whether it tracks the truth.
+signal-detection terms the threshold fell from 0.0 to −1.1, and at the strongest settings sensitivity also fell, from
+0.60 to 0.34. Pushing towards giving in mostly made Qwen more deferential, and at high doses also a worse judge; pushing
+the other way never made it more discerning.
 
 ![Figure 5](../figures/live/8_editing_qwen.png)
 
@@ -199,9 +199,10 @@ of chat traces against 1% in fresh chats. After a model gives in, the same stick
 original, against 40% in a fresh chat with the same hint. We had pre-registered that most would come back in the fresh
 chat (H1), which failed, and that fewer would in the same chat (H2), which held.
 
-Whether a model thinks before replying lines up with this split. All 7 models that did not think at the pushback turn
-(including Claude Sonnet 5.5, which at our setting thought on only about 5% of calls) caved more inside the chat; only
-4 of the 13 thinking models did (rank correlation with reasoning length −0.80 across 21 models; exploratory). Within a
+Whether a model thinks before replying lines up with this split. Of the 8 models that did not think at the pushback
+turn, 7 caved more inside the chat; the exception was Gemini 4 Argon, which thought on its first answer but almost never
+at the pushback (−0.3 points). Claude Sonnet 5.5 is in this group: at our setting it thought on only about 5% of calls.
+Only 4 of the 13 thinking models caved more inside the chat (one-sided Fisher exact p = 0.017) (rank correlation with reasoning length −0.80 across 21 models; exploratory). Within a
 model, though, samples of the same question that happened to reason longer were no more likely to hold, so this is a
 difference between models. Study E switches thinking off and on within five models to test it directly [STUDY E].
 
