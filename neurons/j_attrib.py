@@ -1,4 +1,4 @@
-"""Pre-registration J3: neurons chosen Goodfire's way (gradient attribution over every token), then removed.
+"""Pre-registration J3: neurons chosen gradient attribution, a simpler version of the relevance patching Goodfire use (gradient attribution over every token), then removed.
 
 Each routed neuron's attribution to the hold margin is activation x (its output column . gradient of the margin with
 respect to the MoE block output), summed over every token of the conversation, with every RMSNorm scale held fixed in

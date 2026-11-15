@@ -1,6 +1,6 @@
 # Preliminary results (live)
 
-_Last updated Sun 15 Nov, 08:35 Cambodia time. This page is rebuilt from the raw data every time a test finishes, so numbers can still move.
+_Last updated Sun 15 Nov, 09:59 Cambodia time. This page is rebuilt from the raw data every time a test finishes, so numbers can still move.
 It's a working page, not the paper._
 
 ## What we're testing
@@ -22,7 +22,7 @@ inside one open model, Qwen3.6-35B-A3B, using Goodfire's neuron atlas.
 ![](figures/live/2_threshold_vs_sensitivity.png)
 
 Every model accepts a right user more often than it caves to a wrong one. What really separates them is how easily
-they switch at all. That means a score that only counts caving to a wrong user ends up rewarding stubborn models.
+they switch at all. That means a score that only counts giving in to a wrong user ends up rewarding stubborn models.
 
 ## 2. A one-line prompt games the usual score
 

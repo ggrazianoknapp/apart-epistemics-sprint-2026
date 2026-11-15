@@ -103,7 +103,7 @@ ax.set_xlim(-7, 107); ax.set_xticks(range(0, 101, 20), [f"{v}%" for v in range(0
 ax.set_ylim(-0.7, len(rows) - 0.3)
 ax.grid(axis="x", color=FAINT, lw=0.8); ax.set_axisbelow(True); ax.tick_params(axis="y", length=0)
 ax.set_xlabel("Share of pushbacks where the model switched to the user's answer", fontsize=9)
-fig.legend(handles=[dot(ORANGE, "Caved to a wrong user (lower is better)"), dot(BLUE, "Accepted a right user (higher is better)"),
+fig.legend(handles=[dot(ORANGE, "Gave in to a wrong user (lower is better)"), dot(BLUE, "Accepted a right user (higher is better)"),
                     plt.Line2D([], [], marker="o", ls="", ms=7, color=INK2, markeredgecolor=SURFACE,
                                label="Main panel: 9 current models, 600 questions"),
                     plt.Line2D([], [], marker="o", ls="", ms=6, color=SURFACE, markeredgecolor=INK2, markeredgewidth=1.4,
@@ -180,7 +180,7 @@ WRAP = {"google/gemini-3.1-pro-preview": "Gemini 3.1\nPro Preview"}
 rates = {m: two_sided(everyone[m]) for m in order_all}
 fig, ax = plt.subplots(figsize=(7.0, 7.3))
 header(fig, "Models sit in one narrow band of judgement and spread out along it by stubbornness",
-       "Each dot is a model: how often it caved to a wrong user (across) and accepted a right user (up). Models on the\n"
+       "Each dot is a model: how often it gave in to a wrong user (across) and accepted a right user (up). Models on the\n"
        "same grey line judge equally well, and further up a line a model is less stubborn. Both axes are stretched near\n"
        "0% and 100%, which makes those lines straight.", 0.83)
 lo, hi = -2.6, 2.3
@@ -197,7 +197,7 @@ xt = [1, 2, 5, 10, 20, 50, 80, 90]; yt = [10, 20, 30, 50, 70, 80, 90, 95, 98]
 ax.set_xlim(lo, xr); ax.set_ylim(-1.35, yr); ax.set_aspect("equal")
 ax.set_xticks([z(t / 100) for t in xt], [f"{t}%" for t in xt])
 ax.set_yticks([z(t / 100) for t in yt], [f"{t}%" for t in yt])
-ax.set_xlabel("Caved to a wrong user", fontsize=9.5); ax.set_ylabel("Accepted a right user", fontsize=9.5)
+ax.set_xlabel("Gave in to a wrong user", fontsize=9.5); ax.set_ylabel("Accepted a right user", fontsize=9.5)
 ax.grid(color=FAINT, lw=0.8); ax.set_axisbelow(True)
 for m in order_all:
     g, nu, a, nr = rates[m]
@@ -264,7 +264,7 @@ for ax, t, xl in [(aA, "How often it switched", "Share of pushbacks (%)"),
     ax.grid(axis="x", color=FAINT, lw=0.7); ax.set_axisbelow(True)
 aA.set_yticks(y, [NAMES.get(r[0], r[0]) + (" *" if older(r[0]) else "") for r in sd], fontsize=PS["base"], color=INK)
 aA.set_ylim(-0.7, len(sd) + 0.6)
-fig.legend(handles=[plt.Line2D([], [], marker="o", ls="", ms=5, color=ORANGE, markeredgecolor=SURFACE, label="Caved to a wrong user"),
+fig.legend(handles=[plt.Line2D([], [], marker="o", ls="", ms=5, color=ORANGE, markeredgecolor=SURFACE, label="Gave in to a wrong user"),
                     plt.Line2D([], [], marker="o", ls="", ms=5, color=BLUE, markeredgecolor=SURFACE, label="Accepted a right user")],
            loc="lower left", bbox_to_anchor=(0.0, 0.025), ncol=2, frameon=False, fontsize=PS["small"],
            handlelength=1.0, handletextpad=0.3, columnspacing=1.4, labelcolor=INK2)
@@ -302,15 +302,15 @@ if lm:
     axes[0].set_yticks(range(len(conds)), [c[0] for c in conds], color=INK)
     axes[0].text(21, 1, "Rarely caves, and rarely\naccepts a valid correction", va="center", ha="left", fontsize=9,
                  color=INK2, linespacing=1.25)
-    legend_below(axes[0], [dot(ORANGE, "Caved to a wrong user (all the usual score counts)"),
+    legend_below(axes[0], [dot(ORANGE, "Gave in to a wrong user (all the usual score counts)"),
                            dot(BLUE, "Accepted a right user")], y=-0.22)
     # title and subtitle, left-aligned with the row labels (header() assumes a taller figure)
     fig.canvas.draw()
     x0 = min(t.get_window_extent().x0 for t in axes[0].get_yticklabels()) / fig.bbox.width
     fig.text(x0, 1 - 0.08 / H, "A one-line prompt looks near perfect on the usual score but nearly blocks valid corrections",
              fontsize=12.5, fontweight="bold", color=INK, va="top")
-    fig.text(x0, 1 - 0.40 / H, "The usual sycophancy score counts only the orange dots, caving to a wrong user. With the prompt\n"
-             "\"never change your answer\", both models almost stop caving, but also almost stop accepting a right user.",
+    fig.text(x0, 1 - 0.40 / H, "The usual sycophancy score counts only the orange dots, giving in to a wrong user. With the prompt\n"
+             "\"never change your answer\", both models almost stop giving in, but also almost stop accepting a right user.",
              fontsize=9.5, color=INK2, va="top", linespacing=1.35)
     fig.text(x0, 0.06 / H, f"Every row uses the same {nq} questions and the same pushback; only the system prompt differs.",
              fontsize=8.8, color=GREY, va="bottom")
@@ -410,7 +410,7 @@ H5 = 0.2 * len(cp) + 3.45
 fig, axes5 = plt.subplots(len(groups5), 1, figsize=(7.4, H5), sharex=True, squeeze=False,
                           gridspec_kw={"height_ratios": [len(rs) for _, rs in groups5], "hspace": 0.22})
 header(fig, "Across models, those that think before answering are swayed less by the conversation itself",
-       "Each row is a model. Right of zero means it caved more when the user pushed back inside the chat than when the\n"
+       "Each row is a model. Right of zero means it gave in more when the user pushed back inside the chat than when the\n"
        f"same claim came as a hint in a new chat. Across {len(cp)} models, longer thinking goes with a smaller gap (rank\n"
        f"correlation {rho:+.2f}). It is a difference between models: switching thinking on and off within the same models did not change it.".replace("-", "\u2212"),
        1 - 1.35 / H5)
@@ -618,7 +618,7 @@ if e2p.exists() and pcp.exists():
         a.yaxis.set_major_formatter(matplotlib.ticker.PercentFormatter(decimals=0)); a.set_ylim(0, 100)
         a.grid(axis="y", color=FAINT, lw=0.8); a.set_axisbelow(True)
     a2.grid(axis="x", color=FAINT, lw=0.8); a2.tick_params(axis="y", length=0)
-    fig.legend(handles=[dot(ORANGE, "Caved to a wrong user"), dot(BLUE, "Accepted a right user"),
+    fig.legend(handles=[dot(ORANGE, "Gave in to a wrong user"), dot(BLUE, "Accepted a right user"),
                         matplotlib.patches.Patch(color=GAP, label="Gap between them: how well Qwen tells right from wrong")],
                loc="upper left", bbox_to_anchor=(0.012, 0.035), ncol=3, frameon=False, fontsize=9.5,
                handlelength=1.2, columnspacing=1.4, labelcolor=INK2)
@@ -1108,7 +1108,7 @@ inside one open model, Qwen3.6-35B-A3B, using Goodfire's neuron atlas.
 {img("two_sided")}
 {img("sdt")}
 Every model accepts a right user more often than it caves to a wrong one. What really separates them is how easily
-they switch at all. That means a score that only counts caving to a wrong user ends up rewarding stubborn models.
+they switch at all. That means a score that only counts giving in to a wrong user ends up rewarding stubborn models.
 
 ## 2. A one-line prompt games the usual score
 

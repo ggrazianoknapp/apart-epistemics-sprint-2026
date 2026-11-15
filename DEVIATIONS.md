@@ -182,3 +182,13 @@ the whole project on 14-15 November (research/deliberation8, not public) and add
 35. **The Fisher test in Appendix C (p = 0.017) had no script until after the audit.** `harness/fisher_c1.py` now
     computes it from the main-run files and reproduces the number; the paper also states that the split was chosen after
     seeing the pattern.
+
+36. **Study B's dial check sits on the edge of passing for one setting** (addition to item 4). For k = 8 the change is
+    −0.8 [−1.7, 0.0]: the interval ends at zero on the run of record and just excludes it under most bootstrap seeds.
+    The paper's Appendix B now reports all four settings. We still read the study as not passed.
+
+37. **Final review (15 Nov).** Three reviewing agents checked numbers, arguments and submission rules. Changes: sampled
+    reply rates are now given next to the logit read-out; the atlas-coverage sentence was wrong and is corrected (the
+    index covers ten of 40 layers); stale intervals fixed (G1 part c, J3, J1c); relevance patching is credited to
+    Jafari et al. (2025); two exploratory analyses added on existing data (read-out against sampled replies, and the
+    removal's effect controlling for the unedited margin).
