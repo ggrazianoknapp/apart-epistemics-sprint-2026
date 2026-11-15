@@ -1,7 +1,9 @@
 # Deviations from the pre-registrations
 
-Every place where what we ran differs from `PREREGISTRATION.md` (tag `prereg-A`) or `PREREGISTRATION_B.md`
-(tag `prereg-B`), with the reason. Kept up to date during the sprint.
+Every difference we know of between what we pre-registered (`PREREGISTRATION.md`, tag `prereg-A`, and
+`PREREGISTRATION_B.md` to `PREREGISTRATION_L.md`, tags `prereg-B` to `prereg-L`) and what we ran or reported, including
+analysis code written or changed after the data, with the reason. Items 18 onwards were found by a 16-agent audit of
+the whole project on 14-15 November (research/deliberation8, not public) and added before submission.
 
 1. **We doubled the main set to 600 questions.** This was decided before any main-set call, and it's already
    described in pre-registration A. The pilot showed models give in to a wrong user rarely (0% to 25%), so 300
@@ -98,3 +100,85 @@ Every place where what we ran differs from `PREREGISTRATION.md` (tag `prereg-A`)
 17. **A ninth set of tests was pre-registered on GG's request after Study H's nulls** (`PREREGISTRATION_I.md`, tag
     `prereg-I`): Goodfire's recipe over all routed neurons, for the authority effect (I1, primary) and for stubbornness
     vs judgement (I2). A 3-question dry run (discarded) checked the code.
+
+18. **The extraction check was never done.** Pre-registration A promised to validate the answer extractor against at
+    least 100 hand-labelled replies and report Cohen's kappa. 150 items were prepared (`labels/`), but no one labelled
+    them in time, so no kappa is reported. The regular expression read 99.97% of the main panel's committed answers and
+    99.71% of the older panel's.
+
+19. **The 32-question answer-key rule of pre-registration A was replaced.** It asked for a hand review of questions
+    where 7 or more of 9 models agreed against the key at 80% confidence, and results with and without them. No hand
+    review was done; Study G2 later used a different rule (two checker models, Claude Opus 4.6 and Gemini 3.1 Pro
+    Preview, on 87 contested questions). Without the 32 questions, pooled acceptance of a right user moves from 40.5% to
+    50.1%.
+
+20. **The headline measures changed after the main data.** Pre-registration A scored judgement as discernment
+    (accepted minus gave in). Sensitivity d′ and threshold c were first used in pre-registration D and
+    `harness/sdt.py` (14 Nov 09:47), after the main run; the decomposition in §4.1 is therefore exploratory. H4,
+    stated on discernment, held (GLM 5.3 0.43 [0.34, 0.52] against Gemini 4 Argon 0.15 [0.08, 0.24]) and is now
+    reported. The reason for d′: a difference of rates depends on where a model's threshold sits.
+
+21. **E1's random baseline was smaller and less matched than planned:** 400 random layer-24 neurons (31 of them
+    matched on routing, none on activation scale) instead of 1,000 matched on layer, routing and scale. The best of the
+    31 routing-matched neurons reached AUROC 0.59.
+
+22. **E2 ran a ×4 boost instead of ×2, and its neutral-text damage check was never measured.** Its positive controls
+    did not pass (the whole-layer control reached +14 points against a bar of 15, and the "Anna" control was not run),
+    so by pre-registration A the E2 null is not interpreted; the paper now says so.
+
+23. **C2 was reported in d′ and c instead of the pre-registered discernment.** Prediction 1 (swap brings known
+    discernment below 0.40) failed: 0.84 to 0.71. The paper now reports this.
+
+24. **Analysis code not in its tag or changed after results.** `neurons/e4_layer_reading.py` (named in prereg-C) was
+    first committed with prereg-D, 26 minutes later, and patched four minutes after its results for a crash on the
+    "all" token group (no change to computed values). `harness/analyze_i.py` (named in prereg-I) was first committed
+    with its results, after two bugs were fixed: condition names copied from Study H, and the sign of the reduction
+    interval. The same sign fix was applied to `harness/analyze_h.py`; no verdict changed. `harness/analyze_e.py` was
+    committed 7.75 hours after `results/e.json`.
+
+25. **Qwen's Study E result is quoted without the replacement G1 pre-registered.** Pre-registration G said Qwen's
+    cut-off Study E replies would be replaced by redone ones; with the replacement Qwen's change in d′ is +0.16
+    [−0.16, +0.47] (G1 part c), against +0.02 without. The paper now gives both.
+
+26. **Fewer bootstrap resamples than pre-registered** (10,000): `harness/sdt.py` used 2,000, `harness/analyze_g.py`
+    5,000, and Figure 1 600. Both scripts now use 10,000. Across the 50 intervals in `results/sdt.json` the largest
+    change at either end is 0.034; one verdict changed (Mistral Medium 3's threshold interval, [−0.33, −0.003] before,
+    now [−0.33, +0.003], which the paper does not use). Across the 11 intervals in `results/g.json` the largest change
+    is 0.021, with no verdict changed. Figure 1 now takes its intervals from `results/sdt.json`.
+
+27. **No correction for multiple tests.** Pre-registration A named a Benjamini-Hochberg correction for its secondary
+    hypotheses; it was never applied. The paper now states which judgement results do not survive a Holm correction.
+
+28. **G3's judgement prediction was scored on its point estimate** (author d′ change 0.13 against a limit of 0.15),
+    while its interval reaches 0.23; Study D's matching prediction was scored on the whole interval. G4's prediction
+    about the threshold was never computed (it holds).
+
+29. **The never-change prompt was pre-registered as exploratory and the "change only for a reason" prompt was not
+    pre-registered.** Both are now labelled exploratory in the paper, with denominators.
+
+30. **Study J's census prediction passed on its pre-registered criterion** (the named neuron L24_E18_N122, negative
+    side, ranked 219 of 6,488, within the top 5%), but that neuron reached under 1% of its atlas threshold; we report
+    the pass and the activation together and do not read it as a credibility neuron firing.
+
+31. **Study J3's attribution gate failed** (Pearson r = 0.18). Pre-registration J says the removals are then reported
+    but not read as a test of Goodfire's method; an earlier draft did read them that way, and the paper no longer
+    does. The verified 25 group (J3b, 18% [3, 32]) is now reported.
+
+32. **The Study I analysis compared conditions that the paper's first draft described loosely**, and the honesty
+    panel was described as 300 questions although Gemini 3.1 Pro Preview ran 150 (item 2). Both are corrected in the
+    paper.
+
+
+33. **Study L ran as pre-registered; two things were added after its data.** `harness/analyze_l.py` now also stores, for
+    each edit, the share of Qwen's own conversations in which the next letter is the user's (hold margin below zero).
+    It is descriptive, used only for Figure 1 (left), and leaves every pre-registered number unchanged (checked by
+    comparing `results/l.json` before and after). The planted user-right arm of L3 has a gap too small to give a stable
+    share (+0.09), so its shares (−117% to −200%) are reported but not interpreted.
+
+34. **The paper was restructured around the neuron result after Study L**, following the rule written into
+    pre-registration L before its data: the groups lead the paper only if L1 (both groups), L3 (both groups) and L5 (a
+    and b) all hold. They did. L4 failed and is reported in the main text.
+
+35. **The Fisher test in Appendix C (p = 0.017) had no script until after the audit.** `harness/fisher_c1.py` now
+    computes it from the main-run files and reproduces the number; the paper also states that the split was chosen after
+    seeing the pattern.

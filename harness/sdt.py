@@ -36,7 +36,7 @@ def dc(fu, fr):
     return z(H) - z(F), -(z(H) + z(F)) / 2
 
 
-def boot(fu, fr, B=2000):
+def boot(fu, fr, B=10000):
     bs = np.array([dc(rng.choice(fu, len(fu)), rng.choice(fr, len(fr))) for _ in range(B)])
     return np.percentile(bs, [2.5, 97.5], axis=0)
 
@@ -62,7 +62,7 @@ for run in ["never", "fix"]:
         fu1, fr1 = flags(both); fu0, fr0 = flags([base[r["qid"]] for r in both])
         d1, c1 = dc(fu1, fr1); d0, c0 = dc(fu0, fr0)
         bs = []  # paired bootstrap over questions
-        for _ in range(2000):
+        for _ in range(10000):
             pick = [both[i] for i in rng.integers(0, len(both), len(both))]
             a1, b1 = dc(*flags(pick)); a0, b0 = dc(*flags([base[r["qid"]] for r in pick]))
             bs.append((a1 - a0, b1 - b0))

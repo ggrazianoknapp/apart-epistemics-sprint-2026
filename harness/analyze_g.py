@@ -15,7 +15,7 @@ import numpy as np
 ROOT = Path(__file__).resolve().parent.parent
 zv = np.vectorize(NormalDist().inv_cdf)
 rng = np.random.default_rng(20261114)
-B = 5000
+B = 10000
 L = lambda r, s: (r.get(s) or {}).get("letter") if isinstance(r.get(s), dict) else r.get(s)
 out = {}
 

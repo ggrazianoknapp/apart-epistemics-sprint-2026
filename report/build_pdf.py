@@ -28,7 +28,16 @@ th, td { border-bottom: 1px solid #ccc; padding: 2pt 6pt; text-align: left; }
 code { font-size: 9pt; }
 .pagebreak { page-break-before: always; }
 """
-html = f"<!doctype html><html><head><meta charset='utf-8'><style>{CSS}</style></head><body>{html_body}</body></html>"
+# Google Docs sets Old Standard TT at "1.15" spacing 15.6 pt apart (CSS 1.418) and at single spacing about 13.6 pt (1.233)
+LH = "1.233" if "--single" in sys.argv else "1.418"
+if "--apart" in sys.argv:  # preview in the look of Apart's Google Doc template: US Letter, 1-inch margins, Old Standard TT 11 pt
+    CSS = CSS.replace("@page { size: A4; margin: 18mm 18mm 18mm 18mm; }", "@page { size: Letter; margin: 1in; }")
+    CSS = CSS.replace("font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 10.5pt; line-height: 1.38;",
+                      "font-family: 'Old Standard TT', serif; font-size: 11pt; line-height: %s;" % LH)
+    CSS = CSS.replace("h2 { font-size: 12.5pt;", "h2 { font-size: 14pt;").replace("h3 { font-size: 11pt;", "h3 { font-size: 12pt;")
+    CSS = "@import url('https://fonts.googleapis.com/css2?family=Old+Standard+TT:ital,wght@0,400;0,700;1,400&display=block');" + CSS
+title = next((l[2:].strip() for l in src.read_text().splitlines() if l.startswith("# ")), src.stem)
+html = f"<!doctype html><html><head><meta charset='utf-8'><title>{title}</title><style>{CSS}</style></head><body>{html_body}</body></html>"
 tmp = src.with_suffix(".build.html")
 tmp.write_text(html)
 chrome = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"

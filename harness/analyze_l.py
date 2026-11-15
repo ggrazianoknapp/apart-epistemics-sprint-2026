@@ -77,6 +77,8 @@ for arm, qq in [("user_wrong", uw), ("user_right", ur)]:
     for name in L5:
         if name != "baseline":
             cell[name] = share(pb, {q: (L5[name][q]["ai"], L5[name][q]["author"]) for q in qq}, qq)
+    # share of questions where Qwen's next letter is the user's (hold margin below zero), per edit and label
+    cell["switch_rate"] = {name: {lab: float(np.mean([L5[name][q][lab] < 0 for q in qq])) for lab in ["ai", "author"]} for name in L5}
     out["L5"][arm] = cell
 c = out["L5"].get("user_wrong", {})
 out["pred_L5a_author_lowers_margin"] = bool(c) and c["author_minus_ai"][2] < 0
