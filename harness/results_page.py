@@ -1057,69 +1057,27 @@ if jjf.exists():
                frameon=False, fontsize=9, labelcolor=INK2, handlelength=1.2)
     figs["j"] = save(fig, "14_authority_inside_qwen")
 
-# ---------- Study L: the 25 neurons in Qwen's own conversations, and their controls (results/l.json) ----------
+# ---------- Study L: the 25 neurons in Qwen's own conversations (results/l.json); controls are Table 1 in the paper ----------
 llf = ROOT / "results" / "l.json"
 if llf.exists():
     lj = json.loads(llf.read_text())
-    fig, (axA, axB) = plt.subplots(1, 2, figsize=(7.8, 4.3), gridspec_kw={"wspace": 0.95, "width_ratios": [1.15, 1]})
-    header(fig, "Removing 25 neurons closes most of the gap between the AI and answer-key labels",
-           "Qwen3.6-35B-A3B. Left: its own conversations, with the same pushback labelled as coming from an AI reviewer or from\n"
-           "“the person who wrote this question and has the answer key”. Right: how much of the gap between the two labels\n"
-           "the 25 neurons remove, against groups of 25 random neurons from the same experts.", 0.70)
-    rowsA = [("baseline", "Unedited"), ("rand25", "25 random neurons removed"), ("attr25", "The 25 neurons removed")]
-    ylab, yt = [], []
-    for g, (arm, col, armlab) in enumerate([("user_wrong", ORANGE, "User wrong: Qwen gives in"),
-                                            ("user_right", BLUE, "User right: Qwen accepts")]):
+    fig, axs = plt.subplots(1, 2, figsize=(7.4, 3.5), gridspec_kw={"wspace": 0.55})
+    fig.text(0.012, 0.99, "Removing 25 neurons moves the AI-reviewer line up to the author line", fontsize=12.5, fontweight="bold", color=INK, va="top")
+    fig.text(0.012, 0.905, "Qwen's own conversations: how often it switches to the user's answer, before and after removing the\n"
+             "25 neurons, when the same pushback is labelled as coming from an AI reviewer or from the answer-key author.",
+             fontsize=9.5, color=INK2, va="top", linespacing=1.35)
+    fig.subplots_adjust(top=0.68)
+    for ax, arm, col, ttl in [(axs[0], "user_wrong", ORANGE, "User wrong: Qwen gives in"), (axs[1], "user_right", BLUE, "User right: Qwen accepts")]:
         sr = lj["L5"][arm]["switch_rate"]
-        base_y = (len(rowsA) + 1.4) * (1 - g)
-        axA.text(-2, base_y + 0.95, armlab, fontsize=9.5, fontweight="bold", color=INK, va="center")
-        for i, (k, lab) in enumerate(rowsA):
-            y = base_y - i * 0.95
-            if k == "rand25":
-                ks = [n for n in sr if n.startswith("rand25_")]
-                ai, au = [100 * np.mean([sr[n][lab_] for n in ks]) for lab_ in ("ai", "author")]
-            else:
-                ai, au = 100 * sr[k]["ai"], 100 * sr[k]["author"]
-            axA.plot([ai, au], [y, y], color=LIGHT, lw=2.6, solid_capstyle="round", zorder=1)
-            axA.scatter([ai], [y], s=58, facecolor=SURFACE, edgecolor=col, linewidth=1.6, zorder=3)
-            axA.scatter([au], [y], s=58, color=col, edgecolor=SURFACE, zorder=3)
-            axA.text(max(ai, au) + 2.2, y, f"gap {abs(au - ai):.0f} pts", va="center", fontsize=8.5,
-                     color=INK if k == "attr25" else INK2, fontweight="bold" if k == "attr25" else "normal")
-            ylab.append(lab); yt.append(y)
-    axA.set_yticks(yt, ylab, color=INK); axA.tick_params(axis="y", length=0)
-    axA.set_xlim(-2, 66); axA.set_xticks([0, 20, 40, 60], ["0%", "20%", "40%", "60%"])
-    axA.set_ylim(-2.5, len(rowsA) + 2.6)
-    axA.set_xlabel("Share of questions where Qwen picks the user's answer")
-    axA.set_title("Qwen's own conversations", pad=8)
-    axA.grid(axis="x", color=FAINT, lw=0.8); axA.set_axisbelow(True)
-    axA.legend(handles=[plt.Line2D([], [], marker="o", ls="", ms=7, markerfacecolor=SURFACE, markeredgecolor=INK2, label="AI reviewer label"),
-                        plt.Line2D([], [], marker="o", ls="", ms=7, color=INK2, label="Answer-key author label")],
-               loc="upper left", bbox_to_anchor=(-0.02, -0.17), ncol=2, frameon=False, fontsize=9, labelcolor=INK2,
-               handlelength=1.0, columnspacing=1.4)
-    L5w, L5r = lj["L5"]["user_wrong"], lj["L5"]["user_right"]
-    rowsB = [("Own conversations,\nuser wrong (301)", L5w["attr25"], [L5w[f"rand25_{j}"]["share"] for j in range(4)]),
-             ("Own conversations,\nuser right (156)", L5r["attr25"], [L5r[f"rand25_{j}"]["share"] for j in range(4)]),
-             ("Planted conversations,\nuser wrong (170)", lj["L1"]["attr25"], lj["L1"]["rand25"]),
-             ("Planted, expert routing\nheld fixed (170)", lj["L3"]["user_wrong"]["attr25_frozen"], [])]
-    for i, (lab, d, rv) in enumerate(rowsB):
-        y = len(rowsB) - 1 - i
-        if rv:
-            axB.scatter([100 * x for x in rv], [y] * len(rv), s=22, color=GREY, alpha=0.6, edgecolor="none", zorder=3)
-        v = 100 * d["share"]; lo, hi = [100 * x for x in d["share_ci"]]
-        axB.plot([lo, hi], [y, y], color=LIGHT, lw=2.4, solid_capstyle="round", zorder=2)
-        axB.scatter([v], [y], s=56, color=INK2, edgecolor=SURFACE, zorder=4)
-        axB.text(lo - 4, y, f"{v:.0f}%", va="center", ha="right", fontsize=9, color=INK, fontweight="bold")
-    axB.axvline(0, color=GREY, lw=0.9); axB.axvline(100, color=INK2, lw=0.9, ls=(0, (3, 2)))
-    axB.text(103, len(rowsB) - 0.45, "whole gap", ha="left", va="center", fontsize=8.5, color=INK2)
-    axB.set_yticks(range(len(rowsB)), [r[0] for r in rowsB][::-1], color=INK); axB.tick_params(axis="y", length=0)
-    axB.set_ylim(-0.6, len(rowsB) - 0.3)
-    axB.set_xlim(-20, 165); axB.set_xticks([0, 50, 100, 150], ["0%", "50%", "100%", "150%"])
-    axB.set_xlabel("Share of the author–AI gap removed")
-    axB.set_title("Removing the 25 neurons", pad=8)
-    axB.grid(axis="x", color=FAINT, lw=0.8); axB.set_axisbelow(True)
-    axB.legend(handles=[dot(INK2, "The 25 neurons, 95% interval"), plt.Line2D([], [], marker="o", ls="", ms=5, color=GREY, alpha=0.7,
-                        label="Random 25 from the same experts")], loc="upper left", bbox_to_anchor=(-0.02, -0.17),
-               frameon=False, fontsize=9, labelcolor=INK2, handlelength=1.0)
+        for lab_key, lab, c in [("author", "Answer-key author", col), ("ai", "AI reviewer", GREY)]:
+            y0, y1 = 100 * sr["baseline"][lab_key], 100 * sr["attr25"][lab_key]
+            ax.plot([0, 1], [y0, y1], color=c, lw=2.4, marker="o", ms=7, markeredgecolor=SURFACE, zorder=3)
+            ax.text(-0.06, y0, f"{y0:.0f}%", ha="right", va="center", fontsize=9.5, color=INK)
+            ax.text(1.06, y1, f"{y1:.0f}%  {lab}", ha="left", va="center", fontsize=9.5, color=c if c != GREY else INK2, fontweight="bold")
+        ax.set_xlim(-0.35, 1.9); ax.set_xticks([0, 1], ["Unedited", "25 neurons\nremoved"], color=INK); ax.tick_params(axis="x", length=0)
+        ax.set_ylim(0, 55); ax.set_yticks([0, 25, 50], ["0%", "25%", "50%"]); ax.grid(axis="y", color=FAINT); ax.set_axisbelow(True)
+        ax.spines["left"].set_visible(False); ax.tick_params(axis="y", length=0)
+        ax.set_title(ttl, pad=6)
     figs["l"] = save(fig, "15_authority_neurons")
 
 # ---------- the page ----------

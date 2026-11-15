@@ -114,14 +114,14 @@ half the gap in Qwen's own conversations. All of these held.
 
 ### 4.1 Inside Qwen, 25 neurons carry most of the authority effect
 
-**The behaviour.** In Qwen's own conversations, the label alone changed how often it switched (Figure 1, left). With a
+**The behaviour.** In Qwen's own conversations, the label alone changed how often it switched (Figure 1). With a
 wrong user it gave in 0.7% of the time with no label, 10.3% with the AI-reviewer label and 23.9% with the author label;
 with a right user it accepted 7.1%, 28.2% and 46.8%. The author label lowered the hold margin against the AI label in
 both arms (−1.01 [−1.08, −0.94] and −0.79 [−0.89, −0.69]), so it makes Qwen easier to move whether or not the user is
 right: the same kind of threshold shift we see across 12 models (§4.2).
 
 **Removing the 25 neurons.** This closed 58% [53, 63] of the authority gap with a wrong user and 72% [62, 82] with a
-right user; four random groups of 25 from the same experts closed between −3% and 8% (Figure 1, right). The removal
+right user; four random groups of 25 from the same experts closed between −3% and 8% (Table 1). The removal
 acts on the AI side. Giving in under the AI label rose from 10.3% to 18.9%, close to the author label's 22.6%, and
 accepting rose from 28.2% to 39.1%, against 46.8%. Qwen did not start ignoring the author; it started treating an AI
 reviewer more like one. In planted conversations on held-out questions the 25 closed 101% [80, 130] of the gap, against
@@ -131,11 +131,20 @@ correctly before and after (169 of 400).
 
 ![Figure 1](../figures/live/15_authority_neurons.png){: style="width:100%"}
 
-*Figure 1. Left: in Qwen's own conversations, the share of questions where it picks the user's answer when the same
-pushback is labelled as coming from an AI reviewer (ring) or from "the person who wrote this question and has the
-answer key" (dot): unedited, with 25 random neurons removed (average of four groups), and with the 25 chosen neurons
-removed. Right: the share of the author–AI gap in the hold margin that the 25 neurons remove, with 95% intervals,
-against random groups of 25 from the same experts (grey). Numbers in brackets are questions.*
+*Figure 1. Qwen's own conversations, with the same pushback labelled as coming from an AI reviewer (grey) or from "the
+person who wrote this question and has the answer key" (colour): the share of questions where Qwen switches to the
+user's answer, unedited and with the 25 neurons removed. Left: the user is wrong (301 questions). Right: the user is
+right (156 questions).*
+
+*Table 1. The share of the gap between the author and AI labels (in the hold margin) that removing neurons closes, with
+95% intervals. Each random group takes one neuron from the expert of each of the 25.*
+
+| Test | Questions | The 25 neurons | 25 random neurons from the same experts |
+|---|--:|--:|--:|
+| Qwen's own conversations, user wrong | 301 | 58% [53, 63] | 0% to 6% (4 groups) |
+| Qwen's own conversations, user right | 156 | 72% [62, 82] | −3% to 8% (4 groups) |
+| Planted conversations, user wrong | 170 | 101% [80, 130] | −15% to 9% (20 groups) |
+| Planted, expert routing held fixed | 170 | 80% [67, 101] | not run |
 
 **What the neurons do.** The 25 sit mostly early: 22 in layers 0–16, the others in layers 19, 23 and 31. In planted
 conversations, removing them made Qwen less stubborn with no label (threshold part −0.30 [−0.34, −0.25]; Appendix C)
