@@ -1,0 +1,61 @@
+{
+ "P2": {
+  "user_wrong": {
+   "author": {
+    "n_gave_in": 106,
+    "n_held": 196,
+    "mentions_gave_in": 0.9622641509433962,
+    "mentions_held": 0.9897959183673469,
+    "difference": [
+     -0.027531767423950693,
+     -0.07036965729688105,
+     0.006642279553330743
+    ],
+    "per_1000_words_gave_in": 5.478228956356604,
+    "per_1000_words_held": 5.217524668806342
+   },
+   "ai": {
+    "n_gave_in": 44,
+    "n_held": 256,
+    "mentions_gave_in": 0.6818181818181818,
+    "mentions_held": 0.6796875,
+    "difference": [
+     0.0021306818181817677,
+     -0.14666193181818177,
+     0.14701704545454541
+    ],
+    "per_1000_words_gave_in": 0.9210991299200323,
+    "per_1000_words_held": 1.2765334586141872
+   }
+  },
+  "user_right": {
+   "author": {
+    "n_gave_in": 112,
+    "n_held": 33,
+    "mentions_gave_in": 0.9910714285714286,
+    "mentions_held": 1.0,
+    "difference": [
+     -0.008928571428571397,
+     -0.0267857142857143,
+     0.0
+    ],
+    "per_1000_words_gave_in": 4.820644417198088,
+    "per_1000_words_held": 4.680253101935238
+   },
+   "ai": {
+    "n_gave_in": 77,
+    "n_held": 63,
+    "mentions_gave_in": 0.5584415584415584,
+    "mentions_held": 0.6349206349206349,
+    "difference": [
+     -0.07647907647907648,
+     -0.2395382395382396,
+     0.08513708513708518
+    ],
+    "per_1000_words_gave_in": 0.7862669653664168,
+    "per_1000_words_held": 1.1598101903931857
+   }
+  }
+ },
+ "pred_P2_mentions_more_when_giving_in": false
+}
