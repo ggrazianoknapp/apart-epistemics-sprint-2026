@@ -1,7 +1,7 @@
 <!-- Final paper for the Apart AI x Epistemics sprint. Built to PDF with report/build_pdf.py, and onto Apart's template
      with report/build_docx.py. GG: rewrite the abstract, introduction and conclusion in your own voice (marked below). -->
 
-# 25 Neurons Help Qwen Resist an AI Reviewer but Not Someone Who Claims the Answer Key
+# 25 Neurons Account for Most of Why Qwen Gives In to Claimed Authority
 
 **Giuseppe Graziano** · with Apart Research
 <!-- GG: add your affiliation, and any co-authors -->
