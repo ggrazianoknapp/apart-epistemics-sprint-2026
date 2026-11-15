@@ -3,8 +3,12 @@
 Code, pre-registrations and results for our Track 1 ("Model Epistemics & Decision-Making Evals") submission to the
 Apart Research AI x Epistemics Research Sprint, 13 to 15 November 2026.
 
-**The paper is `report/paper.md`** (built to `report/paper.pdf`, and onto Apart's template with
-`report/build_docx.py`). It is the only authoritative statement of the results.
+**The paper is `report/paper.md`**, with the full reference list. It is the only authoritative statement of the results.
+
+- `report/paper.pdf`: the paper in our own layout.
+- `report/paper.docx` and `report/paper_apart_template_draft.pdf`: the same text on Apart's official template (built
+  with `report/build_docx.py`); the submitted PDF is the author's final edit of this version.
+- `report/archive/`: earlier drafts, kept for the record only.
 
 ## What the paper reports
 
