@@ -61,15 +61,13 @@ lists every prediction and its outcome, failures included, and `DEVIATIONS.md` e
 **Pushback.** SYCON-Bench (Hong et al. 2025) and SPINE (Tang et al. 2026) include no case where the user is right, and
 SycEval (Fanous et al. 2025) counts a switch to the right answer as sycophancy too. SycoBench-600 (Sinha 2026) scores
 both arms; Zhang et al. (2026) and Hussain & Nielbo (2026) found that prompts and other mitigations trade resistance
-for receptivity. Barnes (2026) applied the same signal-detection measures to critiques of seven small open models and
-found that capable models differ more in threshold; we test this on 21 models.
+for receptivity. Barnes (2026) applied the same signal-detection measures to critiques of seven open models and found larger differences in threshold; we test this on 21 models.
 
 **Who disagrees.** Models follow "human expert" labels more than "other LLM" labels (Bajaj & Tiganj 2026), most
 conformity needs no speaker at all (Hu & Qu 2026), and when an expert disagreed, none of five models revised in a way
 that raised accuracy (Tang & Lin 2026). We split each label's effect into threshold and sensitivity and look for it inside a model.
 
-**Inside the model.** Pandey (2026) found heads that signal "this statement is wrong" while the model agrees anyway, and
-Shapira, Cheng & Orgad (2026) argue that deference and useful updating share machinery. Goodfire released a labelled
+**Inside the model.** Pandey (2026) found heads that signal "this statement is wrong" while the model agrees anyway (see also Shapira, Cheng & Orgad 2026). Goodfire released a labelled
 neuron atlas for Qwen3.6-35B-A3B (Tigges et al. 2026a, 2026b) and, in a dense Qwen model, removed 25 neurons found by
 attribution to make it side with an "absolutely certain" user (Cammarata 2026). We use a simpler attribution on the
 mixture-of-experts model and test the group against random groups, frozen routing and the model's own conversations.
@@ -128,7 +126,7 @@ reviewer more like one. In planted conversations on held-out questions the 25 cl
 effect does not come from changing which experts later layers use. The same number of held-out questions were answered
 correctly before and after (169 of 400).
 
-![Figure 1](../figures/live/15_authority_neurons.png){: style="width:100%"}
+![Figure 1](../figures/live/15_authority_neurons.png){: style="width:86%"}
 
 *Figure 1. Qwen's own conversations, with the same pushback labelled as coming from an AI reviewer (grey) or from "the
 person who wrote this question and has the answer key" (colour): the share of questions where Qwen's next answer letter, read with thinking closed, is the user's, unedited and with the 25 neurons removed. Left: the user is wrong (301 questions). Right: the user is
@@ -187,7 +185,7 @@ from 0.45 to 1.31 (standard deviation 0.26) and stubbornness from −1.42 to +1.
 flagged as doubtful (G2). Among the nine current models, differences in judgement are no larger than sampling noise, so
 we do not rank models by it. We chose this decomposition after the main run, so this comparison is exploratory.
 
-![Figure 2](../figures/live/0_models_stubbornness_vs_judgement.png){: style="width:76%"}
+![Figure 2](../figures/live/0_models_stubbornness_vs_judgement.png){: style="width:66%"}
 
 *Figure 2. For 21 models, sorted from most to least stubborn: how often each gave in to a wrong user (orange) and
 accepted a right user (blue), and the same two rates expressed as judgement (sensitivity d′) and stubbornness
@@ -197,11 +195,8 @@ The changes we made tell the same story (Appendix C, Figure 3). A one-line syste
 whatever the user says" (exploratory), cut giving in from 33 of 353 to 5 of 341 (DeepSeek V4.1 Flash) and from 57 of
 321 to 4 of 322 (GPT-6 Luna), nearly perfect on a one-sided score, but also cut accepting a right user from 36 of 114 to
 10 of 128 and from 88 of 164 to 8 of 161: stubbornness rose by 0.88 [0.66, 1.16] and 1.50 [1.28, 1.82], with no
-detectable change in judgement (−0.09 [−0.61, 0.48] and −0.43 [−0.94, 0.16]). Reasoning before replying was the one
-change that raised judgement: with hidden reasoning on rather than off it rose by 0.32 [0.19, 0.46] pooled over five
-models, against our pre-registered prediction of no change, and stayed clear for two or three of them after a Holm correction (DeepSeek sits on the threshold);
-stubbornness rose too (+0.11 [0.04, 0.18]). Having already answered protected five of nine models against the same
-claim made in a new chat, while Claude Sonnet 5.5 gave in more inside the conversation (Appendix C).
+detectable change in judgement. Reasoning before replying was the one change that raised judgement, by 0.32 [0.19,
+0.46] pooled over five models, against our pre-registered prediction of no change.
 
 ## 5. Discussion and Limitations
 
@@ -211,13 +206,11 @@ message that claims a human or expert source can make the reviewer more complian
 messages assert their own source. Inside Qwen, most of the difference between the two labels is resistance that
 applies to an AI challenger and not to a person.
 
-**For evaluation.** A count of giving in to a wrong user mostly ranks stubbornness, and a model can top it by never
-changing its mind. Pushback evaluations should include a user-right arm with identical wording and report sensitivity
+**For evaluation.** A count of giving in to a wrong user mostly ranks stubbornness. Pushback evaluations should include a user-right arm with identical wording and report sensitivity
 and threshold separately: the threshold is a design choice, while sensitivity is a capability.
 
 **For interpretability.** A small group found by a simple attribution carried a behaviour-level effect even though
-attribution did not predict single neurons. What made the result credible was cheap: many random groups from the same
-experts, routing held fixed, and the model's own conversations, not used to choose the neurons (2 of 457 share a question stem with a selection question). The group is not a
+attribution did not predict single neurons. The checks that mattered were cheap: many random groups from the same experts, routing held fixed, and the model's own conversations, not used to choose the neurons (2 of 457 share a question stem with a selection question). The group is not a
 clean authority circuit, since it also backs Qwen's correct answers when nobody pushes back.
 
 **Limitations** (full list in Appendix A). The neuron work uses one model, decisions read from a logit margin with
