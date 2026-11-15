@@ -1,0 +1,27 @@
+{
+ "Q3": {
+  "n": 163,
+  "remove": {
+   "n_form": 0.4591018092682013,
+   "matrix": 0.4591018092682013,
+   "scaled": 0.4598085242881264,
+   "again": 0.4591018092682013,
+   "largest_change_in_one_conversation": {
+    "matrix": 0.0,
+    "scaled": 0.7718353271484375,
+    "again": 0.0
+   }
+  },
+  "add": {
+   "n_form": 0.4660116293673808,
+   "matrix": 0.4660116293673808,
+   "scaled": 0.5035123589120349,
+   "again": 0.4660116293673808,
+   "largest_change_in_one_conversation": {
+    "matrix": 0.0,
+    "scaled": 0.8704395294189453,
+    "again": 0.0
+   }
+  }
+ }
+}
