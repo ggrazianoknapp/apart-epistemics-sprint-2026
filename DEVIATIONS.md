@@ -248,3 +248,14 @@ the whole project on 14-15 November (research/deliberation8, not public) and add
 47. **The title changed twice on 16 Nov**: to "Who Is Speaking Matters More Than Who Is Right" after Studies M to T,
     and to the present title after Study U showed the label ladder across 11 models and a small effect of the
     creator labels.
+
+48. **Study V's analysis lives in `harness/analyze_u.py`, not in the `harness/analyze_v.py` its pre-registration
+    names.** The Study V block was added to `analyze_u.py` and committed at 11:03 on 16 November, about two minutes
+    after the run was launched (11:00) and before any model's Study V results had been analysed (the first model
+    finished at about 11:04). The three predictions are computed exactly as registered.
+
+49. **Final edits after two rounds of review by Claude agents (16 Nov).** Text only, except one analysis: at a
+    reviewer's request we repeated the 11-model label analysis without the 84 questions whose answer keys were flagged
+    in Study G2 (`harness/analyze_u_keys.py`, `results/u_keys.json`). It was run after all other results were known
+    and is labelled exploratory in §4.1. The words "caves" and "pushover" in two figures were changed to match the
+    text (`harness/results_page.py`), with no change to any number.
