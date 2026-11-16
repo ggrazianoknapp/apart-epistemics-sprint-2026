@@ -1,0 +1,11 @@
+anthropic/claude-sonnet-5.5 --from main --concurrency 24 --labels internet,student,grader,ai_key --out source3
+anthropic/claude-haiku-5.5 --from main --concurrency 24 --labels internet,student,grader,ai_key --out source3
+openai/gpt-6.1-sol --from main --concurrency 24 --labels internet,student,grader,ai_key --out source3
+openai/gpt-6-luna --from main --concurrency 24 --labels internet,student,grader,ai_key --out source3
+deepseek/deepseek-v4.1-flash-1017 --from main --concurrency 24 --provider Fireworks --labels internet,student,grader,ai_key --out source3
+z-ai/glm-5.3 --from main --concurrency 24 --provider Fireworks --labels internet,student,grader,ai_key --out source3
+meta-llama/llama-3.3-70b-instruct --from mask --reasoning "" --concurrency 16 --labels internet,student,grader,ai_key --out source3
+meta-llama/llama-4-maverick --from mask --reasoning "" --concurrency 16 --labels internet,student,grader,ai_key --out source3
+mistralai/mistral-medium-3 --from mask --reasoning "" --concurrency 16 --labels internet,student,grader,ai_key --out source3
+openai/gpt-oss-120b --from mask --reasoning "" --concurrency 16 --labels internet,student,grader,ai_key --out source3
+openai/gpt-4o-2024-11-20 --from mask --reasoning "" --concurrency 16 --labels internet,student,grader,ai_key --out source3
