@@ -192,3 +192,46 @@ the whole project on 14-15 November (research/deliberation8, not public) and add
     index covers ten of 40 layers); stale intervals fixed (G1 part c, J3, J1c); relevance patching is credited to
     Jafari et al. (2025); two exploratory analyses added on existing data (read-out against sampled replies, and the
     removal's effect controlling for the unedited margin).
+
+38. **Study M: the top-100 copy was added after seeing M1** and is reported as exploratory. M1b compares the 25 only
+    with the unedited model and the three random groups, as pre-registered.
+
+39. **Study N's first design was dropped before its pre-registration was tagged.** Projecting the direction out of the
+    weights moved the AI-label margin by more than the whole gap, so the design was changed to swapping one component
+    between the two labelled versions of a conversation; the pre-registration describes the dropped design. N4 (written
+    replies) used Hugging Face generation in left-padded batches with at most 6,000 new tokens, not the vLLM sampler
+    with 16,000 used for unedited replies. Padding changes next-token probabilities slightly, so batches were sorted by
+    length, all conditions of a conversation share a batch, and the padding is stored with each reply.
+
+40. **Study O: one reported item was computed before the tag** (O7, how well the component separates Study M1's
+    outcomes), and is marked exploratory in the pre-registration itself. The one-dimension case of O4 gave 43% where
+    Study N gave 46% for the same swap; Study Q3 traced this to rounding in 16-bit arithmetic, not to a difference in
+    the edit, and the paper reports the Study N numbers with the measured spread.
+
+41. **Study P.** (a) The rule that paired comparisons use only conversations where both replies have a readable final
+    line was introduced in pre-registration P, after a first look at 96 conversations of N4 showed the swap doubling
+    cut-off replies; N4 itself is reported as pre-registered (unreadable counted as holding), and both countings are
+    in `results/`. (b) P1 (thinking off) set a 1,500-token limit that more than half the replies exceeded, so it has
+    about 50 usable pairs per comparison. (c) P2 used data that existed before the pre-registration (stated there).
+    (d) The three-times strength run was announced in the pre-registration as exploratory.
+
+42. **Studies Q1 and T take the AI-reviewer and author rows from Study M1's unedited replies** on the same held-out
+    conversations (same sampler and settings, sampled a day earlier), as their pre-registrations say. Study R was
+    registered after an exploratory look at Study P3 and before the Q1 replies existed; the Q chain's start time is in
+    the box log.
+
+43. **A second sample of S1 was added after seeing the first.** The pre-registered S1 sample failed its prediction
+    (−6.8 points [−16.9, +3.4]). A second sample of the author label and the held-down direction was then run; alone
+    it gives −13.3 [−25.0, −1.7] and pooled −9.6 [−17.6, −1.5]. Both are labelled exploratory.
+
+44. **The direction's read-out result stays in the main text although pre-registration N sent it to the appendix.**
+    N's rule: if N1 or N2 failed, the direction would be reported in the appendix as a negative result. Both failed
+    on the half (47% and 46%). We keep two sentences on it in §4.4, with the miss stated, because the direction then
+    passed two pre-registered tests in written replies (P4 and its repeat S2), which are the main result of that
+    section. Pre-registration O said its tests would not change the status N's rule gave the direction; this item
+    records that the later studies did.
+
+45. **The paper was restructured a second time, after Studies M to T (16 Nov).** Under pre-registration L's rule the 25
+    neurons led the earlier draft. Study M then showed they do not change written replies and remove 26% to 31% of the
+    read-out difference with other wording, so they moved to §4.5 and Appendix C, and the title changed. The equal-weight
+    accuracy by label and the sort order of Figure 1 were not pre-registered beyond "reported without a prediction".
