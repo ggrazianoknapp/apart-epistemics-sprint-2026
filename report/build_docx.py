@@ -298,7 +298,7 @@ for el in soup.children:
             for j, c in enumerate(r.find_all(["th", "td"])):
                 longest[j] = max(longest[j], max((len(w) for w in c.get_text().split()), default=0))
         width = [TEXT_W * w / sum(wts) for w in wts]
-        floor = [0.068 * n + 0.17 for n in longest]
+        floor = [0.082 * n + 0.30 for n in longest]  # room for Google Docs' cell padding
         for _ in range(4):
             short = [j for j in range(ncol) if width[j] < floor[j]]
             if not short:

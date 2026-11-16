@@ -560,9 +560,9 @@ and GPT-4o (4% to 6% and 6% to 10% of all pushback items), as in the earlier stu
 *Table 3: Per model, sorted by authority bias (stubbornness under the internet label minus under the author label;
 its 95% interval excludes zero for every model). "Judgement change" is judgement under the internet label minus under
 the author label (no interval excludes zero). The last four columns are changes in stubbornness: author, creator and
-father against the AI reviewer, and the real maker minus the rival.*
+father against the AI reviewer, and the real maker minus the rival ("maker gap").*
 
-| Model | Accepts: internet, author | Gives in: internet, author | Authority bias | Judgement change | Author | Creator | Maker − rival | Father |
+| Model | Accepts: internet, author | Gives in: internet, author | Authority bias | Judgement change | Author | Creator | Maker gap | Father |
 |---|--:|--:|--:|--:|--:|--:|--:|--:|
 | Llama 3.3 70B | 82%, 100% | 47%, 91% | +1.62 | −0.43 | −0.64 | +0.06 | +0.04 | +0.62 |
 | Llama 4 Maverick | 44%, 90% | 16%, 58% | +1.29 | −0.19 | −0.73 | −0.32 | −0.03 | +0.12 |
