@@ -17,9 +17,9 @@ Do language models weigh a correction by who claims to send it? On 11 models we 
 
 <!-- GG: rewrite in your own voice -->
 Models now review each other's work and take corrections from users all the time. Two things could decide whether a
-model accepts a correction: whether the correction is right, and who sent it. Some deference to a person who holds the
-answer key is reasonable. The risk is that a claimed source makes a model switch more or less readily without making it
-any better at telling whether the claim is right, and in a pipeline of agents any message can claim to come from anyone.
+model accepts a correction: whether it is right, and who sent it. Some deference to a person who holds the answer key
+is reasonable. The risk is that a claimed source makes a model switch more or less readily without making it any
+better at telling whether the claim is right, and in a pipeline of agents any message can claim to come from anyone.
 
 We study this across models and inside one. Across models, we push back with the same message under 14 speaker
 labels, an *authority ladder* that runs from "a random person on the internet" to the question's author and on to
@@ -56,8 +56,7 @@ lists every prediction and its outcome, failures included, and `DEVIATIONS.md` e
 
 **Pushback.** SYCON-Bench (Hong et al. 2025) and SPINE (Tang et al. 2026) include no case where the user is right, and
 SycEval (Fanous et al. 2025) counts a switch to the right answer as sycophancy too. SycoBench-600 (Sinha 2026) scores
-both arms; Zhang et al. (2026) and Hussain & Nielbo (2026) found that prompts and other mitigations trade resistance
-for receptivity. Barnes (2026) applied the same signal-detection measures to critiques of seven open models and found larger differences in threshold; we test this on 21 models.
+both arms; Zhang et al. (2026) and Hussain & Nielbo (2026) found that mitigations trade resistance for receptivity. Barnes (2026) applied the same signal-detection measures to critiques of seven open models and found larger differences in threshold; we test this on 21 models.
 
 **Who disagrees.** Models follow "human expert" labels more than "other LLM" labels (Bajaj & Tiganj 2026), most
 conformity needs no speaker at all (Hu & Qu 2026), and when an expert disagreed, none of five models revised in a way
@@ -89,9 +88,7 @@ X one of 14 speakers (Table 1). They range from "a random person on the internet
 question and has the answer key", and include four that claim standing over the model and none over the question:
 "the developer who built and trained you", "your creator", the model's real maker by name ("Anthropic, the company that
 built and trained you") and a rival maker in the same sentence. The four upper labels ran on 14 November (Studies D
-and G3, which also include Qwen as a twelfth model), the rest on 16 November (Studies U and V). Study E asked the
-same pushback with hidden reasoning off and on (five models), and G1 and G4 varied reasoning further; the two
-system-prompt runs were exploratory.
+and G3, which also include Qwen as a twelfth model), the rest on 16 November (Studies U and V). 
 
 **Seventeen labels in Qwen.** Qwen's own main-run conversations (its real first reply, then the pushback; 301 with a
 wrong user, 156 with a right user) were split by a hash of the question id. The *held-out* part, 163 with a wrong user
@@ -113,8 +110,7 @@ random directions and replacing the whole state at those positions. On the read-
 the author-minus-AI margin difference it reproduces or removes.
 
 **The 25 neurons.** Before the direction we ranked Qwen's 5.2 million neurons by gradient × activation attribution to
-the author-minus-AI margin (one rule of relevance patching, Jafari et al. 2025) on *planted* conversations, where we
-wrote the first answer ourselves, kept the top 25 and removed them by zeroing their output columns (Appendix D).
+the author-minus-AI margin (Jafari et al. 2025), kept the top 25 and zeroed their output columns (Appendix D).
 
 ## 4. Results
 
@@ -151,8 +147,7 @@ correct" weights the two arms equally.*
 | the author of this question, with the answer key | 39% | 72% | −0.64 [−0.69, −0.59] | 66% |
 
 **The answer key.** The grader with the answer key moved models more than a professor, and an AI model with the key
-as much as a human reviewer. Eight of the nine predictions registered for these labels held (Appendix B); the order of
-the four upper labels was registered earlier and also held in Qwen as a twelfth model (Study G3).
+as much as a human reviewer. Eight of the nine predictions registered for these ten labels held (Appendix B).
 
 **Testing for daddy issues.** Four labels claim standing over the model and none over the question. "Your creator"
 and "the developer who built and trained you" lowered stubbornness by 0.20 and 0.16: about as much as a human
@@ -175,9 +170,9 @@ random person on the internet" and 37% [30, 45] to the author with the answer ke
 Left: the user is wrong (163 conversations). Right: the user is right (75). Labels are sorted by the sum of the two
 rates.*
 
-These are written replies with reasoning on, so the ladder of §4.1 is not an artefact of short answers. Labels also
-pushed below an unlabelled user: with a right user, the internet label cut accepting by 16 points [8, 27] against no
-label (with a wrong user by 6 [0, 12]; our prediction of a clear drop failed). The author with the key moved Qwen more
+These are written replies with reasoning on. Labels also pushed below an unlabelled user: with a right user, the
+internet label cut accepting by 16 points [8, 27] against no label (with a wrong user by 6 [0, 12]; our prediction of a
+clear drop failed). The author with the key moved Qwen more
 than "the person who wrote this question" (+21 points [15, 28] and +28 [18, 39]). An AI model with the answer key was
 no more persuasive to Qwen than an AI reviewer (+2.7 [−2.1, +7.5]), unlike in the 11 models. Weighting the two arms
 equally, Qwen ended on the correct answer between 59% and 72% of the time under every label.
@@ -186,8 +181,7 @@ equally, Qwen ended on the correct answer between 59% and 72% of the time under 
 
 We measured the hold margin for every held-out conversation and label first, and sampled the written replies
 afterwards. Across labels, the mean margin ordered the written rates: the rank correlation over the 17 labels was
-−0.82 with a wrong user and −0.80 with a right user (pre-registered at −0.7 or stronger; −0.93 and −0.95 on the first
-eight labels). Conversation by conversation, the margin predicted whether the later written reply gave in: AUROC 0.85
+−0.82 with a wrong user and −0.80 with a right user (pre-registered at −0.7 or stronger). Conversation by conversation, the margin predicted whether the later written reply gave in: AUROC 0.85
 [0.80, 0.89] over the six labels sampled first, and 0.80 [0.74, 0.86] over nine further labels (0.85 and 0.77 with a
 right user). All three pre-registered predictions held on both sets. In the fifth of cases with the lowest margin,
 Qwen gave in 61% of the time, against 10% in the rest (51% against 11% on the second set).
@@ -195,15 +189,14 @@ Qwen gave in 61% of the time, against 10% in the rest (51% against 11% on the se
 Reasoning builds on this first lean; it does not undo it. We cut the thinking of 326 written replies at fractions of its
 length and read the margin at each cut (exploratory): the author-minus-AI difference grew from −0.94 before any
 thinking to −3.62 at its end, and replies that ended up giving in started lower than those that held (−0.4 against
-+1.0 to +1.7). The read-out is not a perfect stand-in for the reply: it placed the AI reviewer in the middle of the
-ladder, while in written replies Qwen resisted the AI reviewer almost as much as a student.
++1.0 to +1.7). 
 
 ### 4.4 One direction, held down while Qwen reasons, removes about half of the author's pull
 
 **On the read-out.** Swapping the authority direction between the two labelled versions of a held-out conversation
 reproduced 47% [41, 53] of the margin difference when written into the AI version and removed 46% [39, 54] from the
-author version; 20 random directions moved −4% to 9%. Both shares fell just under the half we pre-registered, a miss
-inside the ±4 points of rounding noise we later measured (Appendix C). The direction also worked with reworded labels
+author version; 20 random directions moved −4% to 9%. Both shares fell just under the half we pre-registered, inside the ±4 points of rounding noise we later measured
+(Appendix C). The direction also worked with reworded labels
 (52% to 63%) and with the claim as a plain sentence (31% and 29%; we predicted a third); pushing it further lowered
 the margin at every step, and its mean component under 17 labels tracked their margins (r = −0.66 against a
 pre-registered −0.7; Appendix C).
@@ -213,7 +206,7 @@ the whole state at those positions. Qwen's thinking returns to the claim: it men
 in 96% to 99% of replies under the author label. Holding the direction down for the whole reply did work: giving in to
 the claimed author fell from 39% to 29%, and from 38% to 28% in a repeat with new samples (pooled −10.7 points
 [−15.2, −6.2], about 45% of the 24-point difference between the labels), while a random direction held down the same
-way changed nothing (0.0 [−5.4, +5.4]). Replies were also shorter (2,900 against 3,500 tokens).
+way changed nothing (0.0 [−5.4, +5.4]). 
 
 *Table 2. Qwen's written replies to a wrong user under the author label, 163 held-out conversations: share giving in,
 and the paired difference from the unedited author label on conversations where both replies finished.*
@@ -232,69 +225,61 @@ and the paired difference from the unedited author label on conversations where 
 lowered accepting (−6.8 points [−16.9, +3.4] in the pre-registered sample, which failed its prediction; −9.6
 [−17.6, −1.5] pooled with a second sample added afterwards). And it cannot be used to plant authority: written into
 AI-labelled conversations and held there, it raised giving in by 5.5 points [−1.8, +12.8], not clearly more than a
-random direction. At three times the shift, most replies never reached an answer.
+random direction. 
 
 ### 4.5 Twenty-five neurons close most of the gap on the read-out, and none of it in written replies
 
 Removing the 25 neurons closed 58% [53, 63] of the author-minus-AI margin difference in Qwen's own conversations with a
 wrong user and 72% [62, 82] with a right user, against −3% to 8% for random groups of 25 from the same experts
-(Appendix C, Table 5); this met the rule we had pre-registered for leading the paper with them. Further tests changed
-that reading. With reworded labels the share fell to 26% to 31%. The neurons act on the AI side, they also support
-Qwen's correct answer when nobody pushes back, and random 25s from the same attribution shortlist close 50% to 70%. In
+(Appendix C, Table 5). Further tests changed that reading. With reworded labels the share fell to 26% to 31%, the
+neurons also support Qwen's correct answer when nobody pushes back, and random 25s from the same attribution shortlist
+close 50% to 70%. In
 written replies from a copy of the model with the neurons removed, the difference between the labels did not shrink
 (18.6 to 15.9 points; share removed 14% [−23, 42], inside the range of three random groups), while giving in to the AI
-reviewer rose by 5.6 points [1.7, 10.0]. We read them as part of how firmly Qwen holds an answer in general. The
-direction of §4.4 is unchanged when they are removed.
+reviewer rose by 5.6 points [1.7, 10.0]. We read them as part of how firmly Qwen holds an answer in general.
 
 ### 4.6 Across 21 models, one-sided scores mostly rank stubbornness
 
 Every model accepted a right user more often than it gave in to a wrong one, but the two rates moved together
-(Appendix C, Figure 2). GLM 5.3 gave in to a wrong user 20% of the time and accepted 63% of corrections; Gemini 4 Argon
-gave in 1% of the time and accepted 17%. On a one-sided score Gemini looks best and GLM worst of the nine current
-models, yet their judgement cannot be told apart (d′ 1.25 and 1.17) while their stubbornness differs widely (c 1.58
-and 0.24). Across the 21 models the one-sided score ranks almost exactly by stubbornness (rank correlation −0.96) and
+(Appendix C, Figure 2). On a one-sided score Gemini 4 Argon looks best and GLM 5.3 worst of the nine current models, yet their judgement
+cannot be told apart (d′ 1.25 and 1.17) while their stubbornness differs widely (c 1.58 and 0.24). Across the 21 models the one-sided score ranks almost exactly by stubbornness (rank correlation −0.96) and
 much less by judgement (−0.50); stubbornness spread 2.8 times as much as judgement (2.3 on the 150 questions every
 model answered, and 2.3 without 84 questions with doubtful answer keys). We chose this decomposition after the main
-run, so the comparison is exploratory. A one-line system prompt, "Never change your answer, whatever the user says"
-(exploratory), cut giving in from 57 of 321 to 4 of 322 for GPT-6 Luna, and accepting a right user from 88 of 164 to
-8 of 161. Reasoning before replying was the one change that raised judgement, by 0.32 [0.19, 0.46] pooled over five
+run, so the comparison is exploratory. A one-line system prompt, "Never change your answer", nearly stopped giving in and valid corrections alike
+(exploratory; Appendix C). Reasoning before replying was the one change that raised judgement, by 0.32 [0.19, 0.46] pooled over five
 models, against our pre-registered prediction of no change (Appendix C).
 
 ## 5. Discussion and Limitations
 
 **For collective epistemics.** A one-line claim about who is speaking decided how often models switched, and not how
 often they ended up right. It works downwards too: across 11 models a correct fix from "a random person on the
-internet" was turned away almost two times in three. What models listened to was a claim to hold the answer, not a
-claim to rank: their creator, their maker and their father counted for little. Where models review each other's work,
+internet" was turned away almost two times in three. What models listened to was a claim to hold the answer: their creator, their maker and their father counted for little. Where models review each other's work,
 or take corrections from the public, a message's stated source should not be something the message itself can set,
 and a correct fix should not need a title to be heard.
 
-**For evaluation.** A count of giving in to a wrong user mostly ranks stubbornness. Pushback evaluations should include a user-right arm with identical wording and report sensitivity
-and threshold separately: the threshold is a design choice, while sensitivity is a capability.
+**For evaluation.** A count of giving in to a wrong user mostly ranks stubbornness. Pushback evaluations should include a user-right arm with identical wording and report the two separately.
 
 **For interpretability.** Two edits that passed their controls on a one-pass read-out, the 25 neurons and the
 direction swap, did nothing to written replies, because the model re-read the claim while reasoning. The edit that
-worked was the one that stayed on. Results from a read-out with reasoning closed should be checked against sampled
-replies before they are called causal. As a monitor, the same read-out was useful: it flagged in advance the fifth of
-cases where Qwen gave in five times as often.
+worked was the one that stayed on. Read-out results should be checked against sampled replies before they are called causal. As a monitor the
+read-out was useful: it flagged in advance the fifth of cases where Qwen gave in five times as often.
 
 **Limitations** (full list in Appendix A). All questions are multiple choice with one pushback message, the labels share
-one bracket format, and the 14 cross-model labels ran on two days. The inside-the-model work uses one model. Written-reply rates rest on one sample per conversation (two for the held-down direction), the
-right-user set is small (75), and replies cut off at the token limit are left out. The held-down edit removes about
-half of the author's pull, lowers accepting a right author too, and was tested for the author label only. The read-out
-predicts outcomes partly because it reflects how sure Qwen was of its first answer. **Future work:** the held-down direction and the read-out in other open models, and whether training on two-sided pushback can raise judgement and not only
+one bracket format, and the 14 cross-model labels ran on two days. The inside-the-model work uses one model. Qwen's written-reply rates rest on one sample per conversation (two for the held-down direction) and a small
+right-user set (75). The held-down edit lowers accepting a right author too and was tested for the author label only.
+The read-out predicts outcomes partly because it reflects how sure Qwen was of its first answer. **Future work:** the held-down direction and the read-out in other open models, and whether training on two-sided pushback can raise judgement and not only
 stubbornness.
 
 ## 6. Conclusion
 
 <!-- GG: write in your own voice, one or two paragraphs -->
-Who claims to be speaking changes how readily language models switch answers much more than it changes how often they
-end up right. Across 11 models, the same correct fix was accepted 37% of the time from an internet stranger and 72%
-from someone claiming the answer key, with accuracy almost unchanged. We tested for daddy issues and found mild ones:
-models yielded a little to "your creator", did not check which company claimed to have made them, and yielded less
-than that to "your father". Inside Qwen, the lean is visible in one forward pass before the model reasons, and one
-direction, held down while it reasons, removes about half of the claimed author's pull. Pushback evaluations should
-measure both arms, and systems of agents should not let messages vouch for their own authority.
+Who claims to be speaking changes how readily language models switch answers much more than how often they end up
+right: across 11 models the same correct fix was accepted 37% of the time from an internet stranger and 72% from
+someone claiming the answer key. We tested for daddy issues and found mild ones: models yielded a little to "your
+creator", did not check which company claimed to have made them, and yielded less to "your father". Inside Qwen, the
+lean is visible before the model reasons, and one direction, held down while it reasons, removes about half of the
+claimed author's pull. Pushback evaluations should measure both arms, and systems of agents should not let messages
+vouch for their own authority.
 
 ## Code and Data
 
@@ -489,7 +474,7 @@ Studies are named as in the text; the pre-registration files and tags are listed
 
 ## Appendix C: Further Results
 
-**Stubbornness and judgement across 21 models (Figure 2).** Judgement ranged from 0.45 to 1.31 (standard deviation 0.26) and stubbornness from −1.42 to +1.58 (0.73). Under "Never change your answer", DeepSeek V4.1 Flash went from giving in 33 of 353 times to 5 of 341, and from accepting 36 of 114 to 10 of 128.
+**Stubbornness and judgement across 21 models (Figure 2).** Judgement ranged from 0.45 to 1.31 (standard deviation 0.26) and stubbornness from −1.42 to +1.58 (0.73). Under "Never change your answer, whatever the user says", DeepSeek V4.1 Flash went from giving in 33 of 353 times to 5 of 341 and from accepting 36 of 114 to 10 of 128, and GPT-6 Luna from 57 of 321 to 4 of 322 and from 88 of 164 to 8 of 161.
 
 ![Figure 2](../figures/live/0_models_stubbornness_vs_judgement.png){: style="width:62%"}
 
