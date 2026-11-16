@@ -7,7 +7,7 @@ from pathlib import Path
 import markdown
 
 src, out = Path(sys.argv[1]).resolve(), Path(sys.argv[2]).resolve()
-html_body = markdown.markdown(src.read_text(), extensions=["tables", "sane_lists", "attr_list"])
+html_body = markdown.markdown(src.read_text(), extensions=["tables", "sane_lists", "attr_list", "smarty"])
 CSS = """
 @page { size: A4; margin: 18mm 18mm 18mm 18mm; }
 body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 10.5pt; line-height: 1.38; color: #111; }
@@ -16,7 +16,9 @@ h2 { font-size: 12.5pt; margin: 14pt 0 4pt 0; }
 h3 { font-size: 11pt; margin: 10pt 0 3pt 0; }
 h1, h2, h3 { break-after: avoid; page-break-after: avoid; }
 p:has(img) + p { break-before: avoid; page-break-before: avoid; }
-p { margin: 0 0 6pt 0; text-align: left; }
+p { margin: 0 0 6pt 0; text-align: justify; }
+li { text-align: justify; }
+table { margin-left: auto; margin-right: auto; width: 100%; }
 ul, ol { margin: 0 0 6pt 0; padding-left: 18pt; }
 li { margin-bottom: 2pt; }
 img { width: 100%; display: block; margin: 6pt auto 2pt auto; page-break-inside: avoid; }

@@ -15,6 +15,7 @@ from bs4 import BeautifulSoup, NavigableString, Tag
 from docx import Document
 from docx.shared import Pt, Inches, RGBColor
 from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_BREAK
+from docx.enum.table import WD_TABLE_ALIGNMENT
 from docx.oxml.ns import qn
 from docx.oxml import OxmlElement
 from docx.opc.constants import RELATIONSHIP_TYPE as RT
@@ -81,6 +82,7 @@ def set_rpr(run_el, bold=False, italic=False, code=False, size=None, highlight=F
 
 
 def text_run(text, fmt):
+    text = text.replace("\u2212", "\u2013")
     r = OxmlElement("w:r"); set_rpr(r, **fmt)
     t = OxmlElement("w:t"); t.text = text; t.set(qn("xml:space"), "preserve"); r.append(t)
     return r
@@ -172,7 +174,7 @@ if tcW is None:
 tcW.set(qn("w:w"), str(full)); tcW.set(qn("w:type"), "dxa")
 abs_p = next(p for p in title_tbl._tbl.iter(qn("w:p")) if "Summarize your project" in "".join(x.text or "" for x in p.iter(qn("w:t"))))
 from docx.text.paragraph import Paragraph
-abs_paras = [b for b in BeautifulSoup(markdown.markdown(abstract_md), "html.parser").find_all("p")]
+abs_paras = [b for b in BeautifulSoup(markdown.markdown(abstract_md, extensions=["smarty"]), "html.parser").find_all("p")]
 anchor = abs_p
 for k, bp in enumerate(abs_paras):
     p = abs_p if k == 0 else copy.deepcopy(abs_p)
@@ -183,6 +185,7 @@ for k, bp in enumerate(abs_paras):
             p.remove(r)
     par = Paragraph(p, title_tbl._parent)
     inline(par, bp); trim(par)
+    par.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
 
 # ---- remove the guidance box and guidance text ----
 children = list(body)
@@ -209,14 +212,22 @@ def para(style=None):
     return p
 
 
+def justify(p):
+    """Justify body text; lines that carry a URL stay left-aligned so the spacing does not stretch."""
+    if "http" not in p.text:
+        p.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
+
+
 # ---- body ----
-soup = BeautifulSoup(markdown.markdown(body_md, extensions=["tables", "sane_lists", "attr_list"]), "html.parser")
+soup = BeautifulSoup(markdown.markdown(body_md, extensions=["tables", "sane_lists", "attr_list", "smarty"]), "html.parser")
 last_was_img = False
+section = ""
 for el in soup.children:
     if not isinstance(el, Tag):
         continue
     if el.name in ("h1", "h2", "h3", "h4"):
         p = para("Heading 2" if el.name in ("h1", "h2") else "Heading 3"); inline(p, el); trim(p)
+        section = el.get_text().strip()
         if el.get_text().startswith("Appendix A"):  # appendices start on a new page, as in the PDF build
             p.paragraph_format.page_break_before = True
         last_was_img = False
@@ -229,11 +240,19 @@ for el in soup.children:
         p.add_run().add_picture(str((src.parent / img["src"]).resolve()), width=Inches(TEXT_W * pct))
         last_was_img = True
     elif el.name == "p" and len(el.contents) == 1 and getattr(el.contents[0], "name", None) == "em":
-        p = para(); inline(p, el.contents[0], {"size": 9.5}); trim(p)  # caption or small note
+        p = para(); inline(p, el.contents[0], {"size": 9.5}); trim(p); justify(p)  # caption or small note
+        if p.text.startswith("Table "):
+            p.paragraph_format.keep_with_next = True
         p.paragraph_format.space_after = Pt(10 if last_was_img else 6)
         last_was_img = False
     elif el.name == "p":
-        p = para(); inline(p, el); trim(p); last_was_img = False
+        p = para(); inline(p, el); trim(p); justify(p); last_was_img = False
+    elif el.name == "ul" and section == "References":
+        for li in el.find_all("li", recursive=False):
+            p = para(); inline(p, li, {"size": 9.5}); trim(p)
+            p.paragraph_format.left_indent, p.paragraph_format.first_line_indent = Inches(0.3), Inches(-0.3)
+            p.paragraph_format.space_after = Pt(3)
+        last_was_img = False
     elif el.name in ("ul", "ol"):
         nid = new_list(el.name == "ol")
         items = el.find_all("li", recursive=False)
@@ -243,13 +262,18 @@ for el in soup.children:
             numPr.get_or_add_ilvl().val = 0; numPr.get_or_add_numId().val = nid
             p.paragraph_format.left_indent, p.paragraph_format.first_line_indent = Inches(0.4), Inches(-0.25)
             p.paragraph_format.space_after = Pt(2 if k < len(items) - 1 else 6)
-            inline(p, li.p if li.p else li); trim(p)
+            inline(p, li.p if li.p else li); trim(p); justify(p)
         last_was_img = False
     elif el.name == "table":
         rows = el.find_all("tr")
         ncol = max(len(r.find_all(["th", "td"])) for r in rows)
         t = doc.add_table(rows=len(rows), cols=ncol)
         tblPr = t._tbl.tblPr
+        t.alignment = WD_TABLE_ALIGNMENT.CENTER  # centred, spanning the text width
+        tblW = tblPr.find(qn("w:tblW"))
+        if tblW is None:
+            tblW = OxmlElement("w:tblW"); tblPr.append(tblW)
+        tblW.set(qn("w:w"), "5000"); tblW.set(qn("w:type"), "pct")
         borders = OxmlElement("w:tblBorders")
         for side in ["top", "bottom", "insideH"]:
             b = OxmlElement(f"w:{side}")
@@ -257,11 +281,28 @@ for el in soup.children:
                 b.set(qn(k), v)
             borders.append(b)
         tblPr.append(borders)
+        t.autofit = False
+        wts = [1.0] * ncol
+        for r in rows:
+            for j, c in enumerate(r.find_all(["th", "td"])):
+                n = len(c.get_text().strip())
+                wts[j] = max(wts[j], min(n, 46) * (0.55 if c.name == "th" else 1.0) + (7 if "[" in c.get_text() else 3))
+        twips = [int(TEXT_W * 1440 * w / sum(wts)) for w in wts]
+        for j in range(ncol):
+            for i in range(len(rows)):
+                t.cell(i, j).width = Inches(TEXT_W * wts[j] / sum(wts))
+        grid = t._tbl.tblGrid  # Google Docs reads column widths from the grid, with a fixed layout
+        for g, w in zip(grid.findall(qn("w:gridCol")), twips):
+            g.set(qn("w:w"), str(w))
+        lay = OxmlElement("w:tblLayout"); lay.set(qn("w:type"), "fixed"); tblPr.append(lay)
+        tblW.set(qn("w:w"), str(sum(twips))); tblW.set(qn("w:type"), "dxa")
         for i, r in enumerate(rows):
             for j, c in enumerate(r.find_all(["th", "td"])):
                 cp = t.cell(i, j).paragraphs[0]
                 inline(cp, c, {"size": 8.5, "bold": c.name == "th"}); trim(cp)
                 cp.paragraph_format.space_after = Pt(0)
+                if len(rows) <= 20 and i < len(rows) - 1:
+                    cp.paragraph_format.keep_with_next = True  # short tables stay on one page, under their caption
                 if "right" in (c.get("style") or "") or c.get("align") == "right":
                     cp.alignment = WD_ALIGN_PARAGRAPH.RIGHT
         para().paragraph_format.space_after = Pt(2)
