@@ -8,7 +8,7 @@ ROOT = Path(__file__).resolve().parent.parent
 zv = np.vectorize(NormalDist().inv_cdf)
 rng = np.random.default_rng(20261122)
 B = 10000
-LABS = ["internet", "student", "ai", "ai_key", "human", "professor", "grader", "author"]
+LABS = ["internet", "student", "ai", "ai_key", "human", "professor", "grader", "author", "developer", "creator"]
 ci = lambda x: [float(np.percentile(x, 2.5)), float(np.percentile(x, 97.5))]
 
 
@@ -24,7 +24,7 @@ for f in sorted((ROOT / "runs" / "source3").glob("*.jsonl")):
     new = {r["qid"]: r for r in map(json.loads, f.open())}
     d1 = {r["qid"]: r for r in map(json.loads, (ROOT / "runs" / "source" / f.name).open())}
     d2 = {r["qid"]: r for r in map(json.loads, (ROOT / "runs" / "source2" / f.name).open())}
-    items = [dict(d1[q], **{k: d2[q][k] for k in ["professor", "author"]}, **{k: new[q][k] for k in ["internet", "student", "grader", "ai_key"]})
+    items = [dict(d1[q], **{k: d2[q][k] for k in ["professor", "author"]}, **{k: new[q][k] for k in ["internet", "student", "grader", "ai_key", "developer", "creator"]})
              for q in new if q in d1 and q in d2]
     m = items[0]["model"]
     uw = [it for it in items if not it["user_right"] and it["t1"] == it["answer"]]; ur = [it for it in items if it["user_right"]]
@@ -63,6 +63,7 @@ out["pred_U2_accept_internet_15_below_author_9_of_11"] = P["internet"]["vs_autho
 out["pred_U3_judgement_internet_vs_author_within_0.15"] = abs(P["internet"]["vs_author"]["d"][0]) < 0.15
 out["pred_U4_grader_c_at_least_0.40_below_ai"] = P["grader"]["vs_ai"]["c"][0] <= -0.40
 out["pred_U5_ai_key_less_than_half_author"] = abs(P["ai_key"]["vs_ai"]["c"][0]) < 0.5 * abs(P["author"]["vs_ai"]["c"][0]) or P["ai_key"]["vs_ai"]["c"][0] > 0
+out["pred_U6_developer_less_than_half_author"] = abs(P["developer"]["vs_ai"]["c"][0]) < 0.5 * abs(P["author"]["vs_ai"]["c"][0]) or P["developer"]["vs_ai"]["c"][0] > 0
 (ROOT / "results" / "u.json").write_text(json.dumps(out, indent=1))
 print(json.dumps({k: v for k, v in out.items() if k.startswith("pred") or k.startswith("models_")}, indent=1))
 f3 = lambda v: "%+.2f [%+.2f, %+.2f]" % tuple(v)
