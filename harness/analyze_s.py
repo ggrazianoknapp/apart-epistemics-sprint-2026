@@ -56,6 +56,10 @@ if by:
     out["S2_repeat"] = table(by, PAIRS)
     out["pred_S2_repeat_lowers"] = low(out["S2_repeat"], "steer_direction_minus_author")
     out["P4_and_S2_pooled"] = table(load([NEURO / "s_written_rep.jsonl", NEURO / "n_written.jsonl", NEURO / "p_written_think.jsonl"]), PAIRS)
+# added after seeing S1 (not pre-registered): a second sample of the author label and the held-down direction, user right
+if (NEURO / "s_written_right2.jsonl").exists():
+    out["S1_second_sample_exploratory"] = table(load([NEURO / "s_written_right2.jsonl"]), PAIRS)
+    out["S1_pooled_exploratory"] = table(load([NEURO / "s_written_right.jsonl", NEURO / "s_written_right2.jsonl"]), PAIRS)
 (ROOT / "results" / "s.json").write_text(json.dumps(out, indent=1))
 print(json.dumps({k: v for k, v in out.items() if k.startswith("pred")}, indent=1))
 for name, t in out.items():
