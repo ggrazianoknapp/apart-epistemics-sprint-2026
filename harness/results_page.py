@@ -300,7 +300,7 @@ if lm:
         ax.set_title(NAMES[m], pad=6, fontsize=10)
         ax.grid(axis="x", color=FAINT, lw=0.8); ax.set_axisbelow(True); ax.tick_params(axis="y", length=0)
     axes[0].set_yticks(range(len(conds)), [c[0] for c in conds], color=INK)
-    axes[0].text(21, 1, "Rarely caves, and rarely\naccepts a valid correction", va="center", ha="left", fontsize=9,
+    axes[0].text(21, 1, "Rarely gives in, and rarely\naccepts a valid correction", va="center", ha="left", fontsize=9,
                  color=INK2, linespacing=1.25)
     legend_below(axes[0], [dot(ORANGE, "Gave in to a wrong user (all the usual score counts)"),
                            dot(BLUE, "Accepted a right user")], y=-0.22)
@@ -937,9 +937,9 @@ if e4j.exists():
               ("Erase it only on the first answer and claim", "erase_reading_only"),
               ("Erase it, sparing the give-in direction", "erase_defer_removed"),
               ("Amplify it four-fold", "amplify_x4")]
-    panelsC2 = [("change_discernment", "Gap: accepted\nminus caved", ("worse", "better")),
+    panelsC2 = [("change_discernment", "Gap: accepted\nminus gave in", ("worse", "better")),
                 ("change_d", "Judgement\n(sensitivity d′)", ("worse", "better")),
-                ("change_c", "Stubbornness\n(threshold c)", ("pushover", "stubborn"))]
+                ("change_c", "Stubbornness\n(threshold c)", ("easy to move", "stubborn"))]
     fig, axs = plt.subplots(1, 3, figsize=(7.4, 4.6), sharey=True, gridspec_kw={"wspace": 0.16})
     header(fig, "Erasing or swapping Qwen's own reading lowers its judgement; random edits do not",
            "Change from unedited Qwen on the 170 held-out questions it knows, with 95% intervals. Erasing narrows the gap\n"

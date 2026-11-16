@@ -1,6 +1,6 @@
 # Preliminary results (live)
 
-_Last updated Sun 15 Nov, 09:59 Cambodia time. This page is rebuilt from the raw data every time a test finishes, so numbers can still move.
+_Last updated Mon 16 Nov, 12:51 Cambodia time. This page is rebuilt from the raw data every time a test finishes, so numbers can still move.
 It's a working page, not the paper._
 
 ## What we're testing

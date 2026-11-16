@@ -146,14 +146,18 @@ authors = next(tb for tb in title_tbl._tbl.iter(qn("w:tbl"))
                if any("Author name 1" in "".join(t.text or "" for par in tc.findall(qn("w:p")) for t in par.iter(qn("w:t")))
                       for tr in tb.findall(qn("w:tr")) for tc in tr.findall(qn("w:tc"))))
 author_names = re.findall(r"\*\*(.+?)\*\*", head.split("# " + title, 1)[1]) or ["Author"]
+_m = re.search(r"\*\*\s*·\s*([^·\n]+?)\s*·", head.split("# " + title, 1)[1])  # "**Name** · Affiliation · with Apart Research"
+AFFIL = _m.group(1) if _m else None
 rows = authors.findall(qn("w:tr"))
 for k, tc in enumerate(rows[0].findall(qn("w:tc"))):
     for t in tc.iter(qn("w:t")):
         if (t.text or "").startswith("Author name"):
             t.text = author_names[0] if k == 1 else ""
         elif t.text == "Affiliation":
-            if k == 1:
-                set_rpr(t.getparent(), highlight=True)  # placeholder for GG to fill
+            if k == 1 and AFFIL:
+                t.text = AFFIL
+            elif k == 1:
+                set_rpr(t.getparent(), highlight=True)  # placeholder until the author line gives an affiliation
             else:
                 t.text = ""
 for tr in rows[1:]:
@@ -288,7 +292,28 @@ for el in soup.children:
                 n = len(c.get_text().strip())
                 wts[j] = max(wts[j], min(n, 46) * (0.55 if c.name == "th" else 1.0) + (7 if "[" in c.get_text() else 3))
                 wts[j] = max(wts[j], max((len(w) for w in c.get_text().split()), default=0) + 3.5)  # longest word fits
+        # no word may break inside a cell: each column is at least as wide as its longest word (8.5 pt type)
+        longest = [0] * ncol
+        for r in rows:
+            for j, c in enumerate(r.find_all(["th", "td"])):
+                longest[j] = max(longest[j], max((len(w) for w in c.get_text().split()), default=0))
+        width = [TEXT_W * w / sum(wts) for w in wts]
+        floor = [0.068 * n + 0.17 for n in longest]
+        for _ in range(4):
+            short = [j for j in range(ncol) if width[j] < floor[j]]
+            if not short:
+                break
+            need = sum(floor[j] - width[j] for j in short)
+            free = [j for j in range(ncol) if width[j] > floor[j] + 0.01]
+            room = sum(width[j] - floor[j] for j in free)
+            for j in short:
+                width[j] = floor[j]
+            for j in free:
+                width[j] -= need * (width[j] - floor[j]) / room if room > need else (width[j] - floor[j])
+        wts = width
         twips = [int(TEXT_W * 1440 * w / sum(wts)) for w in wts]
+        hdr = OxmlElement("w:tblHeader"); hdr.set(qn("w:val"), "true")  # the header row repeats when a table breaks
+        t.rows[0]._tr.get_or_add_trPr().append(hdr)
         for j in range(ncol):
             for i in range(len(rows)):
                 t.cell(i, j).width = Inches(TEXT_W * wts[j] / sum(wts))
