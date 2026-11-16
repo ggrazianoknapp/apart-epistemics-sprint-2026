@@ -2,6 +2,8 @@
 
 AI x Epistemics Research Sprint 2026 (Track 1)
 
+**Project page with interactive charts:** https://ggrazianoknapp.github.io/apart-epistemics-sprint-2026/ (built by `site/build.py` from the result files).
+
 Code, pre-registrations and results for our Track 1 ("Model Epistemics & Decision-Making Evals") submission to the
 Apart Research AI x Epistemics Research Sprint, 13 to 15 November 2026.
 
