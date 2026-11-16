@@ -62,9 +62,8 @@ both arms; Zhang et al. (2026) and Hussain & Nielbo (2026) found that mitigation
 conformity needs no speaker at all (Hu & Qu 2026), and when an expert disagreed, none of five models revised in a way
 that raised accuracy (Tang & Lin 2026). Joswin et al. (2026) found a graded response to four medical ranks in three open models, while Wang et al. (2025) found that stated expertise barely moved seven, and PARROT (Çelebi et al. 2025) scores 22 models against expert personas. All three use only speakers who push a wrong answer, and none places a speaker below a neutral one or lets a speaker claim authority over the model itself. We test both arms, so each label's effect splits into threshold and sensitivity, and we extend the labels below "no label" and to the model's creator.
 
-**Inside the model.** Pandey (2026) found heads that signal "this statement is wrong" while the model agrees anyway (see also Shapira, Cheng & Orgad 2026). Goodfire released a labelled
-neuron atlas for Qwen3.6-35B-A3B (Tigges et al. 2026a, 2026b) and, in a dense Qwen model, removed 25 neurons found by
-attribution to make it side with an "absolutely certain" user (Cammarata 2026). Joswin et al. (2026) and Wang et al. (2025) locate authority and opinion effects in late layers and edit them, scoring the next answer letter. We test such edits against the model's written replies, where it reasons first, and not only against a one-pass read-out.
+**Inside the model.** Pandey (2026) found heads that signal "this statement is wrong" while the model agrees anyway (see also Shapira, Cheng & Orgad 2026). Goodfire released a labelled neuron atlas for Qwen3.6-35B-A3B (Tigges et al. 2026a, 2026b) and, in a dense Qwen model,
+removed 25 neurons to make it side with an "absolutely certain" user (Cammarata 2026). Joswin et al. (2026) and Wang et al. (2025) locate authority and opinion effects in late layers and edit them, scoring the next answer letter. We test such edits against the model's written replies, where it reasons first, and not only against a one-pass read-out.
 
 ## 3. Methods
 
@@ -93,9 +92,8 @@ and G3, which also include Qwen as a twelfth model), the rest on 16 November (St
 **Seventeen labels in Qwen.** Qwen's own main-run conversations (its real first reply, then the pushback; 301 with a
 wrong user, 156 with a right user) were split by a hash of the question id. The *held-out* part, 163 with a wrong user
 and 75 with a right user, was used to choose nothing. On it we sampled one written reply per conversation under each
-of 17 labels (Figure 1), with thinking on and the main run's settings. Replies with no readable final line (0% to 13%
-per label, mostly cut off at the token limit) are left out, and paired comparisons use the conversations where both
-replies are readable.
+of 17 labels (Figure 1), with thinking on and the main run's settings. Replies with no readable final line (0% to 13% per label) are left out, and paired comparisons use the conversations
+where both replies are readable.
 
 **Read-out.** The *hold margin* is the logit of Qwen's own letter minus the logit of the user's letter after "My
 final answer is (" with thinking closed: one forward pass, no sampling. Below zero means giving in.
@@ -106,8 +104,8 @@ conversation shares (the format reminder and the start of Qwen's reply), and nor
 chosen on 27 further conversations. A *swap* sets the component along this direction, at every layer and each of those
 positions, to its value in the other version of the same conversation. *Holding the direction down* is the swap from
 the AI version plus the same shift at every token Qwen then writes, at every layer; nothing is tuned. Controls are
-random directions and replacing the whole state at those positions. On the read-out, a swap's *share* is the part of
-the author-minus-AI margin difference it reproduces or removes.
+random directions and replacing the whole state at those positions. A swap's *share* is the part of the
+author-minus-AI margin difference it reproduces or removes.
 
 **The 25 neurons.** Before the direction we ranked Qwen's 5.2 million neurons by gradient × activation attribution to
 the author-minus-AI margin (Jafari et al. 2025), kept the top 25 and zeroed their output columns (Appendix D).
@@ -183,8 +181,8 @@ We measured the hold margin for every held-out conversation and label first, and
 afterwards. Across labels, the mean margin ordered the written rates: the rank correlation over the 17 labels was
 −0.82 with a wrong user and −0.80 with a right user (pre-registered at −0.7 or stronger). Conversation by conversation, the margin predicted whether the later written reply gave in: AUROC 0.85
 [0.80, 0.89] over the six labels sampled first, and 0.80 [0.74, 0.86] over nine further labels (0.85 and 0.77 with a
-right user). All three pre-registered predictions held on both sets. In the fifth of cases with the lowest margin,
-Qwen gave in 61% of the time, against 10% in the rest (51% against 11% on the second set).
+right user). The pre-registered predictions held on both sets. In the fifth of cases with the lowest margin, Qwen gave in 61% of
+the time, against 10% in the rest (51% against 11% on the second set).
 
 Reasoning builds on this first lean; it does not undo it. We cut the thinking of 326 written replies at fractions of its
 length and read the margin at each cut (exploratory): the author-minus-AI difference grew from −0.94 before any
@@ -202,8 +200,7 @@ the margin at every step, and its mean component under 17 labels tracked their m
 pre-registered −0.7; Appendix C).
 
 **In written replies.** The same swap, applied to the prompt, changed nothing (Table 2), and neither did replacing
-the whole state at those positions. Qwen's thinking returns to the claim: it mentions the authorship or the answer key
-in 96% to 99% of replies under the author label. Holding the direction down for the whole reply did work: giving in to
+the whole state at those positions. Qwen's thinking returns to the claim, mentioning it in 96% to 99% of replies under the author label. Holding the direction down for the whole reply did work: giving in to
 the claimed author fell from 39% to 29%, and from 38% to 28% in a repeat with new samples (pooled −10.7 points
 [−15.2, −6.2], about 45% of the 24-point difference between the labels), while a random direction held down the same
 way changed nothing (0.0 [−5.4, +5.4]). 
@@ -221,11 +218,10 @@ and the paired difference from the unedited author label on conversations where 
 | The same, repeated with new samples | 28% | −9.9 [−16.8, −3.1] |
 | Random direction held down for the whole reply | 39% | 0.0 [−7.6, +7.6] |
 
-**What the edit is not.** It does not make Qwen a better judge: with a right user, holding the direction down also
-lowered accepting (−6.8 points [−16.9, +3.4] in the pre-registered sample, which failed its prediction; −9.6
-[−17.6, −1.5] pooled with a second sample added afterwards). And it cannot be used to plant authority: written into
-AI-labelled conversations and held there, it raised giving in by 5.5 points [−1.8, +12.8], not clearly more than a
-random direction. 
+**What the edit is not.** It does not make Qwen a better judge: with a right user it also lowered accepting (−6.8
+points [−16.9, +3.4] in the pre-registered sample, which failed its prediction; −9.6 [−17.6, −1.5] pooled with a
+second sample added afterwards). And it does not plant authority: written into AI-labelled conversations and held
+there, it raised giving in by 5.5 points [−1.8, +12.8], not clearly more than a random direction. 
 
 ### 4.5 Twenty-five neurons close most of the gap on the read-out, and none of it in written replies
 
@@ -264,11 +260,10 @@ direction swap, did nothing to written replies, because the model re-read the cl
 worked was the one that stayed on. Read-out results should be checked against sampled replies before they are called causal. As a monitor the
 read-out was useful: it flagged in advance the fifth of cases where Qwen gave in five times as often.
 
-**Limitations** (full list in Appendix A). All questions are multiple choice with one pushback message, the labels share
-one bracket format, and the 14 cross-model labels ran on two days. The inside-the-model work uses one model. Qwen's written-reply rates rest on one sample per conversation (two for the held-down direction) and a small
+**Limitations** (full list in Appendix A). All questions are multiple choice with one pushback message, the labels share one bracket format and ran on two
+days, and the inside-the-model work uses one model. Qwen's written-reply rates rest on one sample per conversation (two for the held-down direction) and a small
 right-user set (75). The held-down edit lowers accepting a right author too and was tested for the author label only.
-The read-out predicts outcomes partly because it reflects how sure Qwen was of its first answer. **Future work:** the held-down direction and the read-out in other open models, and whether training on two-sided pushback can raise judgement and not only
-stubbornness.
+The read-out predicts outcomes partly because it reflects how sure Qwen was of its first answer. **Future work:** the direction and the read-out in other open models, and training on two-sided pushback.
 
 ## 6. Conclusion
 
