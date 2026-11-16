@@ -287,6 +287,7 @@ for el in soup.children:
             for j, c in enumerate(r.find_all(["th", "td"])):
                 n = len(c.get_text().strip())
                 wts[j] = max(wts[j], min(n, 46) * (0.55 if c.name == "th" else 1.0) + (7 if "[" in c.get_text() else 3))
+                wts[j] = max(wts[j], max((len(w) for w in c.get_text().split()), default=0) + 3.5)  # longest word fits
         twips = [int(TEXT_W * 1440 * w / sum(wts)) for w in wts]
         for j in range(ncol):
             for i in range(len(rows)):
@@ -314,6 +315,17 @@ for el in soup.children:
     else:
         p = para(); inline(p, el); trim(p); last_was_img = False
 
+# page numbers, centred in the footer
+foot = doc.sections[0].footer
+fp = foot.paragraphs[0] if foot.paragraphs else foot.add_paragraph()
+fp.alignment = WD_ALIGN_PARAGRAPH.CENTER
+for kind, text in [("begin", None), (None, "PAGE"), ("end", None)]:
+    r = OxmlElement("w:r")
+    if kind:
+        fc = OxmlElement("w:fldChar"); fc.set(qn("w:fldCharType"), kind); r.append(fc)
+    else:
+        it = OxmlElement("w:instrText"); it.set(qn("xml:space"), "preserve"); it.text = text; r.append(it)
+    fp._p.append(r)
 doc.core_properties.title = title
 doc.save(str(out))
 print("wrote", out, "| GG notes in the author line:", head_notes)
