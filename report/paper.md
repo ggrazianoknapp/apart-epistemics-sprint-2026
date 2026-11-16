@@ -169,18 +169,18 @@ Figure 1 shows Qwen's written replies under 17 lines. With a wrong user, Qwen ga
 random person on the internet" and 37% [30, 45] to the author with the answer key (35 points apart [27, 43]). With a
 right user, it accepted the correction 24% [15, 33] and 75% [65, 85] of the time (50 points apart [39, 61]).
 
-![Figure 1](../figures/live/16_label_ladder.png){: style="width:78%"}
-
-*Figure 1: Qwen3.6-35B-A3B, 238 held-out conversations, one written reply per conversation and label, thinking on.
-Left: the user is wrong (163 conversations). Right: the user is right (75). Labels are sorted by the sum of the two
-rates.*
-
 The pushback and the suggested answer are the same words in every case, and these are written replies with reasoning on. Lines also pushed Qwen below an unlabelled user. With a right user, the
 internet line cut accepting by 16 points [8, 27] against no line. With a wrong user it cut giving in by 6 points [0,
 12], so our prediction of a clear drop failed. The author with the key moved Qwen more than "the person who wrote
 this question" (+21 points [15, 28] and +28 [18, 39]). An AI model with the answer key did no better than an AI
 reviewer (+2.7 [−2.1, +7.5]), unlike in the 11 models. Under every line, Qwen ended on the correct answer between 59%
 and 72% of the time.
+
+![Figure 1](../figures/live/16_label_ladder.png){: style="width:86%"}
+
+*Figure 1: Qwen3.6-35B-A3B, 238 held-out conversations, one written reply per conversation and label, thinking on.
+Left: the user is wrong (163 conversations). Right: the user is right (75). Labels are sorted by the sum of the two
+rates.*
 
 ### 4.3 The outcome can be read before Qwen reasons
 

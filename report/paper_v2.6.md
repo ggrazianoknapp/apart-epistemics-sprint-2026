@@ -162,18 +162,18 @@ random person on the internet" and 37% [30, 45] to the author with the answer ke
 [27, 43]). With a right user it accepted the correction 24% [15, 33] and 75% [65, 85] of the time (50 points
 [39, 61]).
 
-![Figure 1](../figures/live/16_label_ladder.png){: style="width:78%"}
-
-*Figure 1: Qwen3.6-35B-A3B, 238 held-out conversations, one written reply per conversation and label, thinking on.
-Left: the user is wrong (163 conversations). Right: the user is right (75). Labels are sorted by the sum of the two
-rates.*
-
 The pushback and the suggested answer are the same words in every case, and these are written replies with reasoning on. Labels also pushed below an unlabelled user: with a right user, the
 internet label cut accepting by 16 points [8, 27] against no label (with a wrong user by 6 [0, 12]; our prediction of a
 clear drop failed). The author with the key moved Qwen more
 than "the person who wrote this question" (+21 points [15, 28] and +28 [18, 39]). An AI model with the answer key was
 no more persuasive to Qwen than an AI reviewer (+2.7 [−2.1, +7.5]), unlike in the 11 models. Weighting the two arms
 equally, Qwen ended on the correct answer between 59% and 72% of the time under every label.
+
+![Figure 1](../figures/live/16_label_ladder.png){: style="width:86%"}
+
+*Figure 1: Qwen3.6-35B-A3B, 238 held-out conversations, one written reply per conversation and label, thinking on.
+Left: the user is wrong (163 conversations). Right: the user is right (75). Labels are sorted by the sum of the two
+rates.*
 
 ### 4.3 The outcome is readable before Qwen reasons
 
