@@ -235,3 +235,16 @@ the whole project on 14-15 November (research/deliberation8, not public) and add
     neurons led the earlier draft. Study M then showed they do not change written replies and remove 26% to 31% of the
     read-out difference with other wording, so they moved to §4.5 and Appendix C, and the title changed. The equal-weight
     accuracy by label and the sort order of Figure 1 were not pre-registered beyond "reported without a prediction".
+
+46. **Studies U, U2 and V (16 Nov) were added after the paper had been restructured,** to test on 11 models what
+    Studies Q1 and T showed in Qwen. The times written inside `PREREGISTRATION_U.md` and `PREREGISTRATION_U2.md`
+    ("11:30" and "11:45 Cambodia time") are about an hour late; the git commit and tag times are the record
+    (U committed at 10:32 and U2 at 10:33, the run launched at 10:33 according to `runs/source3/supervisor.log`; V committed at 11:00 and launched at 11:00). The developer and creator
+    labels (U2) were added after a two-item smoke test of the Study U labels on one model and before any other call.
+    Study V was registered when 9 of the 11 models of Study U had finished, as its file says. The split of models
+    into current and older for the creator labels is exploratory. Qwen3.6 was not run in U or V (the GPU box had been
+    stopped); its rates for the same label strings come from Studies Q1 and T on its held-out conversations.
+
+47. **The title changed twice on 16 Nov**: to "Who Is Speaking Matters More Than Who Is Right" after Studies M to T,
+    and to the present title after Study U showed the label ladder across 11 models and a small effect of the
+    creator labels.

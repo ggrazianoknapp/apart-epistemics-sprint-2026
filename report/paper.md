@@ -1,7 +1,7 @@
 <!-- Final paper for the Apart AI x Epistemics sprint. Built to PDF with report/build_pdf.py, and onto Apart's template
      with report/build_docx.py. GG: rewrite the abstract, introduction and conclusion in your own voice (marked below). -->
 
-# Who Is Speaking Matters More Than Who Is Right: Claimed Authority in Qwen
+# Mild Daddy Issues: LLMs Listen to the Answer Key, Not to Their Creator
 
 **Giuseppe Graziano** · with Apart Research
 <!-- GG: add your affiliation, and any co-authors -->
@@ -58,11 +58,11 @@ for receptivity. Barnes (2026) applied the same signal-detection measures to cri
 
 **Who disagrees.** Models follow "human expert" labels more than "other LLM" labels (Bajaj & Tiganj 2026), most
 conformity needs no speaker at all (Hu & Qu 2026), and when an expert disagreed, none of five models revised in a way
-that raised accuracy (Tang & Lin 2026). We split each label's effect into threshold and sensitivity, extend the labels below "no label" as well as above it, and look for the effect inside a model.
+that raised accuracy (Tang & Lin 2026). Joswin et al. (2026) found a graded response to four medical ranks in three open models, while Wang et al. (2025) found that stated expertise barely moved seven, and PARROT (Çelebi et al. 2025) scores 22 models against expert personas. All three use only speakers who push a wrong answer, and none places a speaker below a neutral one or lets a speaker claim authority over the model itself. We test both arms, so each label's effect splits into threshold and sensitivity, and we extend the labels below "no label" and to the model's creator.
 
 **Inside the model.** Pandey (2026) found heads that signal "this statement is wrong" while the model agrees anyway (see also Shapira, Cheng & Orgad 2026). Goodfire released a labelled
 neuron atlas for Qwen3.6-35B-A3B (Tigges et al. 2026a, 2026b) and, in a dense Qwen model, removed 25 neurons found by
-attribution to make it side with an "absolutely certain" user (Cammarata 2026). We test such edits against the model's written replies, where it reasons first, and not only against a one-pass read-out.
+attribution to make it side with an "absolutely certain" user (Cammarata 2026). Joswin et al. (2026) and Wang et al. (2025) locate authority and opinion effects in late layers and edit them, scoring the next answer letter. We test such edits against the model's written replies, where it reasons first, and not only against a one-pass read-out.
 
 ## 3. Methods
 
@@ -80,10 +80,15 @@ c = −[z(accepted) + z(gave in)]/2 (higher means harder to move), with a 0.5 co
 are left out (180 of 7,160). Intervals are 95% bootstrap intervals over questions (10,000 resamples), not corrected for
 multiple tests; where a judgement claim would not survive a Holm correction we say so.
 
-**Source labels across models.** Studies D and G3 put one line before the same pushback on 12 models, with the
-first turn replayed: "[Message from an AI reviewer]", "a human reviewer", "a professor who teaches this subject" or
-"the person who wrote this question and has the answer key". Study E asked the same pushback with hidden reasoning off
-and on (five models), and G1 and G4 varied reasoning further; the two system-prompt runs were exploratory.
+**Speaker labels across models.** On the 11 models reached through an API (six current, five older), we replayed
+each model's own first reply and sent the same pushback once per label, one line before it: "[Message from X]", with
+X one of 14 speakers (Table 1). They range from "a random person on the internet" to "the person who wrote this
+question and has the answer key", and include four that claim standing over the model and none over the question:
+"the developer who built and trained you", "your creator", the model's real maker by name ("Anthropic, the company that
+built and trained you") and a rival maker in the same sentence. The four upper labels ran on 14 November (Studies D
+and G3, which also include Qwen as a twelfth model), the rest on 16 November (Studies U and V). Study E asked the
+same pushback with hidden reasoning off and on (five models), and G1 and G4 varied reasoning further; the two
+system-prompt runs were exploratory.
 
 **Seventeen labels in Qwen.** Qwen's own main-run conversations (its real first reply, then the pushback; 301 with a
 wrong user, 156 with a right user) were split by a hash of the question id. The *held-out* part, 163 with a wrong user
@@ -174,14 +179,14 @@ inside the ±4 points of rounding noise we later measured (Appendix C). The dire
 further lowered the margin at every step (1.93, 1.67, 1.50, 1.12, 0.77 for 0, 0.5, 1, 2 and 3 times the author
 level), and its mean component under 17 labels tracked their margins (r = −0.66 against a pre-registered −0.7).
 
-**In written replies.** The same swap, applied to the prompt, changed nothing (Table 1), and neither did replacing
+**In written replies.** The same swap, applied to the prompt, changed nothing (Table 2), and neither did replacing
 the whole state at those positions. Qwen's thinking returns to the claim: it mentions the authorship or the answer key
 in 96% to 99% of replies under the author label. Holding the direction down for the whole reply did work: giving in to
 the claimed author fell from 39% to 29%, and from 38% to 28% in a repeat with new samples (pooled −10.7 points
 [−15.2, −6.2], about 45% of the 24-point difference between the labels), while a random direction held down the same
 way changed nothing (0.0 [−5.4, +5.4]). Replies were also shorter (2,900 against 3,500 tokens).
 
-*Table 1. Qwen's written replies to a wrong user under the author label, 163 held-out conversations: share giving in,
+*Table 2. Qwen's written replies to a wrong user under the author label, 163 held-out conversations: share giving in,
 and the paired difference from the unedited author label on conversations where both replies finished.*
 
 | Edit | Gives in | Difference from unedited author label |
@@ -204,7 +209,7 @@ random direction. At three times the shift, most replies never reached an answer
 
 Removing the 25 neurons closed 58% [53, 63] of the author-minus-AI margin difference in Qwen's own conversations with a
 wrong user and 72% [62, 82] with a right user, against −3% to 8% for random groups of 25 from the same experts
-(Appendix C, Table 2); this met the rule we had pre-registered for leading the paper with them. Further tests changed
+(Appendix C, Table 3); this met the rule we had pre-registered for leading the paper with them. Further tests changed
 that reading. With reworded labels the share fell to 26% to 31%. The neurons act on the AI side, they also support
 Qwen's correct answer when nobody pushes back, and random 25s from the same attribution shortlist close 50% to 70%. In
 written replies from a copy of the model with the neurons removed, the difference between the labels did not shrink
@@ -270,6 +275,7 @@ systems of agents should not let messages vouch for their own authority.
 ## Code and Data
 
 - Code, prompts, pre-registrations, analysis scripts and per-study results: https://github.com/ggrazianoknapp/apart-epistemics-sprint-2026
+- The speaker-label test can be run on any model with `harness/run_protocol.py` and `harness/run_source.py` (600 fixed questions, both arms, 14 labels) and scored with `harness/analyze_u.py`.
 - Raw model outputs and neuron runs (about 0.5 GB): available on request.
 - Questions: public SuperGPQA and MMLU-Pro items, released by item id.
 
@@ -278,11 +284,13 @@ systems of agents should not let messages vouch for their own authority.
 - Bajaj, A., Tiganj, Z. 2026. Who Do LLMs Trust? Human Experts Matter More Than Other LLMs. arXiv:2602.13568. https://arxiv.org/abs/2602.13568
 - Barnes, J. 2026. Do Language Models Know When to Change Their Mind? Blog post, 20 March 2026 (updated 18 October 2026). https://jbarnes850.github.io/2026/03/20/do-models-know-when-to-change-their-mind/
 - Cammarata, N. 2026. Neural Networks Are Already Clean. Goodfire essay, 15 October 2026 (revised 30 October 2026). https://already-clean.goodfire.com/
+- Çelebi, Y., Ezerceli, Ö., El Hussieni, M. 2025. PARROT: Persuasion and Agreement Robustness Rating of Output Truth – A Sycophancy Robustness Benchmark for LLMs. arXiv:2511.17220. https://arxiv.org/abs/2511.17220
 - Fanous, A. et al. 2025. SycEval: Evaluating LLM Sycophancy. *Proceedings of the AAAI/ACM Conference on AI, Ethics, and Society* 8(1): 893–900. https://doi.org/10.1609/aies.v8i1.36598
 - Hong, J., Byun, G., Kim, S., Shu, K. 2025. Measuring Sycophancy of Language Models in Multi-turn Dialogues. *Findings of EMNLP 2025*, 2239–2259. https://doi.org/10.18653/v1/2025.findings-emnlp.121
 - Hu, Y., Qu, J. 2026. Most LLM Conformity Needs No Speaker: Measuring the Speaker-Free Floor in Peer-Pressure Benchmarks. arXiv:2607.05545. https://arxiv.org/abs/2607.05545
 - Hussain, Z., Nielbo, K. 2026. Conformity Mitigations in Large Language Models Lie on a Single Resistance-Receptivity Frontier. arXiv:2608.11247. https://arxiv.org/abs/2608.11247
 - Jafari, F. R., Eberle, O., Khakzar, A., Nanda, N. 2025. RelP: Faithful and Efficient Circuit Discovery in Language Models via Relevance Patching. arXiv:2508.21258. https://arxiv.org/abs/2508.21258
+- Joswin, E., Medicherla, S., Mammen, P. M. 2026. A Mechanistic View of Authority Hierarchy in LLM Sycophancy. arXiv:2607.00415. https://arxiv.org/abs/2607.00415
 - Kumaran, D., Fleming, S. M., Markeeva, L., Heyward, J., Banino, A., Mathur, M., Pascanu, R., Osindero, S., de Martino, B., Velickovic, P., Patraucean, V. 2025. How Overconfidence in Initial Choices and Underconfidence Under Criticism Modulate Change of Mind in Large Language Models. arXiv:2507.03120. https://arxiv.org/abs/2507.03120
 - Kwon, W. et al. 2023. Efficient Memory Management for Large Language Model Serving with PagedAttention. *SOSP '23*, 611–626. https://doi.org/10.1145/3600006.3613165
 - M-A-P Team, Du, X. et al. 2025. SuperGPQA: Scaling LLM Evaluation across 285 Graduate Disciplines. arXiv:2502.14739. https://arxiv.org/abs/2502.14739
@@ -295,6 +303,7 @@ systems of agents should not let messages vouch for their own authority.
 - Tang, Y., Lin, M. 2026. When Expert Disagreement Hurts: Prestige and Selectivity in LLM Decision Revision. NeurIPS 2026 (to appear). arXiv:2611.16694. https://arxiv.org/abs/2611.16694
 - Tigges, C., Kowal, M., McGrath, T., Lewis, O., Cammarata, N. 2026a. Neurons as an Interpretable Basis. Goodfire research post, 10 November 2026. https://www.goodfire.com/research/neurons-as-an-interpretable-basis
 - Tigges, C. et al. 2026b. Neuron Atlas – Qwen3.6. Goodfire, 10 November 2026. https://www.goodfire.com/research/public_neuron_atlas
+- Wang, K., Li, J., Yang, S., Zhang, Z., Wang, D. 2025. When Truth Is Overridden: Uncovering the Internal Origins of Sycophancy in Large Language Models. arXiv:2508.02087. https://arxiv.org/abs/2508.02087
 - Wang, Y. et al. 2024. MMLU-Pro: A More Robust and Challenging Multi-Task Language Understanding Benchmark. NeurIPS 2024 Datasets and Benchmarks Track. https://arxiv.org/abs/2406.01574
 - Zhang, D. H., Chew, A., Soe, R., Taha, A., Li, R., Shah, A., Chaudhary, M. 2026. Stubborn or Sycophantic? Auditing What Sycophancy Evaluations Measure. NeurIPS 2026 Workshop "Can We Trust AI Evaluation? Robustness, Causality, and Risk in Modern AI Assessment" (poster). https://neurips.cc/virtual/2026/178274
 
@@ -513,7 +522,7 @@ Qwen knows the answer to.*
 *Figure 7. Study C2: editing Qwen's whole-layer reading on the 170 held-out questions it knows. Swapping or erasing
 the reading lowers judgement; the same edits along 10 random directions do not.*
 
-**Seventeen labels in Qwen's written replies (Studies M1, Q1, T).** Table 2 gives every label with the read-out hold
+**Seventeen labels in Qwen's written replies (Studies M1, Q1, T).** Table 3 gives every label with the read-out hold
 margin measured beforehand. The AI-reviewer and author rows come from Study M1's unedited replies on the same
 conversations, sampled a day earlier with the same sampler. "Ends correct" weights the wrong-user and right-user
 conversations equally. Among the nine labels of Study T alone, which sit close together in the middle of the ladder,
@@ -523,7 +532,7 @@ points [3.1, 16.2] with a wrong user and −3.1 [−12.3, +6.2] with a right use
 without the key +6.8 [2.1, 12.3] and +1.6 [−9.4, +12.5]; an anonymous user against no label −2.9 [−7.4, +1.5] and −15.9
 [−28.6, −4.8].
 
-*Table 2. Qwen3.6-35B-A3B, held-out conversations (163 user wrong, 75 user right), sorted by the read-out hold margin
+*Table 3. Qwen3.6-35B-A3B, held-out conversations (163 user wrong, 75 user right), sorted by the read-out hold margin
 with a wrong user. Intervals are 95% bootstrap intervals over conversations.*
 
 | Label | Read-out hold margin (wrong / right) | Gives in, user wrong | Accepts, user right | Ends correct |
@@ -585,7 +594,7 @@ the AI label in both arms (−1.01 [−1.08, −0.94] and −0.79 [−0.89, −0
 across 12 models (§4.1). The neuron results below use the read-out; written replies with the neurons removed are at the end of this section.
 
 **Removing the 25 neurons.** This closed 58% [53, 63] of the authority gap with a wrong user and 72% [62, 82] with a
-right user; four random groups of 25 from the same experts closed between −3% and 8% (Table 3). The removal
+right user; four random groups of 25 from the same experts closed between −3% and 8% (Table 4). The removal
 acts on the AI side. Giving in under the AI label rose from 10.3% to 18.9%, close to the author label's 22.6%, and
 accepting rose from 28.2% to 39.1%, against 46.8%. Qwen did not start ignoring the author; it started treating an AI
 reviewer more like one. In planted conversations on held-out questions the 25 closed 101% [80, 130] of the gap, against under 10% for each of 20 random groups, and 80% [67, 101] with every router forced to its unedited choices, so the
@@ -598,7 +607,7 @@ correctly before and after (169 of 400).
 person who wrote this question and has the answer key" (colour): the share of questions where Qwen's next answer letter, read with thinking closed, is the user's, unedited and with the 25 neurons removed. Left: the user is wrong (301 questions). Right: the user is
 right (156 questions).*
 
-*Table 3. The share of the gap between the author and AI labels (in the hold margin) that removing neurons closes, with
+*Table 4. The share of the gap between the author and AI labels (in the hold margin) that removing neurons closes, with
 95% intervals. Each random group takes one neuron from the expert of each of the 25.*
 
 | Test | Questions | The 25 neurons | 25 random neurons from the same experts |
@@ -681,10 +690,10 @@ is (C) [option]." (hearsay) or "I'm fairly sure the answer is (C) [option]." (fi
 for example "[Message from an AI reviewer]", before the pushback.
 
 **Labels in Qwen (Studies O, Q1, T).** Each label is one line before the pushback, "[Message from X]", with X as
-listed in Table 2; the full author label is "[Message from the person who wrote this question and has the answer
+listed in Table 3; the full author label is "[Message from the person who wrote this question and has the answer
 key]" and the formatter label "[Message from the person who formatted this question and has the page layout]". The
 plain-sentence versions of Study O begin the pushback with "I wrote this question and I have the answer key." or "I
-am an AI reviewer." Exact strings are in `neurons/o_extra.py`, `neurons/q_sample.py` and `neurons/t_sample.py`.
+am an AI reviewer." Exact strings are in `neurons/o_extra.py`, `neurons/q_sample.py` and `neurons/t_sample.py`; the 14 cross-model labels are in `harness/run_source.py`.
 
 **Neuron selection and planted conversations (Studies J to L).** For 600 further questions we built *planted* conversations, in which we wrote the first answer ourselves (the correct option or a plausible wrong one) in fixed wording, followed by the labelled pushback. The decision is the *hold margin*, log P(own letter) − log P(user's letter) after "My final
 answer is (" with thinking closed; below zero means giving in. Each planted question has a wrong-user and a right-user version: the *threshold part* is the average of the two hold margins (the margin-level version of stubbornness) and the *belief part* is half their difference (the margin-level version of judgement). The *authority gap* is the author-label margin minus the
@@ -746,9 +755,9 @@ Each pre-registration was committed and tagged in git before its data existed: `
 hypotheses, labelled-neuron reading and removal), `prereg-B` (the "Wait" neuron dial), `prereg-C` (re-asking C1 and
 layer edits C2), `prereg-D` (human against AI label), `prereg-E` (reasoning off against on), `prereg-F` (internal
 edits), `prereg-G` (no-reasoning Qwen, authority ladder, effort ladder, answer-key check), `prereg-H` (labelled-neuron
-groups), `prereg-I` (all-neuron groups), `prereg-J` (where and how the author label acts inside Qwen), `prereg-K` (what the neurons found in J do under every label), `prereg-L` (controls for those neurons), `prereg-M` (the neurons in written replies and with other wording), `prereg-N` (the authority direction), `prereg-O` (further tests of the direction on the read-out), `prereg-P` (why read-out edits do not move written replies), `prereg-Q` (labels in written replies; writing the direction in), `prereg-R` (the read-out as a predictor), `prereg-S` (repeat of the held-down direction, and the user-right side) and `prereg-T` (all 17 labels in written replies). Every
+groups), `prereg-I` (all-neuron groups), `prereg-J` (where and how the author label acts inside Qwen), `prereg-K` (what the neurons found in J do under every label), `prereg-L` (controls for those neurons), `prereg-M` (the neurons in written replies and with other wording), `prereg-N` (the authority direction), `prereg-O` (further tests of the direction on the read-out), `prereg-P` (why read-out edits do not move written replies), `prereg-Q` (labels in written replies; writing the direction in), `prereg-R` (the read-out as a predictor), `prereg-S` (repeat of the held-down direction, and the user-right side), `prereg-T` (all 17 labels in written replies), `prereg-U` and `prereg-U2` (six more labels across 11 models, including developer and creator) and `prereg-V` (real maker, rival maker, father and mother). Every
 difference we know of between what we pre-registered and what we ran, including analysis code written or changed after
-the data, is listed with its reason in `DEVIATIONS.md` (45 items). The most important: the signal-detection
+the data, is listed with its reason in `DEVIATIONS.md` (47 items). The most important: the signal-detection
 decomposition was chosen after the main run (item 20); the hand check of the answer extractor and the hand review of
 answer keys promised in pre-registration A were not done (items 18, 19); C1's confidence-weighted check turns its five
 clear models into four (item 11); and analysis scripts used fewer bootstrap resamples than planned until the final

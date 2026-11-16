@@ -151,3 +151,4 @@ Recommended addition, verified on its NeurIPS page but not yet cited in the draf
 21. **Appendix A, lines 247–248 (drop [verify], make exact).** `(DeVerna et al. 2024 show wrong AI fact-checks lower belief in true claims) [verify]` → `(DeVerna et al. 2024 found that an LLM fact-checker lowered people's belief in true headlines that it mislabelled as false)`.
 
 22. **Everywhere:** remove every remaining `[verify]` tag, and replace the in-text author–year citations with the numbered list in (b) (or keep author–year and use (b) unnumbered). After changes 1–21, the Appendix E sentence "every reference was opened and checked" is accurate.
+- Çelebi 2511.17220, Joswin 2607.00415, Wang 2508.02087: abstract pages opened and read 16 Nov (web-fetch).
