@@ -1,4 +1,6 @@
-# 25 neurons, claimed authority and pushback: AI x Epistemics Research Sprint 2026 (Track 1)
+# Testing for Daddy Issues: Authority Bias and the Authority Ladder in LLMs
+
+AI x Epistemics Research Sprint 2026 (Track 1)
 
 Code, pre-registrations and results for our Track 1 ("Model Epistemics & Decision-Making Evals") submission to the
 Apart Research AI x Epistemics Research Sprint, 13 to 15 November 2026.
@@ -12,19 +14,30 @@ Apart Research AI x Epistemics Research Sprint, 13 to 15 November 2026.
 
 ## What the paper reports
 
-- Inside Qwen3.6-35B-A3B, removing 25 neurons chosen by gradient attribution closes most of the gap between how Qwen
-  treats pushback labelled as coming from an AI reviewer and pushback from "the person who wrote this question and has
-  the answer key". The gap closes because Qwen resists the AI reviewer less. The neurons are not specific to
-  authority (Study L, `PREREGISTRATION_L.md`, `results/l.json`).
-- Across 12 models, a claimed human, professor or author source makes models easier to move, with little change in how
-  well they tell a right user from a wrong one.
+- Across 11 models and 14 one-line speaker labels (the *authority ladder*), the same correct fix was accepted 37% of the
+  time from "a random person on the internet" and 72% from "the person who wrote this question and has the answer
+  key", in every model, while the share of conversations ending on the correct answer stayed between 61% and 66%
+  (Studies D, G3, U, V; `results/u.json`).
+- Claims of authority over the model did little: "your creator" moved models a third as much as the author with the
+  answer key, models did not tell their real maker from a rival, and "your father" made them more stubborn.
+- Inside Qwen3.6-35B-A3B, a logit margin from one forward pass predicts whether the later written reply gives in, before
+  the model reasons (Studies R, T; `results/q.json`, `results/t.json`).
+- One direction in the residual stream, held at its AI-reviewer value for the whole reply, cuts giving in to the claimed
+  author from 38% to 27%; edits at the end of the prompt alone, including removing 25 neurons that close 58% of the gap
+  on a one-pass read-out, do not change written replies (Studies L to S).
 - Across 21 models, scored with signal detection, models differ more in how readily they switch than in how well they
   judge.
+
+## Run the authority ladder on a model
+
+`harness/run_protocol.py` asks the 600 questions and pushes back in both arms; `harness/run_source.py --labels ...`
+replays each first reply under the speaker labels (strings in `ALL_LABELS`); `harness/analyze_u.py` scores stubbornness,
+judgement and the authority bias score (stubbornness under the internet label minus under the author label).
 
 ## Layout
 
 - `report/`: the paper and its build scripts.
-- `PREREGISTRATION_*.md`: one file per study, each committed and tagged (`prereg-A` to `prereg-L`) before its data
+- `PREREGISTRATION_*.md`: one file per study, each committed and tagged (`prereg-A` to `prereg-V`) before its data
   existed. `DEVIATIONS.md` lists every departure from them.
 - `harness/`: the pushback protocol, model calls, analysis scripts (`analyze*.py`, `sdt.py`) and the chart script
   (`results_page.py`).
